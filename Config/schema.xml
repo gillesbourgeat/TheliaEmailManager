@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database defaultIdMethod="native" name="thelia"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="../../../vendor/propel/propel/resources/xsd/database.xsd" >
+
+    <!-- - - - - - - - - - - -->
+    <!-- - - - trace - - - - -->
+    <!-- - - - - - - - - - - -->
+
+    <table name="mail_manager_trace" namespace="TheliaMailManager\Model">
+        <column autoIncrement="true" name="id" primaryKey="true" required="true" type="INTEGER" />
+        <column name="hash" required="true" size="32" type="CHAR" />
+        <column defaultValue="0" name="disable_history" type="BOOLEAN" />
+        <column defaultValue="0" name="disable_sending" type="BOOLEAN" />
+        <column defaultValue="0" name="number_of_catch" type="INTEGER" />
+        <column defaultValue="0" name="email_bcc" type="ARRAY" />
+        <column name="detail" required="true" type="LONGVARCHAR" />
+
+        <behavior name="timestampable"/>
+
+        <unique>
+            <unique-column name="hash" />
+        </unique>
+    </table>
+
+    <!-- - - - - - - - - - - -->
+    <!-- - - - history - - - -->
+    <!-- - - - - - - - - - - -->
+
+    <table name="mail_manager_history" namespace="TheliaMailManager\Model">
+        <column autoIncrement="true" name="id" primaryKey="true" required="true" type="INTEGER" />
+        <column name="trace_id" required="true" type="INTEGER" />
+        <column name="subject" type="LONGVARCHAR" />
+        <column name="body" type="BLOB" />
+
+        <foreign-key foreignTable="mail_manager_trace" name="fk_mail_manager_history__mail_manager_trace" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference foreign="id" local="trace_id" />
+        </foreign-key>
+
+        <behavior name="timestampable"/>
+
+        <index name="idx_arh_customer_profile_is_default">
+            <index-column name="trace_id" />
+        </index>
+    </table>
+
+    <!-- - - - - - - - - - - -->
+    <!-- - - - mail -  - - - -->
+    <!-- - - - - - - - - - - -->
+
+    <table name="mail_manager_mail" namespace="TheliaMailManager\Model">
+        <column autoIncrement="true" name="id" primaryKey="true" required="true" type="INTEGER" />
+        <column name="mail" required="true" type="VARCHAR" />
+
+        <behavior name="timestampable"/>
+
+        <unique>
+            <unique-column name="hash" />
+        </unique>
+    </table>
+
+
+    <!-- - - - - - - - - - - -->
+    <!-- - history mail  - - -->
+    <!-- - - - - - - - - - - -->
+
+    <table name="mail_manager_history_mail" namespace="TheliaMailManager\Model">
+        <column autoIncrement="true" name="id" primaryKey="true" required="true" type="INTEGER" />
+        <column name="history_id" required="true" type="INTEGER" />
+        <column name="mail_id" required="true" type="INTEGER" />
+        <column name="type" enum="from,to,cc,bcc,rt" required="true"  size="4" type="CHAR" />
+
+        <foreign-key foreignTable="mail_manager_history" name="fk_mail_manager_history_mail__mail_manager_history" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference foreign="id" local="history_id" />
+        </foreign-key>
+
+        <foreign-key foreignTable="mail_manager_trace" name="fk_mail_manager_history_mail__mail_manager_mail" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference foreign="id" local="mail_id" />
+        </foreign-key>
+
+        <index>
+            <index-column name="history_id" />
+        </index>
+
+        <index>
+            <index-column name="mail_id" />
+        </index>
+
+        <unique>
+            <unique-column name="history_id" />
+            <unique-column name="mail_id" />
+            <unique-column name="type" />
+        </unique>
+    </table>
+
+    <external-schema filename="local/config/schema.xml" referenceOnly="true" />
+</database>
