@@ -6,6 +6,7 @@ use Propel\Runtime\Connection\ConnectionInterface;
 use Symfony\Component\Finder\Finder;
 use Thelia\Install\Database;
 use Thelia\Module\BaseModule;
+use TheliaMailManager\Util\MailUtil;
 
 /**
  * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
@@ -21,6 +22,10 @@ class TheliaMailManager extends BaseModule
     /** @var string */
     const UPDATE_PATH = __DIR__ . DS . 'setup' . DS . 'update';
 
+    const CONFIG_ENABLE_HISTORY = 'enable_history';
+    const CONFIG_DISABLE_SEND = 'disable_send';
+    const CONFIG_REDIRECT_ALL_TO = 'redirect_all_to';
+
     /**
      * @inheritdoc
      */
@@ -32,6 +37,10 @@ class TheliaMailManager extends BaseModule
             null,
             [self::SETUP_PATH . DS . "tables.sql", self::SETUP_PATH . DS . "insert.sql"]
         );
+
+        static::setEnableHistory(true);
+        static::setDisableSend(false);
+        static::setRedirectAllTo([]);
     }
 
     /**
@@ -68,5 +77,65 @@ class TheliaMailManager extends BaseModule
                 [self::SETUP_PATH . DS . "uninstall.sql"]
             );
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public static function getEnableHistory()
+    {
+        return static::getConfigValue(self::CONFIG_ENABLE_HISTORY, true) ? true : false;
+    }
+
+    /**
+     * @param bool $bool true for enable all histories, false for disable all histories
+     */
+    public static function setEnableHistory($bool)
+    {
+        static::setConfigValue(self::CONFIG_ENABLE_HISTORY, (bool) $bool);
+    }
+
+    /**
+     * @return bool
+     */
+    public static function getDisableSend()
+    {
+        return static::getConfigValue(self::CONFIG_DISABLE_SEND, false) ? true : false;
+    }
+
+    /**
+     * @param $bool true for disable sending all mails, false for enable sending all emails
+     */
+    public static function setDisableSend($bool)
+    {
+        static::setConfigValue(self::CONFIG_DISABLE_SEND, (bool) $bool);
+    }
+
+    /**
+     * @return string[] list of mail
+     */
+    public static function getRedirectAllTo()
+    {
+        $mails = explode(',', static::getConfigValue(self::CONFIG_REDIRECT_ALL_TO, ""));
+
+        if (!MailUtil::checkMailStructure($mails[0])) {
+            return [];
+        }
+
+        return $mails;
+    }
+
+    /**
+     * @param string[] $mails list of mail
+     */
+    public static function setRedirectAllTo(array $mails)
+    {
+        foreach ($mails as $mail) {
+            if (!MailUtil::checkMailStructure($mail)) {
+                throw new \InvalidArgumentException('Invalid email : ' . $mail);
+            }
+        }
+
+        static::setConfigValue(self::CONFIG_REDIRECT_ALL_TO, implode(',', $mails));
     }
 }
