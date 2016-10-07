@@ -8,8 +8,6 @@ use Thelia\Install\Database;
 use Thelia\Module\BaseModule;
 
 /**
- * Class TheliaMailManager
- * @package TheliaMailManager
  * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
 class TheliaMailManager extends BaseModule

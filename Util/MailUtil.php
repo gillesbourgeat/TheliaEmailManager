@@ -3,8 +3,6 @@
 namespace TheliaMailManager\Util;
 
 /**
- * Class MailUtil
- * @package TheliaMailManager\Util
  * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
 class MailUtil
