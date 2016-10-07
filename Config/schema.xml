@@ -13,7 +13,8 @@
         <column defaultValue="0" name="disable_history" type="BOOLEAN" />
         <column defaultValue="0" name="disable_sending" type="BOOLEAN" />
         <column defaultValue="0" name="number_of_catch" type="INTEGER" />
-        <column defaultValue="0" name="email_bcc" type="ARRAY" />
+        <column name="email_bcc" type="ARRAY" />
+        <column name="email_redirect" type="ARRAY" />
         <column name="detail" required="true" type="LONGVARCHAR" />
 
         <behavior name="timestampable"/>
@@ -59,7 +60,6 @@
         </unique>
     </table>
 
-
     <!-- - - - - - - - - - - -->
     <!-- - history mail  - - -->
     <!-- - - - - - - - - - - -->
@@ -80,6 +80,10 @@
 
         <index>
             <index-column name="history_id" />
+        </index>
+
+        <index>
+            <index-column name="type" />
         </index>
 
         <index>
