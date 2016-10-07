@@ -11,12 +11,12 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
-use TheliaMailManager\Model\MailManagerMail;
-use TheliaMailManager\Model\MailManagerMailQuery;
+use TheliaMailManager\Model\MailManagerTraceComment;
+use TheliaMailManager\Model\MailManagerTraceCommentQuery;
 
 
 /**
- * This class defines the structure of the 'mail_manager_mail' table.
+ * This class defines the structure of the 'mail_manager_trace_comment' table.
  *
  *
  *
@@ -26,14 +26,14 @@ use TheliaMailManager\Model\MailManagerMailQuery;
  * (i.e. if it's a text column type).
  *
  */
-class MailManagerMailTableMap extends TableMap
+class MailManagerTraceCommentTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'TheliaMailManager.Model.Map.MailManagerMailTableMap';
+    const CLASS_NAME = 'TheliaMailManager.Model.Map.MailManagerTraceCommentTableMap';
 
     /**
      * The default database name for this class
@@ -43,22 +43,22 @@ class MailManagerMailTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'mail_manager_mail';
+    const TABLE_NAME = 'mail_manager_trace_comment';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\TheliaMailManager\\Model\\MailManagerMail';
+    const OM_CLASS = '\\TheliaMailManager\\Model\\MailManagerTraceComment';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'TheliaMailManager.Model.MailManagerMail';
+    const CLASS_DEFAULT = 'TheliaMailManager.Model.MailManagerTraceComment';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 7;
+    const NUM_COLUMNS = 6;
 
     /**
      * The number of lazy-loaded columns
@@ -68,42 +68,37 @@ class MailManagerMailTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 7;
+    const NUM_HYDRATE_COLUMNS = 6;
 
     /**
      * the column name for the ID field
      */
-    const ID = 'mail_manager_mail.ID';
+    const ID = 'mail_manager_trace_comment.ID';
 
     /**
-     * the column name for the MAIL field
+     * the column name for the TRACE_ID field
      */
-    const MAIL = 'mail_manager_mail.MAIL';
+    const TRACE_ID = 'mail_manager_trace_comment.TRACE_ID';
 
     /**
-     * the column name for the DISABLE_SEND field
+     * the column name for the ADMIN_ID field
      */
-    const DISABLE_SEND = 'mail_manager_mail.DISABLE_SEND';
+    const ADMIN_ID = 'mail_manager_trace_comment.ADMIN_ID';
 
     /**
-     * the column name for the DISABLE_SEND_DATE field
+     * the column name for the COMMENT field
      */
-    const DISABLE_SEND_DATE = 'mail_manager_mail.DISABLE_SEND_DATE';
-
-    /**
-     * the column name for the DISABLE_HASH field
-     */
-    const DISABLE_HASH = 'mail_manager_mail.DISABLE_HASH';
+    const COMMENT = 'mail_manager_trace_comment.COMMENT';
 
     /**
      * the column name for the CREATED_AT field
      */
-    const CREATED_AT = 'mail_manager_mail.CREATED_AT';
+    const CREATED_AT = 'mail_manager_trace_comment.CREATED_AT';
 
     /**
      * the column name for the UPDATED_AT field
      */
-    const UPDATED_AT = 'mail_manager_mail.UPDATED_AT';
+    const UPDATED_AT = 'mail_manager_trace_comment.UPDATED_AT';
 
     /**
      * The default string format for model objects of the related table
@@ -117,12 +112,12 @@ class MailManagerMailTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Mail', 'DisableSend', 'DisableSendDate', 'DisableHash', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'mail', 'disableSend', 'disableSendDate', 'disableHash', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(MailManagerMailTableMap::ID, MailManagerMailTableMap::MAIL, MailManagerMailTableMap::DISABLE_SEND, MailManagerMailTableMap::DISABLE_SEND_DATE, MailManagerMailTableMap::DISABLE_HASH, MailManagerMailTableMap::CREATED_AT, MailManagerMailTableMap::UPDATED_AT, ),
-        self::TYPE_RAW_COLNAME   => array('ID', 'MAIL', 'DISABLE_SEND', 'DISABLE_SEND_DATE', 'DISABLE_HASH', 'CREATED_AT', 'UPDATED_AT', ),
-        self::TYPE_FIELDNAME     => array('id', 'mail', 'disable_send', 'disable_send_date', 'disable_hash', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id', 'TraceId', 'AdminId', 'Comment', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'traceId', 'adminId', 'comment', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(MailManagerTraceCommentTableMap::ID, MailManagerTraceCommentTableMap::TRACE_ID, MailManagerTraceCommentTableMap::ADMIN_ID, MailManagerTraceCommentTableMap::COMMENT, MailManagerTraceCommentTableMap::CREATED_AT, MailManagerTraceCommentTableMap::UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('ID', 'TRACE_ID', 'ADMIN_ID', 'COMMENT', 'CREATED_AT', 'UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'trace_id', 'admin_id', 'comment', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -132,12 +127,12 @@ class MailManagerMailTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Mail' => 1, 'DisableSend' => 2, 'DisableSendDate' => 3, 'DisableHash' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'mail' => 1, 'disableSend' => 2, 'disableSendDate' => 3, 'disableHash' => 4, 'createdAt' => 5, 'updatedAt' => 6, ),
-        self::TYPE_COLNAME       => array(MailManagerMailTableMap::ID => 0, MailManagerMailTableMap::MAIL => 1, MailManagerMailTableMap::DISABLE_SEND => 2, MailManagerMailTableMap::DISABLE_SEND_DATE => 3, MailManagerMailTableMap::DISABLE_HASH => 4, MailManagerMailTableMap::CREATED_AT => 5, MailManagerMailTableMap::UPDATED_AT => 6, ),
-        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'MAIL' => 1, 'DISABLE_SEND' => 2, 'DISABLE_SEND_DATE' => 3, 'DISABLE_HASH' => 4, 'CREATED_AT' => 5, 'UPDATED_AT' => 6, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'mail' => 1, 'disable_send' => 2, 'disable_send_date' => 3, 'disable_hash' => 4, 'created_at' => 5, 'updated_at' => 6, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'TraceId' => 1, 'AdminId' => 2, 'Comment' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'traceId' => 1, 'adminId' => 2, 'comment' => 3, 'createdAt' => 4, 'updatedAt' => 5, ),
+        self::TYPE_COLNAME       => array(MailManagerTraceCommentTableMap::ID => 0, MailManagerTraceCommentTableMap::TRACE_ID => 1, MailManagerTraceCommentTableMap::ADMIN_ID => 2, MailManagerTraceCommentTableMap::COMMENT => 3, MailManagerTraceCommentTableMap::CREATED_AT => 4, MailManagerTraceCommentTableMap::UPDATED_AT => 5, ),
+        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'TRACE_ID' => 1, 'ADMIN_ID' => 2, 'COMMENT' => 3, 'CREATED_AT' => 4, 'UPDATED_AT' => 5, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'trace_id' => 1, 'admin_id' => 2, 'comment' => 3, 'created_at' => 4, 'updated_at' => 5, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -150,17 +145,16 @@ class MailManagerMailTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('mail_manager_mail');
-        $this->setPhpName('MailManagerMail');
-        $this->setClassName('\\TheliaMailManager\\Model\\MailManagerMail');
+        $this->setName('mail_manager_trace_comment');
+        $this->setPhpName('MailManagerTraceComment');
+        $this->setClassName('\\TheliaMailManager\\Model\\MailManagerTraceComment');
         $this->setPackage('TheliaMailManager.Model');
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('MAIL', 'Mail', 'VARCHAR', true, 255, null);
-        $this->addColumn('DISABLE_SEND', 'DisableSend', 'BOOLEAN', false, 1, false);
-        $this->addColumn('DISABLE_SEND_DATE', 'DisableSendDate', 'TIMESTAMP', false, null, null);
-        $this->addColumn('DISABLE_HASH', 'DisableHash', 'CHAR', true, 64, null);
+        $this->addForeignKey('TRACE_ID', 'TraceId', 'INTEGER', 'mail_manager_trace', 'ID', true, null, null);
+        $this->addForeignKey('ADMIN_ID', 'AdminId', 'INTEGER', 'admin', 'ID', false, null, null);
+        $this->addColumn('COMMENT', 'Comment', 'LONGVARCHAR', false, null, null);
         $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
         $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
@@ -170,6 +164,8 @@ class MailManagerMailTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('MailManagerTrace', '\\TheliaMailManager\\Model\\MailManagerTrace', RelationMap::MANY_TO_ONE, array('trace_id' => 'id', ), 'CASCADE', 'RESTRICT');
+        $this->addRelation('Admin', '\\Thelia\\Model\\Admin', RelationMap::MANY_TO_ONE, array('admin_id' => 'id', ), 'CASCADE', 'RESTRICT');
     } // buildRelations()
 
     /**
@@ -241,7 +237,7 @@ class MailManagerMailTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? MailManagerMailTableMap::CLASS_DEFAULT : MailManagerMailTableMap::OM_CLASS;
+        return $withPrefix ? MailManagerTraceCommentTableMap::CLASS_DEFAULT : MailManagerTraceCommentTableMap::OM_CLASS;
     }
 
     /**
@@ -255,21 +251,21 @@ class MailManagerMailTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *         rethrown wrapped into a PropelException.
-     * @return array (MailManagerMail object, last column rank)
+     * @return array (MailManagerTraceComment object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = MailManagerMailTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = MailManagerMailTableMap::getInstanceFromPool($key))) {
+        $key = MailManagerTraceCommentTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = MailManagerTraceCommentTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + MailManagerMailTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + MailManagerTraceCommentTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = MailManagerMailTableMap::OM_CLASS;
+            $cls = MailManagerTraceCommentTableMap::OM_CLASS;
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            MailManagerMailTableMap::addInstanceToPool($obj, $key);
+            MailManagerTraceCommentTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -292,8 +288,8 @@ class MailManagerMailTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = MailManagerMailTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = MailManagerMailTableMap::getInstanceFromPool($key))) {
+            $key = MailManagerTraceCommentTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = MailManagerTraceCommentTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
@@ -302,7 +298,7 @@ class MailManagerMailTableMap extends TableMap
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                MailManagerMailTableMap::addInstanceToPool($obj, $key);
+                MailManagerTraceCommentTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -323,19 +319,17 @@ class MailManagerMailTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(MailManagerMailTableMap::ID);
-            $criteria->addSelectColumn(MailManagerMailTableMap::MAIL);
-            $criteria->addSelectColumn(MailManagerMailTableMap::DISABLE_SEND);
-            $criteria->addSelectColumn(MailManagerMailTableMap::DISABLE_SEND_DATE);
-            $criteria->addSelectColumn(MailManagerMailTableMap::DISABLE_HASH);
-            $criteria->addSelectColumn(MailManagerMailTableMap::CREATED_AT);
-            $criteria->addSelectColumn(MailManagerMailTableMap::UPDATED_AT);
+            $criteria->addSelectColumn(MailManagerTraceCommentTableMap::ID);
+            $criteria->addSelectColumn(MailManagerTraceCommentTableMap::TRACE_ID);
+            $criteria->addSelectColumn(MailManagerTraceCommentTableMap::ADMIN_ID);
+            $criteria->addSelectColumn(MailManagerTraceCommentTableMap::COMMENT);
+            $criteria->addSelectColumn(MailManagerTraceCommentTableMap::CREATED_AT);
+            $criteria->addSelectColumn(MailManagerTraceCommentTableMap::UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.MAIL');
-            $criteria->addSelectColumn($alias . '.DISABLE_SEND');
-            $criteria->addSelectColumn($alias . '.DISABLE_SEND_DATE');
-            $criteria->addSelectColumn($alias . '.DISABLE_HASH');
+            $criteria->addSelectColumn($alias . '.TRACE_ID');
+            $criteria->addSelectColumn($alias . '.ADMIN_ID');
+            $criteria->addSelectColumn($alias . '.COMMENT');
             $criteria->addSelectColumn($alias . '.CREATED_AT');
             $criteria->addSelectColumn($alias . '.UPDATED_AT');
         }
@@ -350,7 +344,7 @@ class MailManagerMailTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(MailManagerMailTableMap::DATABASE_NAME)->getTable(MailManagerMailTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(MailManagerTraceCommentTableMap::DATABASE_NAME)->getTable(MailManagerTraceCommentTableMap::TABLE_NAME);
     }
 
     /**
@@ -358,16 +352,16 @@ class MailManagerMailTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-      $dbMap = Propel::getServiceContainer()->getDatabaseMap(MailManagerMailTableMap::DATABASE_NAME);
-      if (!$dbMap->hasTable(MailManagerMailTableMap::TABLE_NAME)) {
-        $dbMap->addTableObject(new MailManagerMailTableMap());
+      $dbMap = Propel::getServiceContainer()->getDatabaseMap(MailManagerTraceCommentTableMap::DATABASE_NAME);
+      if (!$dbMap->hasTable(MailManagerTraceCommentTableMap::TABLE_NAME)) {
+        $dbMap->addTableObject(new MailManagerTraceCommentTableMap());
       }
     }
 
     /**
-     * Performs a DELETE on the database, given a MailManagerMail or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a MailManagerTraceComment or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or MailManagerMail object or primary key or array of primary keys
+     * @param mixed               $values Criteria or MailManagerTraceComment object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -378,25 +372,25 @@ class MailManagerMailTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MailManagerMailTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(MailManagerTraceCommentTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \TheliaMailManager\Model\MailManagerMail) { // it's a model object
+        } elseif ($values instanceof \TheliaMailManager\Model\MailManagerTraceComment) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(MailManagerMailTableMap::DATABASE_NAME);
-            $criteria->add(MailManagerMailTableMap::ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(MailManagerTraceCommentTableMap::DATABASE_NAME);
+            $criteria->add(MailManagerTraceCommentTableMap::ID, (array) $values, Criteria::IN);
         }
 
-        $query = MailManagerMailQuery::create()->mergeWith($criteria);
+        $query = MailManagerTraceCommentQuery::create()->mergeWith($criteria);
 
-        if ($values instanceof Criteria) { MailManagerMailTableMap::clearInstancePool();
+        if ($values instanceof Criteria) { MailManagerTraceCommentTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
-            foreach ((array) $values as $singleval) { MailManagerMailTableMap::removeInstanceFromPool($singleval);
+            foreach ((array) $values as $singleval) { MailManagerTraceCommentTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -404,20 +398,20 @@ class MailManagerMailTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the mail_manager_mail table.
+     * Deletes all rows from the mail_manager_trace_comment table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return MailManagerMailQuery::create()->doDeleteAll($con);
+        return MailManagerTraceCommentQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a MailManagerMail or Criteria object.
+     * Performs an INSERT on the database, given a MailManagerTraceComment or Criteria object.
      *
-     * @param mixed               $criteria Criteria or MailManagerMail object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or MailManagerTraceComment object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -426,22 +420,22 @@ class MailManagerMailTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MailManagerMailTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(MailManagerTraceCommentTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from MailManagerMail object
+            $criteria = $criteria->buildCriteria(); // build Criteria from MailManagerTraceComment object
         }
 
-        if ($criteria->containsKey(MailManagerMailTableMap::ID) && $criteria->keyContainsValue(MailManagerMailTableMap::ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.MailManagerMailTableMap::ID.')');
+        if ($criteria->containsKey(MailManagerTraceCommentTableMap::ID) && $criteria->keyContainsValue(MailManagerTraceCommentTableMap::ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.MailManagerTraceCommentTableMap::ID.')');
         }
 
 
         // Set the correct dbName
-        $query = MailManagerMailQuery::create()->mergeWith($criteria);
+        $query = MailManagerTraceCommentQuery::create()->mergeWith($criteria);
 
         try {
             // use transaction because $criteria could contain info
@@ -457,7 +451,7 @@ class MailManagerMailTableMap extends TableMap
         return $pk;
     }
 
-} // MailManagerMailTableMap
+} // MailManagerTraceCommentTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-MailManagerMailTableMap::buildTableMap();
+MailManagerTraceCommentTableMap::buildTableMap();

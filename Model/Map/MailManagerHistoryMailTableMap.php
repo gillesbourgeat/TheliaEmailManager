@@ -95,6 +95,13 @@ class MailManagerHistoryMailTableMap extends TableMap
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
 
+    /** The enumerated values for the TYPE field */
+    const TYPE_FROM = 'from';
+    const TYPE_TO = 'to';
+    const TYPE_CC = 'cc';
+    const TYPE_BCC = 'bcc';
+    const TYPE_RT = 'rt';
+
     /**
      * holds an array of fieldnames
      *
@@ -125,6 +132,38 @@ class MailManagerHistoryMailTableMap extends TableMap
         self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
+    /** The enumerated values for this table */
+    protected static $enumValueSets = array(
+                MailManagerHistoryMailTableMap::TYPE => array(
+                            self::TYPE_FROM,
+            self::TYPE_TO,
+            self::TYPE_CC,
+            self::TYPE_BCC,
+            self::TYPE_RT,
+        ),
+    );
+
+    /**
+     * Gets the list of values for all ENUM columns
+     * @return array
+     */
+    public static function getValueSets()
+    {
+      return static::$enumValueSets;
+    }
+
+    /**
+     * Gets the list of values for an ENUM column
+     * @param string $colname
+     * @return array list of possible values for the column
+     */
+    public static function getValueSet($colname)
+    {
+        $valueSets = self::getValueSets();
+
+        return $valueSets[$colname];
+    }
+
     /**
      * Initialize the table attributes and columns
      * Relations are not initialized by this method since they are lazy loaded
@@ -144,7 +183,14 @@ class MailManagerHistoryMailTableMap extends TableMap
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
         $this->addForeignKey('HISTORY_ID', 'HistoryId', 'INTEGER', 'mail_manager_history', 'ID', true, null, null);
         $this->addForeignKey('MAIL_ID', 'MailId', 'INTEGER', 'mail_manager_trace', 'ID', true, null, null);
-        $this->addColumn('TYPE', 'Type', 'CHAR', true, 4, null);
+        $this->addColumn('TYPE', 'Type', 'ENUM', true, null, null);
+        $this->getColumn('TYPE', false)->setValueSet(array (
+  0 => 'from',
+  1 => 'to',
+  2 => 'cc',
+  3 => 'bcc',
+  4 => 'rt',
+));
     } // initialize()
 
     /**

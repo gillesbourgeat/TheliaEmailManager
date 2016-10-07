@@ -25,6 +25,7 @@ use TheliaMailManager\Model\Map\MailManagerTraceTableMap;
  * @method     ChildMailManagerTraceQuery orderByHash($order = Criteria::ASC) Order by the hash column
  * @method     ChildMailManagerTraceQuery orderByDisableHistory($order = Criteria::ASC) Order by the disable_history column
  * @method     ChildMailManagerTraceQuery orderByDisableSending($order = Criteria::ASC) Order by the disable_sending column
+ * @method     ChildMailManagerTraceQuery orderByForceSameCustomerDisable($order = Criteria::ASC) Order by the force_same_customer_disable column
  * @method     ChildMailManagerTraceQuery orderByNumberOfCatch($order = Criteria::ASC) Order by the number_of_catch column
  * @method     ChildMailManagerTraceQuery orderByEmailBcc($order = Criteria::ASC) Order by the email_bcc column
  * @method     ChildMailManagerTraceQuery orderByEmailRedirect($order = Criteria::ASC) Order by the email_redirect column
@@ -36,6 +37,7 @@ use TheliaMailManager\Model\Map\MailManagerTraceTableMap;
  * @method     ChildMailManagerTraceQuery groupByHash() Group by the hash column
  * @method     ChildMailManagerTraceQuery groupByDisableHistory() Group by the disable_history column
  * @method     ChildMailManagerTraceQuery groupByDisableSending() Group by the disable_sending column
+ * @method     ChildMailManagerTraceQuery groupByForceSameCustomerDisable() Group by the force_same_customer_disable column
  * @method     ChildMailManagerTraceQuery groupByNumberOfCatch() Group by the number_of_catch column
  * @method     ChildMailManagerTraceQuery groupByEmailBcc() Group by the email_bcc column
  * @method     ChildMailManagerTraceQuery groupByEmailRedirect() Group by the email_redirect column
@@ -46,6 +48,10 @@ use TheliaMailManager\Model\Map\MailManagerTraceTableMap;
  * @method     ChildMailManagerTraceQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildMailManagerTraceQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildMailManagerTraceQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ *
+ * @method     ChildMailManagerTraceQuery leftJoinMailManagerTraceComment($relationAlias = null) Adds a LEFT JOIN clause to the query using the MailManagerTraceComment relation
+ * @method     ChildMailManagerTraceQuery rightJoinMailManagerTraceComment($relationAlias = null) Adds a RIGHT JOIN clause to the query using the MailManagerTraceComment relation
+ * @method     ChildMailManagerTraceQuery innerJoinMailManagerTraceComment($relationAlias = null) Adds a INNER JOIN clause to the query using the MailManagerTraceComment relation
  *
  * @method     ChildMailManagerTraceQuery leftJoinMailManagerHistory($relationAlias = null) Adds a LEFT JOIN clause to the query using the MailManagerHistory relation
  * @method     ChildMailManagerTraceQuery rightJoinMailManagerHistory($relationAlias = null) Adds a RIGHT JOIN clause to the query using the MailManagerHistory relation
@@ -62,6 +68,7 @@ use TheliaMailManager\Model\Map\MailManagerTraceTableMap;
  * @method     ChildMailManagerTrace findOneByHash(string $hash) Return the first ChildMailManagerTrace filtered by the hash column
  * @method     ChildMailManagerTrace findOneByDisableHistory(boolean $disable_history) Return the first ChildMailManagerTrace filtered by the disable_history column
  * @method     ChildMailManagerTrace findOneByDisableSending(boolean $disable_sending) Return the first ChildMailManagerTrace filtered by the disable_sending column
+ * @method     ChildMailManagerTrace findOneByForceSameCustomerDisable(boolean $force_same_customer_disable) Return the first ChildMailManagerTrace filtered by the force_same_customer_disable column
  * @method     ChildMailManagerTrace findOneByNumberOfCatch(int $number_of_catch) Return the first ChildMailManagerTrace filtered by the number_of_catch column
  * @method     ChildMailManagerTrace findOneByEmailBcc(array $email_bcc) Return the first ChildMailManagerTrace filtered by the email_bcc column
  * @method     ChildMailManagerTrace findOneByEmailRedirect(array $email_redirect) Return the first ChildMailManagerTrace filtered by the email_redirect column
@@ -73,6 +80,7 @@ use TheliaMailManager\Model\Map\MailManagerTraceTableMap;
  * @method     array findByHash(string $hash) Return ChildMailManagerTrace objects filtered by the hash column
  * @method     array findByDisableHistory(boolean $disable_history) Return ChildMailManagerTrace objects filtered by the disable_history column
  * @method     array findByDisableSending(boolean $disable_sending) Return ChildMailManagerTrace objects filtered by the disable_sending column
+ * @method     array findByForceSameCustomerDisable(boolean $force_same_customer_disable) Return ChildMailManagerTrace objects filtered by the force_same_customer_disable column
  * @method     array findByNumberOfCatch(int $number_of_catch) Return ChildMailManagerTrace objects filtered by the number_of_catch column
  * @method     array findByEmailBcc(array $email_bcc) Return ChildMailManagerTrace objects filtered by the email_bcc column
  * @method     array findByEmailRedirect(array $email_redirect) Return ChildMailManagerTrace objects filtered by the email_redirect column
@@ -167,7 +175,7 @@ abstract class MailManagerTraceQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, HASH, DISABLE_HISTORY, DISABLE_SENDING, NUMBER_OF_CATCH, EMAIL_BCC, EMAIL_REDIRECT, DETAIL, CREATED_AT, UPDATED_AT FROM mail_manager_trace WHERE ID = :p0';
+        $sql = 'SELECT ID, HASH, DISABLE_HISTORY, DISABLE_SENDING, FORCE_SAME_CUSTOMER_DISABLE, NUMBER_OF_CATCH, EMAIL_BCC, EMAIL_REDIRECT, DETAIL, CREATED_AT, UPDATED_AT FROM mail_manager_trace WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -378,6 +386,33 @@ abstract class MailManagerTraceQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(MailManagerTraceTableMap::DISABLE_SENDING, $disableSending, $comparison);
+    }
+
+    /**
+     * Filter the query on the force_same_customer_disable column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByForceSameCustomerDisable(true); // WHERE force_same_customer_disable = true
+     * $query->filterByForceSameCustomerDisable('yes'); // WHERE force_same_customer_disable = true
+     * </code>
+     *
+     * @param     boolean|string $forceSameCustomerDisable The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildMailManagerTraceQuery The current query, for fluid interface
+     */
+    public function filterByForceSameCustomerDisable($forceSameCustomerDisable = null, $comparison = null)
+    {
+        if (is_string($forceSameCustomerDisable)) {
+            $force_same_customer_disable = in_array(strtolower($forceSameCustomerDisable), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(MailManagerTraceTableMap::FORCE_SAME_CUSTOMER_DISABLE, $forceSameCustomerDisable, $comparison);
     }
 
     /**
@@ -634,6 +669,79 @@ abstract class MailManagerTraceQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(MailManagerTraceTableMap::UPDATED_AT, $updatedAt, $comparison);
+    }
+
+    /**
+     * Filter the query by a related \TheliaMailManager\Model\MailManagerTraceComment object
+     *
+     * @param \TheliaMailManager\Model\MailManagerTraceComment|ObjectCollection $mailManagerTraceComment  the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildMailManagerTraceQuery The current query, for fluid interface
+     */
+    public function filterByMailManagerTraceComment($mailManagerTraceComment, $comparison = null)
+    {
+        if ($mailManagerTraceComment instanceof \TheliaMailManager\Model\MailManagerTraceComment) {
+            return $this
+                ->addUsingAlias(MailManagerTraceTableMap::ID, $mailManagerTraceComment->getTraceId(), $comparison);
+        } elseif ($mailManagerTraceComment instanceof ObjectCollection) {
+            return $this
+                ->useMailManagerTraceCommentQuery()
+                ->filterByPrimaryKeys($mailManagerTraceComment->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByMailManagerTraceComment() only accepts arguments of type \TheliaMailManager\Model\MailManagerTraceComment or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the MailManagerTraceComment relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ChildMailManagerTraceQuery The current query, for fluid interface
+     */
+    public function joinMailManagerTraceComment($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('MailManagerTraceComment');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'MailManagerTraceComment');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the MailManagerTraceComment relation MailManagerTraceComment object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \TheliaMailManager\Model\MailManagerTraceCommentQuery A secondary query class using the current class as primary query
+     */
+    public function useMailManagerTraceCommentQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinMailManagerTraceComment($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'MailManagerTraceComment', '\TheliaMailManager\Model\MailManagerTraceCommentQuery');
     }
 
     /**

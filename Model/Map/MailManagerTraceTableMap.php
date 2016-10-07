@@ -58,7 +58,7 @@ class MailManagerTraceTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 10;
+    const NUM_COLUMNS = 11;
 
     /**
      * The number of lazy-loaded columns
@@ -68,7 +68,7 @@ class MailManagerTraceTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 10;
+    const NUM_HYDRATE_COLUMNS = 11;
 
     /**
      * the column name for the ID field
@@ -89,6 +89,11 @@ class MailManagerTraceTableMap extends TableMap
      * the column name for the DISABLE_SENDING field
      */
     const DISABLE_SENDING = 'mail_manager_trace.DISABLE_SENDING';
+
+    /**
+     * the column name for the FORCE_SAME_CUSTOMER_DISABLE field
+     */
+    const FORCE_SAME_CUSTOMER_DISABLE = 'mail_manager_trace.FORCE_SAME_CUSTOMER_DISABLE';
 
     /**
      * the column name for the NUMBER_OF_CATCH field
@@ -132,12 +137,12 @@ class MailManagerTraceTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Hash', 'DisableHistory', 'DisableSending', 'NumberOfCatch', 'EmailBcc', 'EmailRedirect', 'Detail', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'hash', 'disableHistory', 'disableSending', 'numberOfCatch', 'emailBcc', 'emailRedirect', 'detail', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(MailManagerTraceTableMap::ID, MailManagerTraceTableMap::HASH, MailManagerTraceTableMap::DISABLE_HISTORY, MailManagerTraceTableMap::DISABLE_SENDING, MailManagerTraceTableMap::NUMBER_OF_CATCH, MailManagerTraceTableMap::EMAIL_BCC, MailManagerTraceTableMap::EMAIL_REDIRECT, MailManagerTraceTableMap::DETAIL, MailManagerTraceTableMap::CREATED_AT, MailManagerTraceTableMap::UPDATED_AT, ),
-        self::TYPE_RAW_COLNAME   => array('ID', 'HASH', 'DISABLE_HISTORY', 'DISABLE_SENDING', 'NUMBER_OF_CATCH', 'EMAIL_BCC', 'EMAIL_REDIRECT', 'DETAIL', 'CREATED_AT', 'UPDATED_AT', ),
-        self::TYPE_FIELDNAME     => array('id', 'hash', 'disable_history', 'disable_sending', 'number_of_catch', 'email_bcc', 'email_redirect', 'detail', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+        self::TYPE_PHPNAME       => array('Id', 'Hash', 'DisableHistory', 'DisableSending', 'ForceSameCustomerDisable', 'NumberOfCatch', 'EmailBcc', 'EmailRedirect', 'Detail', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'hash', 'disableHistory', 'disableSending', 'forceSameCustomerDisable', 'numberOfCatch', 'emailBcc', 'emailRedirect', 'detail', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(MailManagerTraceTableMap::ID, MailManagerTraceTableMap::HASH, MailManagerTraceTableMap::DISABLE_HISTORY, MailManagerTraceTableMap::DISABLE_SENDING, MailManagerTraceTableMap::FORCE_SAME_CUSTOMER_DISABLE, MailManagerTraceTableMap::NUMBER_OF_CATCH, MailManagerTraceTableMap::EMAIL_BCC, MailManagerTraceTableMap::EMAIL_REDIRECT, MailManagerTraceTableMap::DETAIL, MailManagerTraceTableMap::CREATED_AT, MailManagerTraceTableMap::UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('ID', 'HASH', 'DISABLE_HISTORY', 'DISABLE_SENDING', 'FORCE_SAME_CUSTOMER_DISABLE', 'NUMBER_OF_CATCH', 'EMAIL_BCC', 'EMAIL_REDIRECT', 'DETAIL', 'CREATED_AT', 'UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'hash', 'disable_history', 'disable_sending', 'force_same_customer_disable', 'number_of_catch', 'email_bcc', 'email_redirect', 'detail', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
     );
 
     /**
@@ -147,12 +152,12 @@ class MailManagerTraceTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Hash' => 1, 'DisableHistory' => 2, 'DisableSending' => 3, 'NumberOfCatch' => 4, 'EmailBcc' => 5, 'EmailRedirect' => 6, 'Detail' => 7, 'CreatedAt' => 8, 'UpdatedAt' => 9, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'hash' => 1, 'disableHistory' => 2, 'disableSending' => 3, 'numberOfCatch' => 4, 'emailBcc' => 5, 'emailRedirect' => 6, 'detail' => 7, 'createdAt' => 8, 'updatedAt' => 9, ),
-        self::TYPE_COLNAME       => array(MailManagerTraceTableMap::ID => 0, MailManagerTraceTableMap::HASH => 1, MailManagerTraceTableMap::DISABLE_HISTORY => 2, MailManagerTraceTableMap::DISABLE_SENDING => 3, MailManagerTraceTableMap::NUMBER_OF_CATCH => 4, MailManagerTraceTableMap::EMAIL_BCC => 5, MailManagerTraceTableMap::EMAIL_REDIRECT => 6, MailManagerTraceTableMap::DETAIL => 7, MailManagerTraceTableMap::CREATED_AT => 8, MailManagerTraceTableMap::UPDATED_AT => 9, ),
-        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'HASH' => 1, 'DISABLE_HISTORY' => 2, 'DISABLE_SENDING' => 3, 'NUMBER_OF_CATCH' => 4, 'EMAIL_BCC' => 5, 'EMAIL_REDIRECT' => 6, 'DETAIL' => 7, 'CREATED_AT' => 8, 'UPDATED_AT' => 9, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'hash' => 1, 'disable_history' => 2, 'disable_sending' => 3, 'number_of_catch' => 4, 'email_bcc' => 5, 'email_redirect' => 6, 'detail' => 7, 'created_at' => 8, 'updated_at' => 9, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Hash' => 1, 'DisableHistory' => 2, 'DisableSending' => 3, 'ForceSameCustomerDisable' => 4, 'NumberOfCatch' => 5, 'EmailBcc' => 6, 'EmailRedirect' => 7, 'Detail' => 8, 'CreatedAt' => 9, 'UpdatedAt' => 10, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'hash' => 1, 'disableHistory' => 2, 'disableSending' => 3, 'forceSameCustomerDisable' => 4, 'numberOfCatch' => 5, 'emailBcc' => 6, 'emailRedirect' => 7, 'detail' => 8, 'createdAt' => 9, 'updatedAt' => 10, ),
+        self::TYPE_COLNAME       => array(MailManagerTraceTableMap::ID => 0, MailManagerTraceTableMap::HASH => 1, MailManagerTraceTableMap::DISABLE_HISTORY => 2, MailManagerTraceTableMap::DISABLE_SENDING => 3, MailManagerTraceTableMap::FORCE_SAME_CUSTOMER_DISABLE => 4, MailManagerTraceTableMap::NUMBER_OF_CATCH => 5, MailManagerTraceTableMap::EMAIL_BCC => 6, MailManagerTraceTableMap::EMAIL_REDIRECT => 7, MailManagerTraceTableMap::DETAIL => 8, MailManagerTraceTableMap::CREATED_AT => 9, MailManagerTraceTableMap::UPDATED_AT => 10, ),
+        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'HASH' => 1, 'DISABLE_HISTORY' => 2, 'DISABLE_SENDING' => 3, 'FORCE_SAME_CUSTOMER_DISABLE' => 4, 'NUMBER_OF_CATCH' => 5, 'EMAIL_BCC' => 6, 'EMAIL_REDIRECT' => 7, 'DETAIL' => 8, 'CREATED_AT' => 9, 'UPDATED_AT' => 10, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'hash' => 1, 'disable_history' => 2, 'disable_sending' => 3, 'force_same_customer_disable' => 4, 'number_of_catch' => 5, 'email_bcc' => 6, 'email_redirect' => 7, 'detail' => 8, 'created_at' => 9, 'updated_at' => 10, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
     );
 
     /**
@@ -175,6 +180,7 @@ class MailManagerTraceTableMap extends TableMap
         $this->addColumn('HASH', 'Hash', 'CHAR', true, 32, null);
         $this->addColumn('DISABLE_HISTORY', 'DisableHistory', 'BOOLEAN', false, 1, false);
         $this->addColumn('DISABLE_SENDING', 'DisableSending', 'BOOLEAN', false, 1, false);
+        $this->addColumn('FORCE_SAME_CUSTOMER_DISABLE', 'ForceSameCustomerDisable', 'BOOLEAN', false, 1, false);
         $this->addColumn('NUMBER_OF_CATCH', 'NumberOfCatch', 'INTEGER', false, null, 0);
         $this->addColumn('EMAIL_BCC', 'EmailBcc', 'ARRAY', false, null, null);
         $this->addColumn('EMAIL_REDIRECT', 'EmailRedirect', 'ARRAY', false, null, null);
@@ -188,6 +194,7 @@ class MailManagerTraceTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('MailManagerTraceComment', '\\TheliaMailManager\\Model\\MailManagerTraceComment', RelationMap::ONE_TO_MANY, array('id' => 'trace_id', ), 'CASCADE', 'RESTRICT', 'MailManagerTraceComments');
         $this->addRelation('MailManagerHistory', '\\TheliaMailManager\\Model\\MailManagerHistory', RelationMap::ONE_TO_MANY, array('id' => 'trace_id', ), 'CASCADE', 'RESTRICT', 'MailManagerHistories');
         $this->addRelation('MailManagerHistoryMail', '\\TheliaMailManager\\Model\\MailManagerHistoryMail', RelationMap::ONE_TO_MANY, array('id' => 'mail_id', ), 'CASCADE', 'RESTRICT', 'MailManagerHistoryMails');
     } // buildRelations()
@@ -211,6 +218,7 @@ class MailManagerTraceTableMap extends TableMap
     {
         // Invalidate objects in ".$this->getClassNameFromBuilder($joinedTableTableMapBuilder)." instance pool,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+                MailManagerTraceCommentTableMap::clearInstancePool();
                 MailManagerHistoryTableMap::clearInstancePool();
                 MailManagerHistoryMailTableMap::clearInstancePool();
             }
@@ -357,6 +365,7 @@ class MailManagerTraceTableMap extends TableMap
             $criteria->addSelectColumn(MailManagerTraceTableMap::HASH);
             $criteria->addSelectColumn(MailManagerTraceTableMap::DISABLE_HISTORY);
             $criteria->addSelectColumn(MailManagerTraceTableMap::DISABLE_SENDING);
+            $criteria->addSelectColumn(MailManagerTraceTableMap::FORCE_SAME_CUSTOMER_DISABLE);
             $criteria->addSelectColumn(MailManagerTraceTableMap::NUMBER_OF_CATCH);
             $criteria->addSelectColumn(MailManagerTraceTableMap::EMAIL_BCC);
             $criteria->addSelectColumn(MailManagerTraceTableMap::EMAIL_REDIRECT);
@@ -368,6 +377,7 @@ class MailManagerTraceTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.HASH');
             $criteria->addSelectColumn($alias . '.DISABLE_HISTORY');
             $criteria->addSelectColumn($alias . '.DISABLE_SENDING');
+            $criteria->addSelectColumn($alias . '.FORCE_SAME_CUSTOMER_DISABLE');
             $criteria->addSelectColumn($alias . '.NUMBER_OF_CATCH');
             $criteria->addSelectColumn($alias . '.EMAIL_BCC');
             $criteria->addSelectColumn($alias . '.EMAIL_REDIRECT');

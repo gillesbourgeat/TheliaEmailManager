@@ -75,7 +75,7 @@ abstract class MailManagerHistoryMail implements ActiveRecordInterface
 
     /**
      * The value for the type field.
-     * @var        string
+     * @var        int
      */
     protected $type;
 
@@ -391,12 +391,19 @@ abstract class MailManagerHistoryMail implements ActiveRecordInterface
     /**
      * Get the [type] column value.
      *
-     * @return   string
+     * @return   int
      */
     public function getType()
     {
+        if (null === $this->type) {
+            return null;
+        }
+        $valueSet = MailManagerHistoryMailTableMap::getValueSet(MailManagerHistoryMailTableMap::TYPE);
+        if (!isset($valueSet[$this->type])) {
+            throw new PropelException('Unknown stored enum key: ' . $this->type);
+        }
 
-        return $this->type;
+        return $valueSet[$this->type];
     }
 
     /**
@@ -473,13 +480,17 @@ abstract class MailManagerHistoryMail implements ActiveRecordInterface
     /**
      * Set the value of [type] column.
      *
-     * @param      string $v new value
+     * @param      int $v new value
      * @return   \TheliaMailManager\Model\MailManagerHistoryMail The current object (for fluent API support)
      */
     public function setType($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            $valueSet = MailManagerHistoryMailTableMap::getValueSet(MailManagerHistoryMailTableMap::TYPE);
+            if (!in_array($v, $valueSet)) {
+                throw new PropelException(sprintf('Value "%s" is not accepted in this enumerated column', $v));
+            }
+            $v = array_search($v, $valueSet);
         }
 
         if ($this->type !== $v) {
@@ -538,7 +549,7 @@ abstract class MailManagerHistoryMail implements ActiveRecordInterface
             $this->mail_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : MailManagerHistoryMailTableMap::translateFieldName('Type', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->type = (null !== $col) ? (string) $col : null;
+            $this->type = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -816,7 +827,7 @@ abstract class MailManagerHistoryMail implements ActiveRecordInterface
                         $stmt->bindValue($identifier, $this->mail_id, PDO::PARAM_INT);
                         break;
                     case 'TYPE':
-                        $stmt->bindValue($identifier, $this->type, PDO::PARAM_STR);
+                        $stmt->bindValue($identifier, $this->type, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -982,6 +993,10 @@ abstract class MailManagerHistoryMail implements ActiveRecordInterface
                 $this->setMailId($value);
                 break;
             case 3:
+                $valueSet = MailManagerHistoryMailTableMap::getValueSet(MailManagerHistoryMailTableMap::TYPE);
+                if (isset($valueSet[$value])) {
+                    $value = $valueSet[$value];
+                }
                 $this->setType($value);
                 break;
         } // switch()

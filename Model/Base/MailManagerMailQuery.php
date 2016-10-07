@@ -20,11 +20,17 @@ use TheliaMailManager\Model\Map\MailManagerMailTableMap;
  *
  * @method     ChildMailManagerMailQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildMailManagerMailQuery orderByMail($order = Criteria::ASC) Order by the mail column
+ * @method     ChildMailManagerMailQuery orderByDisableSend($order = Criteria::ASC) Order by the disable_send column
+ * @method     ChildMailManagerMailQuery orderByDisableSendDate($order = Criteria::ASC) Order by the disable_send_date column
+ * @method     ChildMailManagerMailQuery orderByDisableHash($order = Criteria::ASC) Order by the disable_hash column
  * @method     ChildMailManagerMailQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildMailManagerMailQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildMailManagerMailQuery groupById() Group by the id column
  * @method     ChildMailManagerMailQuery groupByMail() Group by the mail column
+ * @method     ChildMailManagerMailQuery groupByDisableSend() Group by the disable_send column
+ * @method     ChildMailManagerMailQuery groupByDisableSendDate() Group by the disable_send_date column
+ * @method     ChildMailManagerMailQuery groupByDisableHash() Group by the disable_hash column
  * @method     ChildMailManagerMailQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildMailManagerMailQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -37,11 +43,17 @@ use TheliaMailManager\Model\Map\MailManagerMailTableMap;
  *
  * @method     ChildMailManagerMail findOneById(int $id) Return the first ChildMailManagerMail filtered by the id column
  * @method     ChildMailManagerMail findOneByMail(string $mail) Return the first ChildMailManagerMail filtered by the mail column
+ * @method     ChildMailManagerMail findOneByDisableSend(boolean $disable_send) Return the first ChildMailManagerMail filtered by the disable_send column
+ * @method     ChildMailManagerMail findOneByDisableSendDate(string $disable_send_date) Return the first ChildMailManagerMail filtered by the disable_send_date column
+ * @method     ChildMailManagerMail findOneByDisableHash(string $disable_hash) Return the first ChildMailManagerMail filtered by the disable_hash column
  * @method     ChildMailManagerMail findOneByCreatedAt(string $created_at) Return the first ChildMailManagerMail filtered by the created_at column
  * @method     ChildMailManagerMail findOneByUpdatedAt(string $updated_at) Return the first ChildMailManagerMail filtered by the updated_at column
  *
  * @method     array findById(int $id) Return ChildMailManagerMail objects filtered by the id column
  * @method     array findByMail(string $mail) Return ChildMailManagerMail objects filtered by the mail column
+ * @method     array findByDisableSend(boolean $disable_send) Return ChildMailManagerMail objects filtered by the disable_send column
+ * @method     array findByDisableSendDate(string $disable_send_date) Return ChildMailManagerMail objects filtered by the disable_send_date column
+ * @method     array findByDisableHash(string $disable_hash) Return ChildMailManagerMail objects filtered by the disable_hash column
  * @method     array findByCreatedAt(string $created_at) Return ChildMailManagerMail objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return ChildMailManagerMail objects filtered by the updated_at column
  *
@@ -132,7 +144,7 @@ abstract class MailManagerMailQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, MAIL, CREATED_AT, UPDATED_AT FROM mail_manager_mail WHERE ID = :p0';
+        $sql = 'SELECT ID, MAIL, DISABLE_SEND, DISABLE_SEND_DATE, DISABLE_HASH, CREATED_AT, UPDATED_AT FROM mail_manager_mail WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -289,6 +301,105 @@ abstract class MailManagerMailQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(MailManagerMailTableMap::MAIL, $mail, $comparison);
+    }
+
+    /**
+     * Filter the query on the disable_send column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByDisableSend(true); // WHERE disable_send = true
+     * $query->filterByDisableSend('yes'); // WHERE disable_send = true
+     * </code>
+     *
+     * @param     boolean|string $disableSend The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildMailManagerMailQuery The current query, for fluid interface
+     */
+    public function filterByDisableSend($disableSend = null, $comparison = null)
+    {
+        if (is_string($disableSend)) {
+            $disable_send = in_array(strtolower($disableSend), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(MailManagerMailTableMap::DISABLE_SEND, $disableSend, $comparison);
+    }
+
+    /**
+     * Filter the query on the disable_send_date column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByDisableSendDate('2011-03-14'); // WHERE disable_send_date = '2011-03-14'
+     * $query->filterByDisableSendDate('now'); // WHERE disable_send_date = '2011-03-14'
+     * $query->filterByDisableSendDate(array('max' => 'yesterday')); // WHERE disable_send_date > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $disableSendDate The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildMailManagerMailQuery The current query, for fluid interface
+     */
+    public function filterByDisableSendDate($disableSendDate = null, $comparison = null)
+    {
+        if (is_array($disableSendDate)) {
+            $useMinMax = false;
+            if (isset($disableSendDate['min'])) {
+                $this->addUsingAlias(MailManagerMailTableMap::DISABLE_SEND_DATE, $disableSendDate['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($disableSendDate['max'])) {
+                $this->addUsingAlias(MailManagerMailTableMap::DISABLE_SEND_DATE, $disableSendDate['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(MailManagerMailTableMap::DISABLE_SEND_DATE, $disableSendDate, $comparison);
+    }
+
+    /**
+     * Filter the query on the disable_hash column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByDisableHash('fooValue');   // WHERE disable_hash = 'fooValue'
+     * $query->filterByDisableHash('%fooValue%'); // WHERE disable_hash LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $disableHash The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildMailManagerMailQuery The current query, for fluid interface
+     */
+    public function filterByDisableHash($disableHash = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($disableHash)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $disableHash)) {
+                $disableHash = str_replace('*', '%', $disableHash);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(MailManagerMailTableMap::DISABLE_HASH, $disableHash, $comparison);
     }
 
     /**

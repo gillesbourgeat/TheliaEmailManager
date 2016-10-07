@@ -49,12 +49,12 @@ use TheliaMailManager\Model\Map\MailManagerHistoryMailTableMap;
  * @method     ChildMailManagerHistoryMail findOneById(int $id) Return the first ChildMailManagerHistoryMail filtered by the id column
  * @method     ChildMailManagerHistoryMail findOneByHistoryId(int $history_id) Return the first ChildMailManagerHistoryMail filtered by the history_id column
  * @method     ChildMailManagerHistoryMail findOneByMailId(int $mail_id) Return the first ChildMailManagerHistoryMail filtered by the mail_id column
- * @method     ChildMailManagerHistoryMail findOneByType(string $type) Return the first ChildMailManagerHistoryMail filtered by the type column
+ * @method     ChildMailManagerHistoryMail findOneByType(int $type) Return the first ChildMailManagerHistoryMail filtered by the type column
  *
  * @method     array findById(int $id) Return ChildMailManagerHistoryMail objects filtered by the id column
  * @method     array findByHistoryId(int $history_id) Return ChildMailManagerHistoryMail objects filtered by the history_id column
  * @method     array findByMailId(int $mail_id) Return ChildMailManagerHistoryMail objects filtered by the mail_id column
- * @method     array findByType(string $type) Return ChildMailManagerHistoryMail objects filtered by the type column
+ * @method     array findByType(int $type) Return ChildMailManagerHistoryMail objects filtered by the type column
  *
  */
 abstract class MailManagerHistoryMailQuery extends ModelCriteria
@@ -362,26 +362,30 @@ abstract class MailManagerHistoryMailQuery extends ModelCriteria
     /**
      * Filter the query on the type column
      *
-     * Example usage:
-     * <code>
-     * $query->filterByType('fooValue');   // WHERE type = 'fooValue'
-     * $query->filterByType('%fooValue%'); // WHERE type LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $type The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     mixed $type The value to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildMailManagerHistoryMailQuery The current query, for fluid interface
      */
     public function filterByType($type = null, $comparison = null)
     {
-        if (null === $comparison) {
-            if (is_array($type)) {
+        $valueSet = MailManagerHistoryMailTableMap::getValueSet(MailManagerHistoryMailTableMap::TYPE);
+        if (is_scalar($type)) {
+            if (!in_array($type, $valueSet)) {
+                throw new PropelException(sprintf('Value "%s" is not accepted in this enumerated column', $type));
+            }
+            $type = array_search($type, $valueSet);
+        } elseif (is_array($type)) {
+            $convertedValues = array();
+            foreach ($type as $value) {
+                if (!in_array($value, $valueSet)) {
+                    throw new PropelException(sprintf('Value "%s" is not accepted in this enumerated column', $value));
+                }
+                $convertedValues []= array_search($value, $valueSet);
+            }
+            $type = $convertedValues;
+            if (null === $comparison) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $type)) {
-                $type = str_replace('*', '%', $type);
-                $comparison = Criteria::LIKE;
             }
         }
 
