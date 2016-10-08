@@ -13,17 +13,18 @@ use TheliaMailManager\Util\MailUtil;
  */
 class TheliaMailManager extends BaseModule
 {
-    /** @var string */
     const DOMAIN_NAME = 'theliamailmanager';
 
-    /** @var string */
+    const ROUTER = 'router.theliamailmanager';
+
     const SETUP_PATH = __DIR__ . DS . 'setup';
 
-    /** @var string */
     const UPDATE_PATH = __DIR__ . DS . 'setup' . DS . 'update';
 
     const CONFIG_ENABLE_HISTORY = 'enable_history';
+
     const CONFIG_DISABLE_SEND = 'disable_send';
+
     const CONFIG_REDIRECT_ALL_TO = 'redirect_all_to';
 
     /**
