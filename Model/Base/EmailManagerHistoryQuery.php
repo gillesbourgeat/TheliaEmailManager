@@ -1,6 +1,6 @@
 <?php
 
-namespace TheliaMailManager\Model\Base;
+namespace TheliaEmailManager\Model\Base;
 
 use \Exception;
 use \PDO;
@@ -12,88 +12,88 @@ use Propel\Runtime\Collection\Collection;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
-use TheliaMailManager\Model\MailManagerHistory as ChildMailManagerHistory;
-use TheliaMailManager\Model\MailManagerHistoryQuery as ChildMailManagerHistoryQuery;
-use TheliaMailManager\Model\Map\MailManagerHistoryTableMap;
+use TheliaEmailManager\Model\EmailManagerHistory as ChildEmailManagerHistory;
+use TheliaEmailManager\Model\EmailManagerHistoryQuery as ChildEmailManagerHistoryQuery;
+use TheliaEmailManager\Model\Map\EmailManagerHistoryTableMap;
 
 /**
- * Base class that represents a query for the 'mail_manager_history' table.
+ * Base class that represents a query for the 'email_manager_history' table.
  *
  *
  *
- * @method     ChildMailManagerHistoryQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildMailManagerHistoryQuery orderByTraceId($order = Criteria::ASC) Order by the trace_id column
- * @method     ChildMailManagerHistoryQuery orderBySubject($order = Criteria::ASC) Order by the subject column
- * @method     ChildMailManagerHistoryQuery orderByBody($order = Criteria::ASC) Order by the body column
- * @method     ChildMailManagerHistoryQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
- * @method     ChildMailManagerHistoryQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
+ * @method     ChildEmailManagerHistoryQuery orderById($order = Criteria::ASC) Order by the id column
+ * @method     ChildEmailManagerHistoryQuery orderByTraceId($order = Criteria::ASC) Order by the trace_id column
+ * @method     ChildEmailManagerHistoryQuery orderBySubject($order = Criteria::ASC) Order by the subject column
+ * @method     ChildEmailManagerHistoryQuery orderByBody($order = Criteria::ASC) Order by the body column
+ * @method     ChildEmailManagerHistoryQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
+ * @method     ChildEmailManagerHistoryQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
- * @method     ChildMailManagerHistoryQuery groupById() Group by the id column
- * @method     ChildMailManagerHistoryQuery groupByTraceId() Group by the trace_id column
- * @method     ChildMailManagerHistoryQuery groupBySubject() Group by the subject column
- * @method     ChildMailManagerHistoryQuery groupByBody() Group by the body column
- * @method     ChildMailManagerHistoryQuery groupByCreatedAt() Group by the created_at column
- * @method     ChildMailManagerHistoryQuery groupByUpdatedAt() Group by the updated_at column
+ * @method     ChildEmailManagerHistoryQuery groupById() Group by the id column
+ * @method     ChildEmailManagerHistoryQuery groupByTraceId() Group by the trace_id column
+ * @method     ChildEmailManagerHistoryQuery groupBySubject() Group by the subject column
+ * @method     ChildEmailManagerHistoryQuery groupByBody() Group by the body column
+ * @method     ChildEmailManagerHistoryQuery groupByCreatedAt() Group by the created_at column
+ * @method     ChildEmailManagerHistoryQuery groupByUpdatedAt() Group by the updated_at column
  *
- * @method     ChildMailManagerHistoryQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
- * @method     ChildMailManagerHistoryQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
- * @method     ChildMailManagerHistoryQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ * @method     ChildEmailManagerHistoryQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
+ * @method     ChildEmailManagerHistoryQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
+ * @method     ChildEmailManagerHistoryQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildMailManagerHistoryQuery leftJoinMailManagerTrace($relationAlias = null) Adds a LEFT JOIN clause to the query using the MailManagerTrace relation
- * @method     ChildMailManagerHistoryQuery rightJoinMailManagerTrace($relationAlias = null) Adds a RIGHT JOIN clause to the query using the MailManagerTrace relation
- * @method     ChildMailManagerHistoryQuery innerJoinMailManagerTrace($relationAlias = null) Adds a INNER JOIN clause to the query using the MailManagerTrace relation
+ * @method     ChildEmailManagerHistoryQuery leftJoinEmailManagerTrace($relationAlias = null) Adds a LEFT JOIN clause to the query using the EmailManagerTrace relation
+ * @method     ChildEmailManagerHistoryQuery rightJoinEmailManagerTrace($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EmailManagerTrace relation
+ * @method     ChildEmailManagerHistoryQuery innerJoinEmailManagerTrace($relationAlias = null) Adds a INNER JOIN clause to the query using the EmailManagerTrace relation
  *
- * @method     ChildMailManagerHistoryQuery leftJoinMailManagerHistoryMail($relationAlias = null) Adds a LEFT JOIN clause to the query using the MailManagerHistoryMail relation
- * @method     ChildMailManagerHistoryQuery rightJoinMailManagerHistoryMail($relationAlias = null) Adds a RIGHT JOIN clause to the query using the MailManagerHistoryMail relation
- * @method     ChildMailManagerHistoryQuery innerJoinMailManagerHistoryMail($relationAlias = null) Adds a INNER JOIN clause to the query using the MailManagerHistoryMail relation
+ * @method     ChildEmailManagerHistoryQuery leftJoinEmailManagerHistoryEmail($relationAlias = null) Adds a LEFT JOIN clause to the query using the EmailManagerHistoryEmail relation
+ * @method     ChildEmailManagerHistoryQuery rightJoinEmailManagerHistoryEmail($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EmailManagerHistoryEmail relation
+ * @method     ChildEmailManagerHistoryQuery innerJoinEmailManagerHistoryEmail($relationAlias = null) Adds a INNER JOIN clause to the query using the EmailManagerHistoryEmail relation
  *
- * @method     ChildMailManagerHistory findOne(ConnectionInterface $con = null) Return the first ChildMailManagerHistory matching the query
- * @method     ChildMailManagerHistory findOneOrCreate(ConnectionInterface $con = null) Return the first ChildMailManagerHistory matching the query, or a new ChildMailManagerHistory object populated from the query conditions when no match is found
+ * @method     ChildEmailManagerHistory findOne(ConnectionInterface $con = null) Return the first ChildEmailManagerHistory matching the query
+ * @method     ChildEmailManagerHistory findOneOrCreate(ConnectionInterface $con = null) Return the first ChildEmailManagerHistory matching the query, or a new ChildEmailManagerHistory object populated from the query conditions when no match is found
  *
- * @method     ChildMailManagerHistory findOneById(int $id) Return the first ChildMailManagerHistory filtered by the id column
- * @method     ChildMailManagerHistory findOneByTraceId(int $trace_id) Return the first ChildMailManagerHistory filtered by the trace_id column
- * @method     ChildMailManagerHistory findOneBySubject(string $subject) Return the first ChildMailManagerHistory filtered by the subject column
- * @method     ChildMailManagerHistory findOneByBody(resource $body) Return the first ChildMailManagerHistory filtered by the body column
- * @method     ChildMailManagerHistory findOneByCreatedAt(string $created_at) Return the first ChildMailManagerHistory filtered by the created_at column
- * @method     ChildMailManagerHistory findOneByUpdatedAt(string $updated_at) Return the first ChildMailManagerHistory filtered by the updated_at column
+ * @method     ChildEmailManagerHistory findOneById(int $id) Return the first ChildEmailManagerHistory filtered by the id column
+ * @method     ChildEmailManagerHistory findOneByTraceId(int $trace_id) Return the first ChildEmailManagerHistory filtered by the trace_id column
+ * @method     ChildEmailManagerHistory findOneBySubject(string $subject) Return the first ChildEmailManagerHistory filtered by the subject column
+ * @method     ChildEmailManagerHistory findOneByBody(resource $body) Return the first ChildEmailManagerHistory filtered by the body column
+ * @method     ChildEmailManagerHistory findOneByCreatedAt(string $created_at) Return the first ChildEmailManagerHistory filtered by the created_at column
+ * @method     ChildEmailManagerHistory findOneByUpdatedAt(string $updated_at) Return the first ChildEmailManagerHistory filtered by the updated_at column
  *
- * @method     array findById(int $id) Return ChildMailManagerHistory objects filtered by the id column
- * @method     array findByTraceId(int $trace_id) Return ChildMailManagerHistory objects filtered by the trace_id column
- * @method     array findBySubject(string $subject) Return ChildMailManagerHistory objects filtered by the subject column
- * @method     array findByBody(resource $body) Return ChildMailManagerHistory objects filtered by the body column
- * @method     array findByCreatedAt(string $created_at) Return ChildMailManagerHistory objects filtered by the created_at column
- * @method     array findByUpdatedAt(string $updated_at) Return ChildMailManagerHistory objects filtered by the updated_at column
+ * @method     array findById(int $id) Return ChildEmailManagerHistory objects filtered by the id column
+ * @method     array findByTraceId(int $trace_id) Return ChildEmailManagerHistory objects filtered by the trace_id column
+ * @method     array findBySubject(string $subject) Return ChildEmailManagerHistory objects filtered by the subject column
+ * @method     array findByBody(resource $body) Return ChildEmailManagerHistory objects filtered by the body column
+ * @method     array findByCreatedAt(string $created_at) Return ChildEmailManagerHistory objects filtered by the created_at column
+ * @method     array findByUpdatedAt(string $updated_at) Return ChildEmailManagerHistory objects filtered by the updated_at column
  *
  */
-abstract class MailManagerHistoryQuery extends ModelCriteria
+abstract class EmailManagerHistoryQuery extends ModelCriteria
 {
 
     /**
-     * Initializes internal state of \TheliaMailManager\Model\Base\MailManagerHistoryQuery object.
+     * Initializes internal state of \TheliaEmailManager\Model\Base\EmailManagerHistoryQuery object.
      *
      * @param     string $dbName The database name
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'thelia', $modelName = '\\TheliaMailManager\\Model\\MailManagerHistory', $modelAlias = null)
+    public function __construct($dbName = 'thelia', $modelName = '\\TheliaEmailManager\\Model\\EmailManagerHistory', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
     /**
-     * Returns a new ChildMailManagerHistoryQuery object.
+     * Returns a new ChildEmailManagerHistoryQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
      * @param     Criteria $criteria Optional Criteria to build the query from
      *
-     * @return ChildMailManagerHistoryQuery
+     * @return ChildEmailManagerHistoryQuery
      */
     public static function create($modelAlias = null, $criteria = null)
     {
-        if ($criteria instanceof \TheliaMailManager\Model\MailManagerHistoryQuery) {
+        if ($criteria instanceof \TheliaEmailManager\Model\EmailManagerHistoryQuery) {
             return $criteria;
         }
-        $query = new \TheliaMailManager\Model\MailManagerHistoryQuery();
+        $query = new \TheliaEmailManager\Model\EmailManagerHistoryQuery();
         if (null !== $modelAlias) {
             $query->setModelAlias($modelAlias);
         }
@@ -116,19 +116,19 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
      * @param mixed $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
-     * @return ChildMailManagerHistory|array|mixed the result, formatted by the current formatter
+     * @return ChildEmailManagerHistory|array|mixed the result, formatted by the current formatter
      */
     public function findPk($key, $con = null)
     {
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = MailManagerHistoryTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
+        if ((null !== ($obj = EmailManagerHistoryTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(MailManagerHistoryTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(EmailManagerHistoryTableMap::DATABASE_NAME);
         }
         $this->basePreSelect($con);
         if ($this->formatter || $this->modelAlias || $this->with || $this->select
@@ -147,11 +147,11 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
-     * @return   ChildMailManagerHistory A model object, or null if the key is not found
+     * @return   ChildEmailManagerHistory A model object, or null if the key is not found
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, TRACE_ID, SUBJECT, BODY, CREATED_AT, UPDATED_AT FROM mail_manager_history WHERE ID = :p0';
+        $sql = 'SELECT ID, TRACE_ID, SUBJECT, BODY, CREATED_AT, UPDATED_AT FROM email_manager_history WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -162,9 +162,9 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
         }
         $obj = null;
         if ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
-            $obj = new ChildMailManagerHistory();
+            $obj = new ChildEmailManagerHistory();
             $obj->hydrate($row);
-            MailManagerHistoryTableMap::addInstanceToPool($obj, (string) $key);
+            EmailManagerHistoryTableMap::addInstanceToPool($obj, (string) $key);
         }
         $stmt->closeCursor();
 
@@ -177,7 +177,7 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
-     * @return ChildMailManagerHistory|array|mixed the result, formatted by the current formatter
+     * @return ChildEmailManagerHistory|array|mixed the result, formatted by the current formatter
      */
     protected function findPkComplex($key, $con)
     {
@@ -219,12 +219,12 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
      *
      * @param     mixed $key Primary key to use for the query
      *
-     * @return ChildMailManagerHistoryQuery The current query, for fluid interface
+     * @return ChildEmailManagerHistoryQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
 
-        return $this->addUsingAlias(MailManagerHistoryTableMap::ID, $key, Criteria::EQUAL);
+        return $this->addUsingAlias(EmailManagerHistoryTableMap::ID, $key, Criteria::EQUAL);
     }
 
     /**
@@ -232,12 +232,12 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
      *
      * @param     array $keys The list of primary key to use for the query
      *
-     * @return ChildMailManagerHistoryQuery The current query, for fluid interface
+     * @return ChildEmailManagerHistoryQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
 
-        return $this->addUsingAlias(MailManagerHistoryTableMap::ID, $keys, Criteria::IN);
+        return $this->addUsingAlias(EmailManagerHistoryTableMap::ID, $keys, Criteria::IN);
     }
 
     /**
@@ -256,18 +256,18 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildMailManagerHistoryQuery The current query, for fluid interface
+     * @return ChildEmailManagerHistoryQuery The current query, for fluid interface
      */
     public function filterById($id = null, $comparison = null)
     {
         if (is_array($id)) {
             $useMinMax = false;
             if (isset($id['min'])) {
-                $this->addUsingAlias(MailManagerHistoryTableMap::ID, $id['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(EmailManagerHistoryTableMap::ID, $id['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($id['max'])) {
-                $this->addUsingAlias(MailManagerHistoryTableMap::ID, $id['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(EmailManagerHistoryTableMap::ID, $id['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -278,7 +278,7 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(MailManagerHistoryTableMap::ID, $id, $comparison);
+        return $this->addUsingAlias(EmailManagerHistoryTableMap::ID, $id, $comparison);
     }
 
     /**
@@ -291,7 +291,7 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
      * $query->filterByTraceId(array('min' => 12)); // WHERE trace_id > 12
      * </code>
      *
-     * @see       filterByMailManagerTrace()
+     * @see       filterByEmailManagerTrace()
      *
      * @param     mixed $traceId The value to use as filter.
      *              Use scalar values for equality.
@@ -299,18 +299,18 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildMailManagerHistoryQuery The current query, for fluid interface
+     * @return ChildEmailManagerHistoryQuery The current query, for fluid interface
      */
     public function filterByTraceId($traceId = null, $comparison = null)
     {
         if (is_array($traceId)) {
             $useMinMax = false;
             if (isset($traceId['min'])) {
-                $this->addUsingAlias(MailManagerHistoryTableMap::TRACE_ID, $traceId['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(EmailManagerHistoryTableMap::TRACE_ID, $traceId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($traceId['max'])) {
-                $this->addUsingAlias(MailManagerHistoryTableMap::TRACE_ID, $traceId['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(EmailManagerHistoryTableMap::TRACE_ID, $traceId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -321,7 +321,7 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(MailManagerHistoryTableMap::TRACE_ID, $traceId, $comparison);
+        return $this->addUsingAlias(EmailManagerHistoryTableMap::TRACE_ID, $traceId, $comparison);
     }
 
     /**
@@ -337,7 +337,7 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildMailManagerHistoryQuery The current query, for fluid interface
+     * @return ChildEmailManagerHistoryQuery The current query, for fluid interface
      */
     public function filterBySubject($subject = null, $comparison = null)
     {
@@ -350,7 +350,7 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(MailManagerHistoryTableMap::SUBJECT, $subject, $comparison);
+        return $this->addUsingAlias(EmailManagerHistoryTableMap::SUBJECT, $subject, $comparison);
     }
 
     /**
@@ -359,12 +359,12 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
      * @param     mixed $body The value to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildMailManagerHistoryQuery The current query, for fluid interface
+     * @return ChildEmailManagerHistoryQuery The current query, for fluid interface
      */
     public function filterByBody($body = null, $comparison = null)
     {
 
-        return $this->addUsingAlias(MailManagerHistoryTableMap::BODY, $body, $comparison);
+        return $this->addUsingAlias(EmailManagerHistoryTableMap::BODY, $body, $comparison);
     }
 
     /**
@@ -385,18 +385,18 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildMailManagerHistoryQuery The current query, for fluid interface
+     * @return ChildEmailManagerHistoryQuery The current query, for fluid interface
      */
     public function filterByCreatedAt($createdAt = null, $comparison = null)
     {
         if (is_array($createdAt)) {
             $useMinMax = false;
             if (isset($createdAt['min'])) {
-                $this->addUsingAlias(MailManagerHistoryTableMap::CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(EmailManagerHistoryTableMap::CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($createdAt['max'])) {
-                $this->addUsingAlias(MailManagerHistoryTableMap::CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(EmailManagerHistoryTableMap::CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -407,7 +407,7 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(MailManagerHistoryTableMap::CREATED_AT, $createdAt, $comparison);
+        return $this->addUsingAlias(EmailManagerHistoryTableMap::CREATED_AT, $createdAt, $comparison);
     }
 
     /**
@@ -428,18 +428,18 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildMailManagerHistoryQuery The current query, for fluid interface
+     * @return ChildEmailManagerHistoryQuery The current query, for fluid interface
      */
     public function filterByUpdatedAt($updatedAt = null, $comparison = null)
     {
         if (is_array($updatedAt)) {
             $useMinMax = false;
             if (isset($updatedAt['min'])) {
-                $this->addUsingAlias(MailManagerHistoryTableMap::UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(EmailManagerHistoryTableMap::UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($updatedAt['max'])) {
-                $this->addUsingAlias(MailManagerHistoryTableMap::UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(EmailManagerHistoryTableMap::UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -450,46 +450,46 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(MailManagerHistoryTableMap::UPDATED_AT, $updatedAt, $comparison);
+        return $this->addUsingAlias(EmailManagerHistoryTableMap::UPDATED_AT, $updatedAt, $comparison);
     }
 
     /**
-     * Filter the query by a related \TheliaMailManager\Model\MailManagerTrace object
+     * Filter the query by a related \TheliaEmailManager\Model\EmailManagerTrace object
      *
-     * @param \TheliaMailManager\Model\MailManagerTrace|ObjectCollection $mailManagerTrace The related object(s) to use as filter
+     * @param \TheliaEmailManager\Model\EmailManagerTrace|ObjectCollection $emailManagerTrace The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildMailManagerHistoryQuery The current query, for fluid interface
+     * @return ChildEmailManagerHistoryQuery The current query, for fluid interface
      */
-    public function filterByMailManagerTrace($mailManagerTrace, $comparison = null)
+    public function filterByEmailManagerTrace($emailManagerTrace, $comparison = null)
     {
-        if ($mailManagerTrace instanceof \TheliaMailManager\Model\MailManagerTrace) {
+        if ($emailManagerTrace instanceof \TheliaEmailManager\Model\EmailManagerTrace) {
             return $this
-                ->addUsingAlias(MailManagerHistoryTableMap::TRACE_ID, $mailManagerTrace->getId(), $comparison);
-        } elseif ($mailManagerTrace instanceof ObjectCollection) {
+                ->addUsingAlias(EmailManagerHistoryTableMap::TRACE_ID, $emailManagerTrace->getId(), $comparison);
+        } elseif ($emailManagerTrace instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(MailManagerHistoryTableMap::TRACE_ID, $mailManagerTrace->toKeyValue('PrimaryKey', 'Id'), $comparison);
+                ->addUsingAlias(EmailManagerHistoryTableMap::TRACE_ID, $emailManagerTrace->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
-            throw new PropelException('filterByMailManagerTrace() only accepts arguments of type \TheliaMailManager\Model\MailManagerTrace or Collection');
+            throw new PropelException('filterByEmailManagerTrace() only accepts arguments of type \TheliaEmailManager\Model\EmailManagerTrace or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the MailManagerTrace relation
+     * Adds a JOIN clause to the query using the EmailManagerTrace relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return ChildMailManagerHistoryQuery The current query, for fluid interface
+     * @return ChildEmailManagerHistoryQuery The current query, for fluid interface
      */
-    public function joinMailManagerTrace($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinEmailManagerTrace($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('MailManagerTrace');
+        $relationMap = $tableMap->getRelation('EmailManagerTrace');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -504,14 +504,14 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'MailManagerTrace');
+            $this->addJoinObject($join, 'EmailManagerTrace');
         }
 
         return $this;
     }
 
     /**
-     * Use the MailManagerTrace relation MailManagerTrace object
+     * Use the EmailManagerTrace relation EmailManagerTrace object
      *
      * @see useQuery()
      *
@@ -519,50 +519,50 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return   \TheliaMailManager\Model\MailManagerTraceQuery A secondary query class using the current class as primary query
+     * @return   \TheliaEmailManager\Model\EmailManagerTraceQuery A secondary query class using the current class as primary query
      */
-    public function useMailManagerTraceQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useEmailManagerTraceQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinMailManagerTrace($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'MailManagerTrace', '\TheliaMailManager\Model\MailManagerTraceQuery');
+            ->joinEmailManagerTrace($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'EmailManagerTrace', '\TheliaEmailManager\Model\EmailManagerTraceQuery');
     }
 
     /**
-     * Filter the query by a related \TheliaMailManager\Model\MailManagerHistoryMail object
+     * Filter the query by a related \TheliaEmailManager\Model\EmailManagerHistoryEmail object
      *
-     * @param \TheliaMailManager\Model\MailManagerHistoryMail|ObjectCollection $mailManagerHistoryMail  the related object to use as filter
+     * @param \TheliaEmailManager\Model\EmailManagerHistoryEmail|ObjectCollection $emailManagerHistoryEmail  the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildMailManagerHistoryQuery The current query, for fluid interface
+     * @return ChildEmailManagerHistoryQuery The current query, for fluid interface
      */
-    public function filterByMailManagerHistoryMail($mailManagerHistoryMail, $comparison = null)
+    public function filterByEmailManagerHistoryEmail($emailManagerHistoryEmail, $comparison = null)
     {
-        if ($mailManagerHistoryMail instanceof \TheliaMailManager\Model\MailManagerHistoryMail) {
+        if ($emailManagerHistoryEmail instanceof \TheliaEmailManager\Model\EmailManagerHistoryEmail) {
             return $this
-                ->addUsingAlias(MailManagerHistoryTableMap::ID, $mailManagerHistoryMail->getHistoryId(), $comparison);
-        } elseif ($mailManagerHistoryMail instanceof ObjectCollection) {
+                ->addUsingAlias(EmailManagerHistoryTableMap::ID, $emailManagerHistoryEmail->getHistoryId(), $comparison);
+        } elseif ($emailManagerHistoryEmail instanceof ObjectCollection) {
             return $this
-                ->useMailManagerHistoryMailQuery()
-                ->filterByPrimaryKeys($mailManagerHistoryMail->getPrimaryKeys())
+                ->useEmailManagerHistoryEmailQuery()
+                ->filterByPrimaryKeys($emailManagerHistoryEmail->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByMailManagerHistoryMail() only accepts arguments of type \TheliaMailManager\Model\MailManagerHistoryMail or Collection');
+            throw new PropelException('filterByEmailManagerHistoryEmail() only accepts arguments of type \TheliaEmailManager\Model\EmailManagerHistoryEmail or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the MailManagerHistoryMail relation
+     * Adds a JOIN clause to the query using the EmailManagerHistoryEmail relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return ChildMailManagerHistoryQuery The current query, for fluid interface
+     * @return ChildEmailManagerHistoryQuery The current query, for fluid interface
      */
-    public function joinMailManagerHistoryMail($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinEmailManagerHistoryEmail($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('MailManagerHistoryMail');
+        $relationMap = $tableMap->getRelation('EmailManagerHistoryEmail');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -577,14 +577,14 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'MailManagerHistoryMail');
+            $this->addJoinObject($join, 'EmailManagerHistoryEmail');
         }
 
         return $this;
     }
 
     /**
-     * Use the MailManagerHistoryMail relation MailManagerHistoryMail object
+     * Use the EmailManagerHistoryEmail relation EmailManagerHistoryEmail object
      *
      * @see useQuery()
      *
@@ -592,33 +592,33 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return   \TheliaMailManager\Model\MailManagerHistoryMailQuery A secondary query class using the current class as primary query
+     * @return   \TheliaEmailManager\Model\EmailManagerHistoryEmailQuery A secondary query class using the current class as primary query
      */
-    public function useMailManagerHistoryMailQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useEmailManagerHistoryEmailQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinMailManagerHistoryMail($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'MailManagerHistoryMail', '\TheliaMailManager\Model\MailManagerHistoryMailQuery');
+            ->joinEmailManagerHistoryEmail($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'EmailManagerHistoryEmail', '\TheliaEmailManager\Model\EmailManagerHistoryEmailQuery');
     }
 
     /**
      * Exclude object from result
      *
-     * @param   ChildMailManagerHistory $mailManagerHistory Object to remove from the list of results
+     * @param   ChildEmailManagerHistory $emailManagerHistory Object to remove from the list of results
      *
-     * @return ChildMailManagerHistoryQuery The current query, for fluid interface
+     * @return ChildEmailManagerHistoryQuery The current query, for fluid interface
      */
-    public function prune($mailManagerHistory = null)
+    public function prune($emailManagerHistory = null)
     {
-        if ($mailManagerHistory) {
-            $this->addUsingAlias(MailManagerHistoryTableMap::ID, $mailManagerHistory->getId(), Criteria::NOT_EQUAL);
+        if ($emailManagerHistory) {
+            $this->addUsingAlias(EmailManagerHistoryTableMap::ID, $emailManagerHistory->getId(), Criteria::NOT_EQUAL);
         }
 
         return $this;
     }
 
     /**
-     * Deletes all rows from the mail_manager_history table.
+     * Deletes all rows from the email_manager_history table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
@@ -626,7 +626,7 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
     public function doDeleteAll(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MailManagerHistoryTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(EmailManagerHistoryTableMap::DATABASE_NAME);
         }
         $affectedRows = 0; // initialize var to track total num of affected rows
         try {
@@ -637,8 +637,8 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
             // Because this db requires some delete cascade/set null emulation, we have to
             // clear the cached instance *after* the emulation has happened (since
             // instances get re-added by the select statement contained therein).
-            MailManagerHistoryTableMap::clearInstancePool();
-            MailManagerHistoryTableMap::clearRelatedInstancePool();
+            EmailManagerHistoryTableMap::clearInstancePool();
+            EmailManagerHistoryTableMap::clearRelatedInstancePool();
 
             $con->commit();
         } catch (PropelException $e) {
@@ -650,9 +650,9 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
     }
 
     /**
-     * Performs a DELETE on the database, given a ChildMailManagerHistory or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a ChildEmailManagerHistory or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or ChildMailManagerHistory object or primary key or array of primary keys
+     * @param mixed               $values Criteria or ChildEmailManagerHistory object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -663,13 +663,13 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
      public function delete(ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MailManagerHistoryTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(EmailManagerHistoryTableMap::DATABASE_NAME);
         }
 
         $criteria = $this;
 
         // Set the correct dbName
-        $criteria->setDbName(MailManagerHistoryTableMap::DATABASE_NAME);
+        $criteria->setDbName(EmailManagerHistoryTableMap::DATABASE_NAME);
 
         $affectedRows = 0; // initialize var to track total num of affected rows
 
@@ -679,10 +679,10 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
             $con->beginTransaction();
 
 
-        MailManagerHistoryTableMap::removeInstanceFromPool($criteria);
+        EmailManagerHistoryTableMap::removeInstanceFromPool($criteria);
 
             $affectedRows += ModelCriteria::delete($con);
-            MailManagerHistoryTableMap::clearRelatedInstancePool();
+            EmailManagerHistoryTableMap::clearRelatedInstancePool();
             $con->commit();
 
             return $affectedRows;
@@ -699,11 +699,11 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
      *
      * @param      int $nbDays Maximum age of the latest update in days
      *
-     * @return     ChildMailManagerHistoryQuery The current query, for fluid interface
+     * @return     ChildEmailManagerHistoryQuery The current query, for fluid interface
      */
     public function recentlyUpdated($nbDays = 7)
     {
-        return $this->addUsingAlias(MailManagerHistoryTableMap::UPDATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+        return $this->addUsingAlias(EmailManagerHistoryTableMap::UPDATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
     }
 
     /**
@@ -711,51 +711,51 @@ abstract class MailManagerHistoryQuery extends ModelCriteria
      *
      * @param      int $nbDays Maximum age of in days
      *
-     * @return     ChildMailManagerHistoryQuery The current query, for fluid interface
+     * @return     ChildEmailManagerHistoryQuery The current query, for fluid interface
      */
     public function recentlyCreated($nbDays = 7)
     {
-        return $this->addUsingAlias(MailManagerHistoryTableMap::CREATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+        return $this->addUsingAlias(EmailManagerHistoryTableMap::CREATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
     }
 
     /**
      * Order by update date desc
      *
-     * @return     ChildMailManagerHistoryQuery The current query, for fluid interface
+     * @return     ChildEmailManagerHistoryQuery The current query, for fluid interface
      */
     public function lastUpdatedFirst()
     {
-        return $this->addDescendingOrderByColumn(MailManagerHistoryTableMap::UPDATED_AT);
+        return $this->addDescendingOrderByColumn(EmailManagerHistoryTableMap::UPDATED_AT);
     }
 
     /**
      * Order by update date asc
      *
-     * @return     ChildMailManagerHistoryQuery The current query, for fluid interface
+     * @return     ChildEmailManagerHistoryQuery The current query, for fluid interface
      */
     public function firstUpdatedFirst()
     {
-        return $this->addAscendingOrderByColumn(MailManagerHistoryTableMap::UPDATED_AT);
+        return $this->addAscendingOrderByColumn(EmailManagerHistoryTableMap::UPDATED_AT);
     }
 
     /**
      * Order by create date desc
      *
-     * @return     ChildMailManagerHistoryQuery The current query, for fluid interface
+     * @return     ChildEmailManagerHistoryQuery The current query, for fluid interface
      */
     public function lastCreatedFirst()
     {
-        return $this->addDescendingOrderByColumn(MailManagerHistoryTableMap::CREATED_AT);
+        return $this->addDescendingOrderByColumn(EmailManagerHistoryTableMap::CREATED_AT);
     }
 
     /**
      * Order by create date asc
      *
-     * @return     ChildMailManagerHistoryQuery The current query, for fluid interface
+     * @return     ChildEmailManagerHistoryQuery The current query, for fluid interface
      */
     public function firstCreatedFirst()
     {
-        return $this->addAscendingOrderByColumn(MailManagerHistoryTableMap::CREATED_AT);
+        return $this->addAscendingOrderByColumn(EmailManagerHistoryTableMap::CREATED_AT);
     }
 
-} // MailManagerHistoryQuery
+} // EmailManagerHistoryQuery

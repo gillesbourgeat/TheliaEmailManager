@@ -1,6 +1,6 @@
 <?php
 
-namespace TheliaMailManager\Model\Map;
+namespace TheliaEmailManager\Model\Map;
 
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -11,12 +11,12 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
-use TheliaMailManager\Model\MailManagerHistoryMail;
-use TheliaMailManager\Model\MailManagerHistoryMailQuery;
+use TheliaEmailManager\Model\EmailManagerEmail;
+use TheliaEmailManager\Model\EmailManagerEmailQuery;
 
 
 /**
- * This class defines the structure of the 'mail_manager_history_mail' table.
+ * This class defines the structure of the 'email_manager_email' table.
  *
  *
  *
@@ -26,14 +26,14 @@ use TheliaMailManager\Model\MailManagerHistoryMailQuery;
  * (i.e. if it's a text column type).
  *
  */
-class MailManagerHistoryMailTableMap extends TableMap
+class EmailManagerEmailTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'TheliaMailManager.Model.Map.MailManagerHistoryMailTableMap';
+    const CLASS_NAME = 'TheliaEmailManager.Model.Map.EmailManagerEmailTableMap';
 
     /**
      * The default database name for this class
@@ -43,22 +43,22 @@ class MailManagerHistoryMailTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'mail_manager_history_mail';
+    const TABLE_NAME = 'email_manager_email';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\TheliaMailManager\\Model\\MailManagerHistoryMail';
+    const OM_CLASS = '\\TheliaEmailManager\\Model\\EmailManagerEmail';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'TheliaMailManager.Model.MailManagerHistoryMail';
+    const CLASS_DEFAULT = 'TheliaEmailManager.Model.EmailManagerEmail';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 4;
+    const NUM_COLUMNS = 7;
 
     /**
      * The number of lazy-loaded columns
@@ -68,39 +68,47 @@ class MailManagerHistoryMailTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 4;
+    const NUM_HYDRATE_COLUMNS = 7;
 
     /**
      * the column name for the ID field
      */
-    const ID = 'mail_manager_history_mail.ID';
+    const ID = 'email_manager_email.ID';
 
     /**
-     * the column name for the HISTORY_ID field
+     * the column name for the EMAIL field
      */
-    const HISTORY_ID = 'mail_manager_history_mail.HISTORY_ID';
+    const EMAIL = 'email_manager_email.EMAIL';
 
     /**
-     * the column name for the MAIL_ID field
+     * the column name for the DISABLE_SEND field
      */
-    const MAIL_ID = 'mail_manager_history_mail.MAIL_ID';
+    const DISABLE_SEND = 'email_manager_email.DISABLE_SEND';
 
     /**
-     * the column name for the TYPE field
+     * the column name for the DISABLE_SEND_DATE field
      */
-    const TYPE = 'mail_manager_history_mail.TYPE';
+    const DISABLE_SEND_DATE = 'email_manager_email.DISABLE_SEND_DATE';
+
+    /**
+     * the column name for the DISABLE_HASH field
+     */
+    const DISABLE_HASH = 'email_manager_email.DISABLE_HASH';
+
+    /**
+     * the column name for the CREATED_AT field
+     */
+    const CREATED_AT = 'email_manager_email.CREATED_AT';
+
+    /**
+     * the column name for the UPDATED_AT field
+     */
+    const UPDATED_AT = 'email_manager_email.UPDATED_AT';
 
     /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
-
-    /** The enumerated values for the TYPE field */
-    const TYPE_FROM = 'from';
-    const TYPE_TO = 'to';
-    const TYPE_CC = 'cc';
-    const TYPE_BCC = 'bcc';
-    const TYPE_RT = 'rt';
 
     /**
      * holds an array of fieldnames
@@ -109,12 +117,12 @@ class MailManagerHistoryMailTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'HistoryId', 'MailId', 'Type', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'historyId', 'mailId', 'type', ),
-        self::TYPE_COLNAME       => array(MailManagerHistoryMailTableMap::ID, MailManagerHistoryMailTableMap::HISTORY_ID, MailManagerHistoryMailTableMap::MAIL_ID, MailManagerHistoryMailTableMap::TYPE, ),
-        self::TYPE_RAW_COLNAME   => array('ID', 'HISTORY_ID', 'MAIL_ID', 'TYPE', ),
-        self::TYPE_FIELDNAME     => array('id', 'history_id', 'mail_id', 'type', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, )
+        self::TYPE_PHPNAME       => array('Id', 'Email', 'DisableSend', 'DisableSendDate', 'DisableHash', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'email', 'disableSend', 'disableSendDate', 'disableHash', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(EmailManagerEmailTableMap::ID, EmailManagerEmailTableMap::EMAIL, EmailManagerEmailTableMap::DISABLE_SEND, EmailManagerEmailTableMap::DISABLE_SEND_DATE, EmailManagerEmailTableMap::DISABLE_HASH, EmailManagerEmailTableMap::CREATED_AT, EmailManagerEmailTableMap::UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('ID', 'EMAIL', 'DISABLE_SEND', 'DISABLE_SEND_DATE', 'DISABLE_HASH', 'CREATED_AT', 'UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'email', 'disable_send', 'disable_send_date', 'disable_hash', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -124,45 +132,13 @@ class MailManagerHistoryMailTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'HistoryId' => 1, 'MailId' => 2, 'Type' => 3, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'historyId' => 1, 'mailId' => 2, 'type' => 3, ),
-        self::TYPE_COLNAME       => array(MailManagerHistoryMailTableMap::ID => 0, MailManagerHistoryMailTableMap::HISTORY_ID => 1, MailManagerHistoryMailTableMap::MAIL_ID => 2, MailManagerHistoryMailTableMap::TYPE => 3, ),
-        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'HISTORY_ID' => 1, 'MAIL_ID' => 2, 'TYPE' => 3, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'history_id' => 1, 'mail_id' => 2, 'type' => 3, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Email' => 1, 'DisableSend' => 2, 'DisableSendDate' => 3, 'DisableHash' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'email' => 1, 'disableSend' => 2, 'disableSendDate' => 3, 'disableHash' => 4, 'createdAt' => 5, 'updatedAt' => 6, ),
+        self::TYPE_COLNAME       => array(EmailManagerEmailTableMap::ID => 0, EmailManagerEmailTableMap::EMAIL => 1, EmailManagerEmailTableMap::DISABLE_SEND => 2, EmailManagerEmailTableMap::DISABLE_SEND_DATE => 3, EmailManagerEmailTableMap::DISABLE_HASH => 4, EmailManagerEmailTableMap::CREATED_AT => 5, EmailManagerEmailTableMap::UPDATED_AT => 6, ),
+        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'EMAIL' => 1, 'DISABLE_SEND' => 2, 'DISABLE_SEND_DATE' => 3, 'DISABLE_HASH' => 4, 'CREATED_AT' => 5, 'UPDATED_AT' => 6, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'email' => 1, 'disable_send' => 2, 'disable_send_date' => 3, 'disable_hash' => 4, 'created_at' => 5, 'updated_at' => 6, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
-
-    /** The enumerated values for this table */
-    protected static $enumValueSets = array(
-                MailManagerHistoryMailTableMap::TYPE => array(
-                            self::TYPE_FROM,
-            self::TYPE_TO,
-            self::TYPE_CC,
-            self::TYPE_BCC,
-            self::TYPE_RT,
-        ),
-    );
-
-    /**
-     * Gets the list of values for all ENUM columns
-     * @return array
-     */
-    public static function getValueSets()
-    {
-      return static::$enumValueSets;
-    }
-
-    /**
-     * Gets the list of values for an ENUM column
-     * @param string $colname
-     * @return array list of possible values for the column
-     */
-    public static function getValueSet($colname)
-    {
-        $valueSets = self::getValueSets();
-
-        return $valueSets[$colname];
-    }
 
     /**
      * Initialize the table attributes and columns
@@ -174,23 +150,19 @@ class MailManagerHistoryMailTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('mail_manager_history_mail');
-        $this->setPhpName('MailManagerHistoryMail');
-        $this->setClassName('\\TheliaMailManager\\Model\\MailManagerHistoryMail');
-        $this->setPackage('TheliaMailManager.Model');
+        $this->setName('email_manager_email');
+        $this->setPhpName('EmailManagerEmail');
+        $this->setClassName('\\TheliaEmailManager\\Model\\EmailManagerEmail');
+        $this->setPackage('TheliaEmailManager.Model');
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
-        $this->addForeignKey('HISTORY_ID', 'HistoryId', 'INTEGER', 'mail_manager_history', 'ID', true, null, null);
-        $this->addForeignKey('MAIL_ID', 'MailId', 'INTEGER', 'mail_manager_trace', 'ID', true, null, null);
-        $this->addColumn('TYPE', 'Type', 'ENUM', true, null, null);
-        $this->getColumn('TYPE', false)->setValueSet(array (
-  0 => 'from',
-  1 => 'to',
-  2 => 'cc',
-  3 => 'bcc',
-  4 => 'rt',
-));
+        $this->addColumn('EMAIL', 'Email', 'VARCHAR', true, 255, null);
+        $this->addColumn('DISABLE_SEND', 'DisableSend', 'BOOLEAN', false, 1, false);
+        $this->addColumn('DISABLE_SEND_DATE', 'DisableSendDate', 'TIMESTAMP', false, null, null);
+        $this->addColumn('DISABLE_HASH', 'DisableHash', 'CHAR', true, 64, null);
+        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -198,9 +170,20 @@ class MailManagerHistoryMailTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('MailManagerHistory', '\\TheliaMailManager\\Model\\MailManagerHistory', RelationMap::MANY_TO_ONE, array('history_id' => 'id', ), 'CASCADE', 'RESTRICT');
-        $this->addRelation('MailManagerTrace', '\\TheliaMailManager\\Model\\MailManagerTrace', RelationMap::MANY_TO_ONE, array('mail_id' => 'id', ), 'CASCADE', 'RESTRICT');
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
+        );
+    } // getBehaviors()
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -258,7 +241,7 @@ class MailManagerHistoryMailTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? MailManagerHistoryMailTableMap::CLASS_DEFAULT : MailManagerHistoryMailTableMap::OM_CLASS;
+        return $withPrefix ? EmailManagerEmailTableMap::CLASS_DEFAULT : EmailManagerEmailTableMap::OM_CLASS;
     }
 
     /**
@@ -272,21 +255,21 @@ class MailManagerHistoryMailTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *         rethrown wrapped into a PropelException.
-     * @return array (MailManagerHistoryMail object, last column rank)
+     * @return array (EmailManagerEmail object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = MailManagerHistoryMailTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = MailManagerHistoryMailTableMap::getInstanceFromPool($key))) {
+        $key = EmailManagerEmailTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = EmailManagerEmailTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + MailManagerHistoryMailTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + EmailManagerEmailTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = MailManagerHistoryMailTableMap::OM_CLASS;
+            $cls = EmailManagerEmailTableMap::OM_CLASS;
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            MailManagerHistoryMailTableMap::addInstanceToPool($obj, $key);
+            EmailManagerEmailTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -309,8 +292,8 @@ class MailManagerHistoryMailTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = MailManagerHistoryMailTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = MailManagerHistoryMailTableMap::getInstanceFromPool($key))) {
+            $key = EmailManagerEmailTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = EmailManagerEmailTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
@@ -319,7 +302,7 @@ class MailManagerHistoryMailTableMap extends TableMap
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                MailManagerHistoryMailTableMap::addInstanceToPool($obj, $key);
+                EmailManagerEmailTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -340,15 +323,21 @@ class MailManagerHistoryMailTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(MailManagerHistoryMailTableMap::ID);
-            $criteria->addSelectColumn(MailManagerHistoryMailTableMap::HISTORY_ID);
-            $criteria->addSelectColumn(MailManagerHistoryMailTableMap::MAIL_ID);
-            $criteria->addSelectColumn(MailManagerHistoryMailTableMap::TYPE);
+            $criteria->addSelectColumn(EmailManagerEmailTableMap::ID);
+            $criteria->addSelectColumn(EmailManagerEmailTableMap::EMAIL);
+            $criteria->addSelectColumn(EmailManagerEmailTableMap::DISABLE_SEND);
+            $criteria->addSelectColumn(EmailManagerEmailTableMap::DISABLE_SEND_DATE);
+            $criteria->addSelectColumn(EmailManagerEmailTableMap::DISABLE_HASH);
+            $criteria->addSelectColumn(EmailManagerEmailTableMap::CREATED_AT);
+            $criteria->addSelectColumn(EmailManagerEmailTableMap::UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.HISTORY_ID');
-            $criteria->addSelectColumn($alias . '.MAIL_ID');
-            $criteria->addSelectColumn($alias . '.TYPE');
+            $criteria->addSelectColumn($alias . '.EMAIL');
+            $criteria->addSelectColumn($alias . '.DISABLE_SEND');
+            $criteria->addSelectColumn($alias . '.DISABLE_SEND_DATE');
+            $criteria->addSelectColumn($alias . '.DISABLE_HASH');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
         }
     }
 
@@ -361,7 +350,7 @@ class MailManagerHistoryMailTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(MailManagerHistoryMailTableMap::DATABASE_NAME)->getTable(MailManagerHistoryMailTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(EmailManagerEmailTableMap::DATABASE_NAME)->getTable(EmailManagerEmailTableMap::TABLE_NAME);
     }
 
     /**
@@ -369,16 +358,16 @@ class MailManagerHistoryMailTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-      $dbMap = Propel::getServiceContainer()->getDatabaseMap(MailManagerHistoryMailTableMap::DATABASE_NAME);
-      if (!$dbMap->hasTable(MailManagerHistoryMailTableMap::TABLE_NAME)) {
-        $dbMap->addTableObject(new MailManagerHistoryMailTableMap());
+      $dbMap = Propel::getServiceContainer()->getDatabaseMap(EmailManagerEmailTableMap::DATABASE_NAME);
+      if (!$dbMap->hasTable(EmailManagerEmailTableMap::TABLE_NAME)) {
+        $dbMap->addTableObject(new EmailManagerEmailTableMap());
       }
     }
 
     /**
-     * Performs a DELETE on the database, given a MailManagerHistoryMail or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a EmailManagerEmail or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or MailManagerHistoryMail object or primary key or array of primary keys
+     * @param mixed               $values Criteria or EmailManagerEmail object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -389,25 +378,25 @@ class MailManagerHistoryMailTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MailManagerHistoryMailTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(EmailManagerEmailTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \TheliaMailManager\Model\MailManagerHistoryMail) { // it's a model object
+        } elseif ($values instanceof \TheliaEmailManager\Model\EmailManagerEmail) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(MailManagerHistoryMailTableMap::DATABASE_NAME);
-            $criteria->add(MailManagerHistoryMailTableMap::ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(EmailManagerEmailTableMap::DATABASE_NAME);
+            $criteria->add(EmailManagerEmailTableMap::ID, (array) $values, Criteria::IN);
         }
 
-        $query = MailManagerHistoryMailQuery::create()->mergeWith($criteria);
+        $query = EmailManagerEmailQuery::create()->mergeWith($criteria);
 
-        if ($values instanceof Criteria) { MailManagerHistoryMailTableMap::clearInstancePool();
+        if ($values instanceof Criteria) { EmailManagerEmailTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
-            foreach ((array) $values as $singleval) { MailManagerHistoryMailTableMap::removeInstanceFromPool($singleval);
+            foreach ((array) $values as $singleval) { EmailManagerEmailTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -415,20 +404,20 @@ class MailManagerHistoryMailTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the mail_manager_history_mail table.
+     * Deletes all rows from the email_manager_email table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return MailManagerHistoryMailQuery::create()->doDeleteAll($con);
+        return EmailManagerEmailQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a MailManagerHistoryMail or Criteria object.
+     * Performs an INSERT on the database, given a EmailManagerEmail or Criteria object.
      *
-     * @param mixed               $criteria Criteria or MailManagerHistoryMail object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or EmailManagerEmail object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -437,22 +426,22 @@ class MailManagerHistoryMailTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MailManagerHistoryMailTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(EmailManagerEmailTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from MailManagerHistoryMail object
+            $criteria = $criteria->buildCriteria(); // build Criteria from EmailManagerEmail object
         }
 
-        if ($criteria->containsKey(MailManagerHistoryMailTableMap::ID) && $criteria->keyContainsValue(MailManagerHistoryMailTableMap::ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.MailManagerHistoryMailTableMap::ID.')');
+        if ($criteria->containsKey(EmailManagerEmailTableMap::ID) && $criteria->keyContainsValue(EmailManagerEmailTableMap::ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.EmailManagerEmailTableMap::ID.')');
         }
 
 
         // Set the correct dbName
-        $query = MailManagerHistoryMailQuery::create()->mergeWith($criteria);
+        $query = EmailManagerEmailQuery::create()->mergeWith($criteria);
 
         try {
             // use transaction because $criteria could contain info
@@ -468,7 +457,7 @@ class MailManagerHistoryMailTableMap extends TableMap
         return $pk;
     }
 
-} // MailManagerHistoryMailTableMap
+} // EmailManagerEmailTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-MailManagerHistoryMailTableMap::buildTableMap();
+EmailManagerEmailTableMap::buildTableMap();

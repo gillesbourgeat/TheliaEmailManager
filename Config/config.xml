@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://thelia.net/schema/dic/config http://thelia.net/schema/dic/config/thelia-1.0.xsd">
 
     <services>
-        <service id="thelia.mail.manager.listener" class="TheliaMailManager\EventListener\MailerListener">
+        <service id="thelia.email.manager.listener" class="TheliaEmailManager\EventListener\MailerListener">
             <tag name="kernel.event_subscriber"/>
         </service>
     </services>

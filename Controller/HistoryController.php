@@ -1,10 +1,10 @@
 <?php
 
-namespace TheliaMailManager\Controller;
+namespace TheliaEmailManager\Controller;
 
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\HttpFoundation\Request;
-use TheliaMailManager\TheliaMailManager;
+use TheliaEmailManager\TheliaEmailManager;
 
 /**
  * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
@@ -12,16 +12,16 @@ use TheliaMailManager\TheliaMailManager;
 class HistoryController extends BaseAdminController
 {
     /** @var string */
-    protected $currentRouter = TheliaMailManager::ROUTER;
+    protected $currentRouter = TheliaEmailManager::ROUTER;
 
     public function listAction(Request $request)
     {
-        return $this->render('TheliaMailManager/histories');
+        return $this->render('TheliaEmailManager/histories');
     }
 
     public function viwAction(Request $request, $historyId)
     {
-        return $this->render('TheliaMailManager/modal/history', ['historyId' => $historyId]);
+        return $this->render('TheliaEmailManager/modal/history', ['historyId' => $historyId]);
     }
 
     public function resendAction(Request $request, $historyId)

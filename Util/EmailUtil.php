@@ -1,11 +1,11 @@
 <?php
 
-namespace TheliaMailManager\Util;
+namespace TheliaEmailManager\Util;
 
 /**
  * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
-class MailUtil
+class EmailUtil
 {
     /**
      * for check if the email is valid

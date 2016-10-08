@@ -1,10 +1,10 @@
 <?php
 
-namespace TheliaMailManager\Controller;
+namespace TheliaEmailManager\Controller;
 
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\HttpFoundation\Request;
-use TheliaMailManager\TheliaMailManager;
+use TheliaEmailManager\TheliaEmailManager;
 
 /**
  * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
@@ -12,16 +12,16 @@ use TheliaMailManager\TheliaMailManager;
 class TraceController extends BaseAdminController
 {
     /** @var string */
-    protected $currentRouter = TheliaMailManager::ROUTER;
+    protected $currentRouter = TheliaEmailManager::ROUTER;
 
     public function listAction(Request $request)
     {
-        return $this->render('TheliaMailManager/traces');
+        return $this->render('TheliaEmailManager/traces');
     }
 
     public function viwAction(Request $request, $traceId)
     {
-        return $this->render('TheliaMailManager/traceEdit', ['traceId' => $traceId]);
+        return $this->render('TheliaEmailManager/traceEdit', ['traceId' => $traceId]);
     }
 
     public function updateAction(Request $request, $traceId)
@@ -30,12 +30,12 @@ class TraceController extends BaseAdminController
 
 
             return $this->generateRedirectFromRoute(
-                'admin_mail_manager_trace_view',
+                'admin_email_manager_trace_view',
                 [],
                 ['traceId' => $traceId]
             );
         } catch (\Exception $e) {
-            return $this->render('TheliaMailManager/traceEdit', ['traceId' => $traceId]);
+            return $this->render('TheliaEmailManager/traceEdit', ['traceId' => $traceId]);
         }
     }
 }

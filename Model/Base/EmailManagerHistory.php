@@ -1,6 +1,6 @@
 <?php
 
-namespace TheliaMailManager\Model\Base;
+namespace TheliaEmailManager\Model\Base;
 
 use \DateTime;
 use \Exception;
@@ -17,20 +17,20 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
-use TheliaMailManager\Model\MailManagerHistory as ChildMailManagerHistory;
-use TheliaMailManager\Model\MailManagerHistoryMail as ChildMailManagerHistoryMail;
-use TheliaMailManager\Model\MailManagerHistoryMailQuery as ChildMailManagerHistoryMailQuery;
-use TheliaMailManager\Model\MailManagerHistoryQuery as ChildMailManagerHistoryQuery;
-use TheliaMailManager\Model\MailManagerTrace as ChildMailManagerTrace;
-use TheliaMailManager\Model\MailManagerTraceQuery as ChildMailManagerTraceQuery;
-use TheliaMailManager\Model\Map\MailManagerHistoryTableMap;
+use TheliaEmailManager\Model\EmailManagerHistory as ChildEmailManagerHistory;
+use TheliaEmailManager\Model\EmailManagerHistoryEmail as ChildEmailManagerHistoryEmail;
+use TheliaEmailManager\Model\EmailManagerHistoryEmailQuery as ChildEmailManagerHistoryEmailQuery;
+use TheliaEmailManager\Model\EmailManagerHistoryQuery as ChildEmailManagerHistoryQuery;
+use TheliaEmailManager\Model\EmailManagerTrace as ChildEmailManagerTrace;
+use TheliaEmailManager\Model\EmailManagerTraceQuery as ChildEmailManagerTraceQuery;
+use TheliaEmailManager\Model\Map\EmailManagerHistoryTableMap;
 
-abstract class MailManagerHistory implements ActiveRecordInterface
+abstract class EmailManagerHistory implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\TheliaMailManager\\Model\\Map\\MailManagerHistoryTableMap';
+    const TABLE_MAP = '\\TheliaEmailManager\\Model\\Map\\EmailManagerHistoryTableMap';
 
 
     /**
@@ -96,15 +96,15 @@ abstract class MailManagerHistory implements ActiveRecordInterface
     protected $updated_at;
 
     /**
-     * @var        MailManagerTrace
+     * @var        EmailManagerTrace
      */
-    protected $aMailManagerTrace;
+    protected $aEmailManagerTrace;
 
     /**
-     * @var        ObjectCollection|ChildMailManagerHistoryMail[] Collection to store aggregation of ChildMailManagerHistoryMail objects.
+     * @var        ObjectCollection|ChildEmailManagerHistoryEmail[] Collection to store aggregation of ChildEmailManagerHistoryEmail objects.
      */
-    protected $collMailManagerHistoryMails;
-    protected $collMailManagerHistoryMailsPartial;
+    protected $collEmailManagerHistoryEmails;
+    protected $collEmailManagerHistoryEmailsPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -118,10 +118,10 @@ abstract class MailManagerHistory implements ActiveRecordInterface
      * An array of objects scheduled for deletion.
      * @var ObjectCollection
      */
-    protected $mailManagerHistoryMailsScheduledForDeletion = null;
+    protected $emailManagerHistoryEmailsScheduledForDeletion = null;
 
     /**
-     * Initializes internal state of TheliaMailManager\Model\Base\MailManagerHistory object.
+     * Initializes internal state of TheliaEmailManager\Model\Base\EmailManagerHistory object.
      */
     public function __construct()
     {
@@ -216,9 +216,9 @@ abstract class MailManagerHistory implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>MailManagerHistory</code> instance.  If
-     * <code>obj</code> is an instance of <code>MailManagerHistory</code>, delegates to
-     * <code>equals(MailManagerHistory)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>EmailManagerHistory</code> instance.  If
+     * <code>obj</code> is an instance of <code>EmailManagerHistory</code>, delegates to
+     * <code>equals(EmailManagerHistory)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -301,7 +301,7 @@ abstract class MailManagerHistory implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return MailManagerHistory The current object, for fluid interface
+     * @return EmailManagerHistory The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -333,7 +333,7 @@ abstract class MailManagerHistory implements ActiveRecordInterface
      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param string $data The source data to import from
      *
-     * @return MailManagerHistory The current object, for fluid interface
+     * @return EmailManagerHistory The current object, for fluid interface
      */
     public function importFrom($parser, $data)
     {
@@ -466,7 +466,7 @@ abstract class MailManagerHistory implements ActiveRecordInterface
      * Set the value of [id] column.
      *
      * @param      int $v new value
-     * @return   \TheliaMailManager\Model\MailManagerHistory The current object (for fluent API support)
+     * @return   \TheliaEmailManager\Model\EmailManagerHistory The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -476,7 +476,7 @@ abstract class MailManagerHistory implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[MailManagerHistoryTableMap::ID] = true;
+            $this->modifiedColumns[EmailManagerHistoryTableMap::ID] = true;
         }
 
 
@@ -487,7 +487,7 @@ abstract class MailManagerHistory implements ActiveRecordInterface
      * Set the value of [trace_id] column.
      *
      * @param      int $v new value
-     * @return   \TheliaMailManager\Model\MailManagerHistory The current object (for fluent API support)
+     * @return   \TheliaEmailManager\Model\EmailManagerHistory The current object (for fluent API support)
      */
     public function setTraceId($v)
     {
@@ -497,11 +497,11 @@ abstract class MailManagerHistory implements ActiveRecordInterface
 
         if ($this->trace_id !== $v) {
             $this->trace_id = $v;
-            $this->modifiedColumns[MailManagerHistoryTableMap::TRACE_ID] = true;
+            $this->modifiedColumns[EmailManagerHistoryTableMap::TRACE_ID] = true;
         }
 
-        if ($this->aMailManagerTrace !== null && $this->aMailManagerTrace->getId() !== $v) {
-            $this->aMailManagerTrace = null;
+        if ($this->aEmailManagerTrace !== null && $this->aEmailManagerTrace->getId() !== $v) {
+            $this->aEmailManagerTrace = null;
         }
 
 
@@ -512,7 +512,7 @@ abstract class MailManagerHistory implements ActiveRecordInterface
      * Set the value of [subject] column.
      *
      * @param      string $v new value
-     * @return   \TheliaMailManager\Model\MailManagerHistory The current object (for fluent API support)
+     * @return   \TheliaEmailManager\Model\EmailManagerHistory The current object (for fluent API support)
      */
     public function setSubject($v)
     {
@@ -522,7 +522,7 @@ abstract class MailManagerHistory implements ActiveRecordInterface
 
         if ($this->subject !== $v) {
             $this->subject = $v;
-            $this->modifiedColumns[MailManagerHistoryTableMap::SUBJECT] = true;
+            $this->modifiedColumns[EmailManagerHistoryTableMap::SUBJECT] = true;
         }
 
 
@@ -533,7 +533,7 @@ abstract class MailManagerHistory implements ActiveRecordInterface
      * Set the value of [body] column.
      *
      * @param      resource $v new value
-     * @return   \TheliaMailManager\Model\MailManagerHistory The current object (for fluent API support)
+     * @return   \TheliaEmailManager\Model\EmailManagerHistory The current object (for fluent API support)
      */
     public function setBody($v)
     {
@@ -547,7 +547,7 @@ abstract class MailManagerHistory implements ActiveRecordInterface
         } else { // it's already a stream
             $this->body = $v;
         }
-        $this->modifiedColumns[MailManagerHistoryTableMap::BODY] = true;
+        $this->modifiedColumns[EmailManagerHistoryTableMap::BODY] = true;
 
 
         return $this;
@@ -558,7 +558,7 @@ abstract class MailManagerHistory implements ActiveRecordInterface
      *
      * @param      mixed $v string, integer (timestamp), or \DateTime value.
      *               Empty strings are treated as NULL.
-     * @return   \TheliaMailManager\Model\MailManagerHistory The current object (for fluent API support)
+     * @return   \TheliaEmailManager\Model\EmailManagerHistory The current object (for fluent API support)
      */
     public function setCreatedAt($v)
     {
@@ -566,7 +566,7 @@ abstract class MailManagerHistory implements ActiveRecordInterface
         if ($this->created_at !== null || $dt !== null) {
             if ($dt !== $this->created_at) {
                 $this->created_at = $dt;
-                $this->modifiedColumns[MailManagerHistoryTableMap::CREATED_AT] = true;
+                $this->modifiedColumns[EmailManagerHistoryTableMap::CREATED_AT] = true;
             }
         } // if either are not null
 
@@ -579,7 +579,7 @@ abstract class MailManagerHistory implements ActiveRecordInterface
      *
      * @param      mixed $v string, integer (timestamp), or \DateTime value.
      *               Empty strings are treated as NULL.
-     * @return   \TheliaMailManager\Model\MailManagerHistory The current object (for fluent API support)
+     * @return   \TheliaEmailManager\Model\EmailManagerHistory The current object (for fluent API support)
      */
     public function setUpdatedAt($v)
     {
@@ -587,7 +587,7 @@ abstract class MailManagerHistory implements ActiveRecordInterface
         if ($this->updated_at !== null || $dt !== null) {
             if ($dt !== $this->updated_at) {
                 $this->updated_at = $dt;
-                $this->modifiedColumns[MailManagerHistoryTableMap::UPDATED_AT] = true;
+                $this->modifiedColumns[EmailManagerHistoryTableMap::UPDATED_AT] = true;
             }
         } // if either are not null
 
@@ -632,16 +632,16 @@ abstract class MailManagerHistory implements ActiveRecordInterface
         try {
 
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : MailManagerHistoryTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : EmailManagerHistoryTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : MailManagerHistoryTableMap::translateFieldName('TraceId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : EmailManagerHistoryTableMap::translateFieldName('TraceId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->trace_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : MailManagerHistoryTableMap::translateFieldName('Subject', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : EmailManagerHistoryTableMap::translateFieldName('Subject', TableMap::TYPE_PHPNAME, $indexType)];
             $this->subject = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : MailManagerHistoryTableMap::translateFieldName('Body', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : EmailManagerHistoryTableMap::translateFieldName('Body', TableMap::TYPE_PHPNAME, $indexType)];
             if (null !== $col) {
                 $this->body = fopen('php://memory', 'r+');
                 fwrite($this->body, $col);
@@ -650,13 +650,13 @@ abstract class MailManagerHistory implements ActiveRecordInterface
                 $this->body = null;
             }
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : MailManagerHistoryTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : EmailManagerHistoryTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : MailManagerHistoryTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : EmailManagerHistoryTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -669,10 +669,10 @@ abstract class MailManagerHistory implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 6; // 6 = MailManagerHistoryTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 6; // 6 = EmailManagerHistoryTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException("Error populating \TheliaMailManager\Model\MailManagerHistory object", 0, $e);
+            throw new PropelException("Error populating \TheliaEmailManager\Model\EmailManagerHistory object", 0, $e);
         }
     }
 
@@ -691,8 +691,8 @@ abstract class MailManagerHistory implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aMailManagerTrace !== null && $this->trace_id !== $this->aMailManagerTrace->getId()) {
-            $this->aMailManagerTrace = null;
+        if ($this->aEmailManagerTrace !== null && $this->trace_id !== $this->aEmailManagerTrace->getId()) {
+            $this->aEmailManagerTrace = null;
         }
     } // ensureConsistency
 
@@ -717,13 +717,13 @@ abstract class MailManagerHistory implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(MailManagerHistoryTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(EmailManagerHistoryTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildMailManagerHistoryQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildEmailManagerHistoryQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -733,8 +733,8 @@ abstract class MailManagerHistory implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aMailManagerTrace = null;
-            $this->collMailManagerHistoryMails = null;
+            $this->aEmailManagerTrace = null;
+            $this->collEmailManagerHistoryEmails = null;
 
         } // if (deep)
     }
@@ -745,8 +745,8 @@ abstract class MailManagerHistory implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see MailManagerHistory::setDeleted()
-     * @see MailManagerHistory::isDeleted()
+     * @see EmailManagerHistory::setDeleted()
+     * @see EmailManagerHistory::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -755,12 +755,12 @@ abstract class MailManagerHistory implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MailManagerHistoryTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(EmailManagerHistoryTableMap::DATABASE_NAME);
         }
 
         $con->beginTransaction();
         try {
-            $deleteQuery = ChildMailManagerHistoryQuery::create()
+            $deleteQuery = ChildEmailManagerHistoryQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -797,7 +797,7 @@ abstract class MailManagerHistory implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MailManagerHistoryTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(EmailManagerHistoryTableMap::DATABASE_NAME);
         }
 
         $con->beginTransaction();
@@ -807,16 +807,16 @@ abstract class MailManagerHistory implements ActiveRecordInterface
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
                 // timestampable behavior
-                if (!$this->isColumnModified(MailManagerHistoryTableMap::CREATED_AT)) {
+                if (!$this->isColumnModified(EmailManagerHistoryTableMap::CREATED_AT)) {
                     $this->setCreatedAt(time());
                 }
-                if (!$this->isColumnModified(MailManagerHistoryTableMap::UPDATED_AT)) {
+                if (!$this->isColumnModified(EmailManagerHistoryTableMap::UPDATED_AT)) {
                     $this->setUpdatedAt(time());
                 }
             } else {
                 $ret = $ret && $this->preUpdate($con);
                 // timestampable behavior
-                if ($this->isModified() && !$this->isColumnModified(MailManagerHistoryTableMap::UPDATED_AT)) {
+                if ($this->isModified() && !$this->isColumnModified(EmailManagerHistoryTableMap::UPDATED_AT)) {
                     $this->setUpdatedAt(time());
                 }
             }
@@ -828,7 +828,7 @@ abstract class MailManagerHistory implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                MailManagerHistoryTableMap::addInstanceToPool($this);
+                EmailManagerHistoryTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -863,11 +863,11 @@ abstract class MailManagerHistory implements ActiveRecordInterface
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
-            if ($this->aMailManagerTrace !== null) {
-                if ($this->aMailManagerTrace->isModified() || $this->aMailManagerTrace->isNew()) {
-                    $affectedRows += $this->aMailManagerTrace->save($con);
+            if ($this->aEmailManagerTrace !== null) {
+                if ($this->aEmailManagerTrace->isModified() || $this->aEmailManagerTrace->isNew()) {
+                    $affectedRows += $this->aEmailManagerTrace->save($con);
                 }
-                $this->setMailManagerTrace($this->aMailManagerTrace);
+                $this->setEmailManagerTrace($this->aEmailManagerTrace);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -886,17 +886,17 @@ abstract class MailManagerHistory implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->mailManagerHistoryMailsScheduledForDeletion !== null) {
-                if (!$this->mailManagerHistoryMailsScheduledForDeletion->isEmpty()) {
-                    \TheliaMailManager\Model\MailManagerHistoryMailQuery::create()
-                        ->filterByPrimaryKeys($this->mailManagerHistoryMailsScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->emailManagerHistoryEmailsScheduledForDeletion !== null) {
+                if (!$this->emailManagerHistoryEmailsScheduledForDeletion->isEmpty()) {
+                    \TheliaEmailManager\Model\EmailManagerHistoryEmailQuery::create()
+                        ->filterByPrimaryKeys($this->emailManagerHistoryEmailsScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->mailManagerHistoryMailsScheduledForDeletion = null;
+                    $this->emailManagerHistoryEmailsScheduledForDeletion = null;
                 }
             }
 
-                if ($this->collMailManagerHistoryMails !== null) {
-            foreach ($this->collMailManagerHistoryMails as $referrerFK) {
+                if ($this->collEmailManagerHistoryEmails !== null) {
+            foreach ($this->collEmailManagerHistoryEmails as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -923,33 +923,33 @@ abstract class MailManagerHistory implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[MailManagerHistoryTableMap::ID] = true;
+        $this->modifiedColumns[EmailManagerHistoryTableMap::ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . MailManagerHistoryTableMap::ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . EmailManagerHistoryTableMap::ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(MailManagerHistoryTableMap::ID)) {
+        if ($this->isColumnModified(EmailManagerHistoryTableMap::ID)) {
             $modifiedColumns[':p' . $index++]  = 'ID';
         }
-        if ($this->isColumnModified(MailManagerHistoryTableMap::TRACE_ID)) {
+        if ($this->isColumnModified(EmailManagerHistoryTableMap::TRACE_ID)) {
             $modifiedColumns[':p' . $index++]  = 'TRACE_ID';
         }
-        if ($this->isColumnModified(MailManagerHistoryTableMap::SUBJECT)) {
+        if ($this->isColumnModified(EmailManagerHistoryTableMap::SUBJECT)) {
             $modifiedColumns[':p' . $index++]  = 'SUBJECT';
         }
-        if ($this->isColumnModified(MailManagerHistoryTableMap::BODY)) {
+        if ($this->isColumnModified(EmailManagerHistoryTableMap::BODY)) {
             $modifiedColumns[':p' . $index++]  = 'BODY';
         }
-        if ($this->isColumnModified(MailManagerHistoryTableMap::CREATED_AT)) {
+        if ($this->isColumnModified(EmailManagerHistoryTableMap::CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
         }
-        if ($this->isColumnModified(MailManagerHistoryTableMap::UPDATED_AT)) {
+        if ($this->isColumnModified(EmailManagerHistoryTableMap::UPDATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'UPDATED_AT';
         }
 
         $sql = sprintf(
-            'INSERT INTO mail_manager_history (%s) VALUES (%s)',
+            'INSERT INTO email_manager_history (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -1025,7 +1025,7 @@ abstract class MailManagerHistory implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = MailManagerHistoryTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = EmailManagerHistoryTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -1082,11 +1082,11 @@ abstract class MailManagerHistory implements ActiveRecordInterface
      */
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
-        if (isset($alreadyDumpedObjects['MailManagerHistory'][$this->getPrimaryKey()])) {
+        if (isset($alreadyDumpedObjects['EmailManagerHistory'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['MailManagerHistory'][$this->getPrimaryKey()] = true;
-        $keys = MailManagerHistoryTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['EmailManagerHistory'][$this->getPrimaryKey()] = true;
+        $keys = EmailManagerHistoryTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getTraceId(),
@@ -1101,11 +1101,11 @@ abstract class MailManagerHistory implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aMailManagerTrace) {
-                $result['MailManagerTrace'] = $this->aMailManagerTrace->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            if (null !== $this->aEmailManagerTrace) {
+                $result['EmailManagerTrace'] = $this->aEmailManagerTrace->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
-            if (null !== $this->collMailManagerHistoryMails) {
-                $result['MailManagerHistoryMails'] = $this->collMailManagerHistoryMails->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            if (null !== $this->collEmailManagerHistoryEmails) {
+                $result['EmailManagerHistoryEmails'] = $this->collEmailManagerHistoryEmails->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1125,7 +1125,7 @@ abstract class MailManagerHistory implements ActiveRecordInterface
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = MailManagerHistoryTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = EmailManagerHistoryTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1181,7 +1181,7 @@ abstract class MailManagerHistory implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = MailManagerHistoryTableMap::getFieldNames($keyType);
+        $keys = EmailManagerHistoryTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setTraceId($arr[$keys[1]]);
@@ -1198,14 +1198,14 @@ abstract class MailManagerHistory implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(MailManagerHistoryTableMap::DATABASE_NAME);
+        $criteria = new Criteria(EmailManagerHistoryTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(MailManagerHistoryTableMap::ID)) $criteria->add(MailManagerHistoryTableMap::ID, $this->id);
-        if ($this->isColumnModified(MailManagerHistoryTableMap::TRACE_ID)) $criteria->add(MailManagerHistoryTableMap::TRACE_ID, $this->trace_id);
-        if ($this->isColumnModified(MailManagerHistoryTableMap::SUBJECT)) $criteria->add(MailManagerHistoryTableMap::SUBJECT, $this->subject);
-        if ($this->isColumnModified(MailManagerHistoryTableMap::BODY)) $criteria->add(MailManagerHistoryTableMap::BODY, $this->body);
-        if ($this->isColumnModified(MailManagerHistoryTableMap::CREATED_AT)) $criteria->add(MailManagerHistoryTableMap::CREATED_AT, $this->created_at);
-        if ($this->isColumnModified(MailManagerHistoryTableMap::UPDATED_AT)) $criteria->add(MailManagerHistoryTableMap::UPDATED_AT, $this->updated_at);
+        if ($this->isColumnModified(EmailManagerHistoryTableMap::ID)) $criteria->add(EmailManagerHistoryTableMap::ID, $this->id);
+        if ($this->isColumnModified(EmailManagerHistoryTableMap::TRACE_ID)) $criteria->add(EmailManagerHistoryTableMap::TRACE_ID, $this->trace_id);
+        if ($this->isColumnModified(EmailManagerHistoryTableMap::SUBJECT)) $criteria->add(EmailManagerHistoryTableMap::SUBJECT, $this->subject);
+        if ($this->isColumnModified(EmailManagerHistoryTableMap::BODY)) $criteria->add(EmailManagerHistoryTableMap::BODY, $this->body);
+        if ($this->isColumnModified(EmailManagerHistoryTableMap::CREATED_AT)) $criteria->add(EmailManagerHistoryTableMap::CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(EmailManagerHistoryTableMap::UPDATED_AT)) $criteria->add(EmailManagerHistoryTableMap::UPDATED_AT, $this->updated_at);
 
         return $criteria;
     }
@@ -1220,8 +1220,8 @@ abstract class MailManagerHistory implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(MailManagerHistoryTableMap::DATABASE_NAME);
-        $criteria->add(MailManagerHistoryTableMap::ID, $this->id);
+        $criteria = new Criteria(EmailManagerHistoryTableMap::DATABASE_NAME);
+        $criteria->add(EmailManagerHistoryTableMap::ID, $this->id);
 
         return $criteria;
     }
@@ -1262,7 +1262,7 @@ abstract class MailManagerHistory implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \TheliaMailManager\Model\MailManagerHistory (or compatible) type.
+     * @param      object $copyObj An object of \TheliaEmailManager\Model\EmailManagerHistory (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1280,9 +1280,9 @@ abstract class MailManagerHistory implements ActiveRecordInterface
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
-            foreach ($this->getMailManagerHistoryMails() as $relObj) {
+            foreach ($this->getEmailManagerHistoryEmails() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addMailManagerHistoryMail($relObj->copy($deepCopy));
+                    $copyObj->addEmailManagerHistoryEmail($relObj->copy($deepCopy));
                 }
             }
 
@@ -1303,7 +1303,7 @@ abstract class MailManagerHistory implements ActiveRecordInterface
      * objects.
      *
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return                 \TheliaMailManager\Model\MailManagerHistory Clone of current object.
+     * @return                 \TheliaEmailManager\Model\EmailManagerHistory Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1317,13 +1317,13 @@ abstract class MailManagerHistory implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildMailManagerTrace object.
+     * Declares an association between this object and a ChildEmailManagerTrace object.
      *
-     * @param                  ChildMailManagerTrace $v
-     * @return                 \TheliaMailManager\Model\MailManagerHistory The current object (for fluent API support)
+     * @param                  ChildEmailManagerTrace $v
+     * @return                 \TheliaEmailManager\Model\EmailManagerHistory The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setMailManagerTrace(ChildMailManagerTrace $v = null)
+    public function setEmailManagerTrace(ChildEmailManagerTrace $v = null)
     {
         if ($v === null) {
             $this->setTraceId(NULL);
@@ -1331,12 +1331,12 @@ abstract class MailManagerHistory implements ActiveRecordInterface
             $this->setTraceId($v->getId());
         }
 
-        $this->aMailManagerTrace = $v;
+        $this->aEmailManagerTrace = $v;
 
         // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildMailManagerTrace object, it will not be re-added.
+        // If this object has already been added to the ChildEmailManagerTrace object, it will not be re-added.
         if ($v !== null) {
-            $v->addMailManagerHistory($this);
+            $v->addEmailManagerHistory($this);
         }
 
 
@@ -1345,26 +1345,26 @@ abstract class MailManagerHistory implements ActiveRecordInterface
 
 
     /**
-     * Get the associated ChildMailManagerTrace object
+     * Get the associated ChildEmailManagerTrace object
      *
      * @param      ConnectionInterface $con Optional Connection object.
-     * @return                 ChildMailManagerTrace The associated ChildMailManagerTrace object.
+     * @return                 ChildEmailManagerTrace The associated ChildEmailManagerTrace object.
      * @throws PropelException
      */
-    public function getMailManagerTrace(ConnectionInterface $con = null)
+    public function getEmailManagerTrace(ConnectionInterface $con = null)
     {
-        if ($this->aMailManagerTrace === null && ($this->trace_id !== null)) {
-            $this->aMailManagerTrace = ChildMailManagerTraceQuery::create()->findPk($this->trace_id, $con);
+        if ($this->aEmailManagerTrace === null && ($this->trace_id !== null)) {
+            $this->aEmailManagerTrace = ChildEmailManagerTraceQuery::create()->findPk($this->trace_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aMailManagerTrace->addMailManagerHistories($this);
+                $this->aEmailManagerTrace->addEmailManagerHistories($this);
              */
         }
 
-        return $this->aMailManagerTrace;
+        return $this->aEmailManagerTrace;
     }
 
 
@@ -1378,37 +1378,37 @@ abstract class MailManagerHistory implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('MailManagerHistoryMail' == $relationName) {
-            return $this->initMailManagerHistoryMails();
+        if ('EmailManagerHistoryEmail' == $relationName) {
+            return $this->initEmailManagerHistoryEmails();
         }
     }
 
     /**
-     * Clears out the collMailManagerHistoryMails collection
+     * Clears out the collEmailManagerHistoryEmails collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addMailManagerHistoryMails()
+     * @see        addEmailManagerHistoryEmails()
      */
-    public function clearMailManagerHistoryMails()
+    public function clearEmailManagerHistoryEmails()
     {
-        $this->collMailManagerHistoryMails = null; // important to set this to NULL since that means it is uninitialized
+        $this->collEmailManagerHistoryEmails = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collMailManagerHistoryMails collection loaded partially.
+     * Reset is the collEmailManagerHistoryEmails collection loaded partially.
      */
-    public function resetPartialMailManagerHistoryMails($v = true)
+    public function resetPartialEmailManagerHistoryEmails($v = true)
     {
-        $this->collMailManagerHistoryMailsPartial = $v;
+        $this->collEmailManagerHistoryEmailsPartial = $v;
     }
 
     /**
-     * Initializes the collMailManagerHistoryMails collection.
+     * Initializes the collEmailManagerHistoryEmails collection.
      *
-     * By default this just sets the collMailManagerHistoryMails collection to an empty array (like clearcollMailManagerHistoryMails());
+     * By default this just sets the collEmailManagerHistoryEmails collection to an empty array (like clearcollEmailManagerHistoryEmails());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1417,185 +1417,185 @@ abstract class MailManagerHistory implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initMailManagerHistoryMails($overrideExisting = true)
+    public function initEmailManagerHistoryEmails($overrideExisting = true)
     {
-        if (null !== $this->collMailManagerHistoryMails && !$overrideExisting) {
+        if (null !== $this->collEmailManagerHistoryEmails && !$overrideExisting) {
             return;
         }
-        $this->collMailManagerHistoryMails = new ObjectCollection();
-        $this->collMailManagerHistoryMails->setModel('\TheliaMailManager\Model\MailManagerHistoryMail');
+        $this->collEmailManagerHistoryEmails = new ObjectCollection();
+        $this->collEmailManagerHistoryEmails->setModel('\TheliaEmailManager\Model\EmailManagerHistoryEmail');
     }
 
     /**
-     * Gets an array of ChildMailManagerHistoryMail objects which contain a foreign key that references this object.
+     * Gets an array of ChildEmailManagerHistoryEmail objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
      * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildMailManagerHistory is new, it will return
+     * If this ChildEmailManagerHistory is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return Collection|ChildMailManagerHistoryMail[] List of ChildMailManagerHistoryMail objects
+     * @return Collection|ChildEmailManagerHistoryEmail[] List of ChildEmailManagerHistoryEmail objects
      * @throws PropelException
      */
-    public function getMailManagerHistoryMails($criteria = null, ConnectionInterface $con = null)
+    public function getEmailManagerHistoryEmails($criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collMailManagerHistoryMailsPartial && !$this->isNew();
-        if (null === $this->collMailManagerHistoryMails || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collMailManagerHistoryMails) {
+        $partial = $this->collEmailManagerHistoryEmailsPartial && !$this->isNew();
+        if (null === $this->collEmailManagerHistoryEmails || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collEmailManagerHistoryEmails) {
                 // return empty collection
-                $this->initMailManagerHistoryMails();
+                $this->initEmailManagerHistoryEmails();
             } else {
-                $collMailManagerHistoryMails = ChildMailManagerHistoryMailQuery::create(null, $criteria)
-                    ->filterByMailManagerHistory($this)
+                $collEmailManagerHistoryEmails = ChildEmailManagerHistoryEmailQuery::create(null, $criteria)
+                    ->filterByEmailManagerHistory($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collMailManagerHistoryMailsPartial && count($collMailManagerHistoryMails)) {
-                        $this->initMailManagerHistoryMails(false);
+                    if (false !== $this->collEmailManagerHistoryEmailsPartial && count($collEmailManagerHistoryEmails)) {
+                        $this->initEmailManagerHistoryEmails(false);
 
-                        foreach ($collMailManagerHistoryMails as $obj) {
-                            if (false == $this->collMailManagerHistoryMails->contains($obj)) {
-                                $this->collMailManagerHistoryMails->append($obj);
+                        foreach ($collEmailManagerHistoryEmails as $obj) {
+                            if (false == $this->collEmailManagerHistoryEmails->contains($obj)) {
+                                $this->collEmailManagerHistoryEmails->append($obj);
                             }
                         }
 
-                        $this->collMailManagerHistoryMailsPartial = true;
+                        $this->collEmailManagerHistoryEmailsPartial = true;
                     }
 
-                    reset($collMailManagerHistoryMails);
+                    reset($collEmailManagerHistoryEmails);
 
-                    return $collMailManagerHistoryMails;
+                    return $collEmailManagerHistoryEmails;
                 }
 
-                if ($partial && $this->collMailManagerHistoryMails) {
-                    foreach ($this->collMailManagerHistoryMails as $obj) {
+                if ($partial && $this->collEmailManagerHistoryEmails) {
+                    foreach ($this->collEmailManagerHistoryEmails as $obj) {
                         if ($obj->isNew()) {
-                            $collMailManagerHistoryMails[] = $obj;
+                            $collEmailManagerHistoryEmails[] = $obj;
                         }
                     }
                 }
 
-                $this->collMailManagerHistoryMails = $collMailManagerHistoryMails;
-                $this->collMailManagerHistoryMailsPartial = false;
+                $this->collEmailManagerHistoryEmails = $collEmailManagerHistoryEmails;
+                $this->collEmailManagerHistoryEmailsPartial = false;
             }
         }
 
-        return $this->collMailManagerHistoryMails;
+        return $this->collEmailManagerHistoryEmails;
     }
 
     /**
-     * Sets a collection of MailManagerHistoryMail objects related by a one-to-many relationship
+     * Sets a collection of EmailManagerHistoryEmail objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $mailManagerHistoryMails A Propel collection.
+     * @param      Collection $emailManagerHistoryEmails A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
-     * @return   ChildMailManagerHistory The current object (for fluent API support)
+     * @return   ChildEmailManagerHistory The current object (for fluent API support)
      */
-    public function setMailManagerHistoryMails(Collection $mailManagerHistoryMails, ConnectionInterface $con = null)
+    public function setEmailManagerHistoryEmails(Collection $emailManagerHistoryEmails, ConnectionInterface $con = null)
     {
-        $mailManagerHistoryMailsToDelete = $this->getMailManagerHistoryMails(new Criteria(), $con)->diff($mailManagerHistoryMails);
+        $emailManagerHistoryEmailsToDelete = $this->getEmailManagerHistoryEmails(new Criteria(), $con)->diff($emailManagerHistoryEmails);
 
 
-        $this->mailManagerHistoryMailsScheduledForDeletion = $mailManagerHistoryMailsToDelete;
+        $this->emailManagerHistoryEmailsScheduledForDeletion = $emailManagerHistoryEmailsToDelete;
 
-        foreach ($mailManagerHistoryMailsToDelete as $mailManagerHistoryMailRemoved) {
-            $mailManagerHistoryMailRemoved->setMailManagerHistory(null);
+        foreach ($emailManagerHistoryEmailsToDelete as $emailManagerHistoryEmailRemoved) {
+            $emailManagerHistoryEmailRemoved->setEmailManagerHistory(null);
         }
 
-        $this->collMailManagerHistoryMails = null;
-        foreach ($mailManagerHistoryMails as $mailManagerHistoryMail) {
-            $this->addMailManagerHistoryMail($mailManagerHistoryMail);
+        $this->collEmailManagerHistoryEmails = null;
+        foreach ($emailManagerHistoryEmails as $emailManagerHistoryEmail) {
+            $this->addEmailManagerHistoryEmail($emailManagerHistoryEmail);
         }
 
-        $this->collMailManagerHistoryMails = $mailManagerHistoryMails;
-        $this->collMailManagerHistoryMailsPartial = false;
+        $this->collEmailManagerHistoryEmails = $emailManagerHistoryEmails;
+        $this->collEmailManagerHistoryEmailsPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related MailManagerHistoryMail objects.
+     * Returns the number of related EmailManagerHistoryEmail objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related MailManagerHistoryMail objects.
+     * @return int             Count of related EmailManagerHistoryEmail objects.
      * @throws PropelException
      */
-    public function countMailManagerHistoryMails(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countEmailManagerHistoryEmails(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collMailManagerHistoryMailsPartial && !$this->isNew();
-        if (null === $this->collMailManagerHistoryMails || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collMailManagerHistoryMails) {
+        $partial = $this->collEmailManagerHistoryEmailsPartial && !$this->isNew();
+        if (null === $this->collEmailManagerHistoryEmails || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collEmailManagerHistoryEmails) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getMailManagerHistoryMails());
+                return count($this->getEmailManagerHistoryEmails());
             }
 
-            $query = ChildMailManagerHistoryMailQuery::create(null, $criteria);
+            $query = ChildEmailManagerHistoryEmailQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
 
             return $query
-                ->filterByMailManagerHistory($this)
+                ->filterByEmailManagerHistory($this)
                 ->count($con);
         }
 
-        return count($this->collMailManagerHistoryMails);
+        return count($this->collEmailManagerHistoryEmails);
     }
 
     /**
-     * Method called to associate a ChildMailManagerHistoryMail object to this object
-     * through the ChildMailManagerHistoryMail foreign key attribute.
+     * Method called to associate a ChildEmailManagerHistoryEmail object to this object
+     * through the ChildEmailManagerHistoryEmail foreign key attribute.
      *
-     * @param    ChildMailManagerHistoryMail $l ChildMailManagerHistoryMail
-     * @return   \TheliaMailManager\Model\MailManagerHistory The current object (for fluent API support)
+     * @param    ChildEmailManagerHistoryEmail $l ChildEmailManagerHistoryEmail
+     * @return   \TheliaEmailManager\Model\EmailManagerHistory The current object (for fluent API support)
      */
-    public function addMailManagerHistoryMail(ChildMailManagerHistoryMail $l)
+    public function addEmailManagerHistoryEmail(ChildEmailManagerHistoryEmail $l)
     {
-        if ($this->collMailManagerHistoryMails === null) {
-            $this->initMailManagerHistoryMails();
-            $this->collMailManagerHistoryMailsPartial = true;
+        if ($this->collEmailManagerHistoryEmails === null) {
+            $this->initEmailManagerHistoryEmails();
+            $this->collEmailManagerHistoryEmailsPartial = true;
         }
 
-        if (!in_array($l, $this->collMailManagerHistoryMails->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddMailManagerHistoryMail($l);
+        if (!in_array($l, $this->collEmailManagerHistoryEmails->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddEmailManagerHistoryEmail($l);
         }
 
         return $this;
     }
 
     /**
-     * @param MailManagerHistoryMail $mailManagerHistoryMail The mailManagerHistoryMail object to add.
+     * @param EmailManagerHistoryEmail $emailManagerHistoryEmail The emailManagerHistoryEmail object to add.
      */
-    protected function doAddMailManagerHistoryMail($mailManagerHistoryMail)
+    protected function doAddEmailManagerHistoryEmail($emailManagerHistoryEmail)
     {
-        $this->collMailManagerHistoryMails[]= $mailManagerHistoryMail;
-        $mailManagerHistoryMail->setMailManagerHistory($this);
+        $this->collEmailManagerHistoryEmails[]= $emailManagerHistoryEmail;
+        $emailManagerHistoryEmail->setEmailManagerHistory($this);
     }
 
     /**
-     * @param  MailManagerHistoryMail $mailManagerHistoryMail The mailManagerHistoryMail object to remove.
-     * @return ChildMailManagerHistory The current object (for fluent API support)
+     * @param  EmailManagerHistoryEmail $emailManagerHistoryEmail The emailManagerHistoryEmail object to remove.
+     * @return ChildEmailManagerHistory The current object (for fluent API support)
      */
-    public function removeMailManagerHistoryMail($mailManagerHistoryMail)
+    public function removeEmailManagerHistoryEmail($emailManagerHistoryEmail)
     {
-        if ($this->getMailManagerHistoryMails()->contains($mailManagerHistoryMail)) {
-            $this->collMailManagerHistoryMails->remove($this->collMailManagerHistoryMails->search($mailManagerHistoryMail));
-            if (null === $this->mailManagerHistoryMailsScheduledForDeletion) {
-                $this->mailManagerHistoryMailsScheduledForDeletion = clone $this->collMailManagerHistoryMails;
-                $this->mailManagerHistoryMailsScheduledForDeletion->clear();
+        if ($this->getEmailManagerHistoryEmails()->contains($emailManagerHistoryEmail)) {
+            $this->collEmailManagerHistoryEmails->remove($this->collEmailManagerHistoryEmails->search($emailManagerHistoryEmail));
+            if (null === $this->emailManagerHistoryEmailsScheduledForDeletion) {
+                $this->emailManagerHistoryEmailsScheduledForDeletion = clone $this->collEmailManagerHistoryEmails;
+                $this->emailManagerHistoryEmailsScheduledForDeletion->clear();
             }
-            $this->mailManagerHistoryMailsScheduledForDeletion[]= clone $mailManagerHistoryMail;
-            $mailManagerHistoryMail->setMailManagerHistory(null);
+            $this->emailManagerHistoryEmailsScheduledForDeletion[]= clone $emailManagerHistoryEmail;
+            $emailManagerHistoryEmail->setEmailManagerHistory(null);
         }
 
         return $this;
@@ -1605,25 +1605,25 @@ abstract class MailManagerHistory implements ActiveRecordInterface
     /**
      * If this collection has already been initialized with
      * an identical criteria, it returns the collection.
-     * Otherwise if this MailManagerHistory is new, it will return
-     * an empty collection; or if this MailManagerHistory has previously
-     * been saved, it will retrieve related MailManagerHistoryMails from storage.
+     * Otherwise if this EmailManagerHistory is new, it will return
+     * an empty collection; or if this EmailManagerHistory has previously
+     * been saved, it will retrieve related EmailManagerHistoryEmails from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
-     * actually need in MailManagerHistory.
+     * actually need in EmailManagerHistory.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return Collection|ChildMailManagerHistoryMail[] List of ChildMailManagerHistoryMail objects
+     * @return Collection|ChildEmailManagerHistoryEmail[] List of ChildEmailManagerHistoryEmail objects
      */
-    public function getMailManagerHistoryMailsJoinMailManagerTrace($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getEmailManagerHistoryEmailsJoinEmailManagerTrace($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildMailManagerHistoryMailQuery::create(null, $criteria);
-        $query->joinWith('MailManagerTrace', $joinBehavior);
+        $query = ChildEmailManagerHistoryEmailQuery::create(null, $criteria);
+        $query->joinWith('EmailManagerTrace', $joinBehavior);
 
-        return $this->getMailManagerHistoryMails($query, $con);
+        return $this->getEmailManagerHistoryEmails($query, $con);
     }
 
     /**
@@ -1656,15 +1656,15 @@ abstract class MailManagerHistory implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collMailManagerHistoryMails) {
-                foreach ($this->collMailManagerHistoryMails as $o) {
+            if ($this->collEmailManagerHistoryEmails) {
+                foreach ($this->collEmailManagerHistoryEmails as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
         } // if ($deep)
 
-        $this->collMailManagerHistoryMails = null;
-        $this->aMailManagerTrace = null;
+        $this->collEmailManagerHistoryEmails = null;
+        $this->aEmailManagerTrace = null;
     }
 
     /**
@@ -1674,7 +1674,7 @@ abstract class MailManagerHistory implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(MailManagerHistoryTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(EmailManagerHistoryTableMap::DEFAULT_STRING_FORMAT);
     }
 
     // timestampable behavior
@@ -1682,11 +1682,11 @@ abstract class MailManagerHistory implements ActiveRecordInterface
     /**
      * Mark the current object so that the update date doesn't get updated during next save
      *
-     * @return     ChildMailManagerHistory The current object (for fluent API support)
+     * @return     ChildEmailManagerHistory The current object (for fluent API support)
      */
     public function keepUpdateDateUnchanged()
     {
-        $this->modifiedColumns[MailManagerHistoryTableMap::UPDATED_AT] = true;
+        $this->modifiedColumns[EmailManagerHistoryTableMap::UPDATED_AT] = true;
 
         return $this;
     }

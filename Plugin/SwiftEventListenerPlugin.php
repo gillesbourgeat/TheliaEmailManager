@@ -1,9 +1,9 @@
 <?php
 
-namespace TheliaMailManager\Plugin;
+namespace TheliaEmailManager\Plugin;
 
-use TheliaMailManager\Event\Events;
-use TheliaMailManager\Event\SwiftEvent;
+use TheliaEmailManager\Event\Events;
+use TheliaEmailManager\Event\SwiftEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**

@@ -1,10 +1,10 @@
 <?php
 
-namespace TheliaMailManager\Controller;
+namespace TheliaEmailManager\Controller;
 
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\HttpFoundation\Request;
-use TheliaMailManager\TheliaMailManager;
+use TheliaEmailManager\TheliaEmailManager;
 
 /**
  * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
@@ -12,11 +12,11 @@ use TheliaMailManager\TheliaMailManager;
 class ConfigController extends BaseAdminController
 {
     /** @var string */
-    protected $currentRouter = TheliaMailManager::ROUTER;
+    protected $currentRouter = TheliaEmailManager::ROUTER;
 
     public function viwAction(Request $request)
     {
-        return $this->render('TheliaMailManager/configuration');
+        return $this->render('TheliaEmailManager/configuration');
     }
 
     public function updateAction(Request $request)
@@ -25,10 +25,10 @@ class ConfigController extends BaseAdminController
 
 
             return $this->generateRedirectFromRoute(
-                'admin_mail_manager_config'
+                'admin_email_manager_config'
             );
         } catch (\Exception $e) {
-            return $this->render('TheliaMailManager/configuration');
+            return $this->render('TheliaEmailManager/configuration');
         }
     }
 }

@@ -3,34 +3,34 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ---------------------------------------------------------------------
--- mail_manager_trace
+-- email_manager_trace
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `mail_manager_trace`;
+DROP TABLE IF EXISTS `email_manager_trace`;
 
 -- ---------------------------------------------------------------------
--- mail_manager_trace_i18n
+-- email_manager_trace_i18n
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `mail_manager_trace_i18n`;
+DROP TABLE IF EXISTS `email_manager_trace_i18n`;
 
 -- ---------------------------------------------------------------------
--- mail_manager_history
+-- email_manager_history
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `mail_manager_history`;
+DROP TABLE IF EXISTS `email_manager_history`;
 
 -- ---------------------------------------------------------------------
--- mail_manager_mail
+-- email_manager_email
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `mail_manager_mail`;
+DROP TABLE IF EXISTS `email_manager_email`;
 
 -- ---------------------------------------------------------------------
--- mail_manager_history_mail
+-- email_manager_history_email
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `mail_manager_history_mail`;
+DROP TABLE IF EXISTS `email_manager_history_email`;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

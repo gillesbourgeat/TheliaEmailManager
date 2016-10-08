@@ -5,41 +5,41 @@
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
     <!-- - Config - -->
-    <route id="admin_mail_manager_config" path="/admin/mail-manager/config" methods="GET">
-        <default key="_controller">TheliaMailManager:Config:view</default>
+    <route id="admin_email_manager_config" path="/admin/email-manager/config" methods="GET">
+        <default key="_controller">TheliaEmailManager:Config:view</default>
     </route>
 
-    <route id="admin_mail_manager_config_update" path="/admin/mail-manager/config" methods="POST">
-        <default key="_controller">TheliaMailManager:Config:update</default>
+    <route id="admin_email_manager_config_update" path="/admin/email-manager/config" methods="POST">
+        <default key="_controller">TheliaEmailManager:Config:update</default>
     </route>
 
     <!-- - Trace - -->
-    <route id="admin_mail_manager_trace" path="/admin/mail-manager/trace" methods="GET">
-        <default key="_controller">TheliaMailManager:Trace:list</default>
+    <route id="admin_email_manager_trace" path="/admin/email-manager/trace" methods="GET">
+        <default key="_controller">TheliaEmailManager:Trace:list</default>
     </route>
 
-    <route id="admin_mail_manager_trace_view" path="/admin/mail-manager/trace/{traceId}" methods="GET">
-        <default key="_controller">TheliaMailManager:Trace:view</default>
+    <route id="admin_email_manager_trace_view" path="/admin/email-manager/trace/{traceId}" methods="GET">
+        <default key="_controller">TheliaEmailManager:Trace:view</default>
         <requirement key="traceId">\d+</requirement>
     </route>
 
-    <route id="admin_mail_manager_trace_update" path="/admin/mail-manager/trace/{traceId}" methods="POST">
-        <default key="_controller">TheliaMailManager:Trace:view</default>
+    <route id="admin_email_manager_trace_update" path="/admin/email-manager/trace/{traceId}" methods="POST">
+        <default key="_controller">TheliaEmailManager:Trace:view</default>
         <requirement key="traceId">\d+</requirement>
     </route>
 
     <!-- - History - -->
-    <route id="admin_mail_manager_history" path="/admin/mail-manager/history" methods="GET">
-        <default key="_controller">TheliaMailManager:History:list</default>
+    <route id="admin_email_manager_history" path="/admin/email-manager/history" methods="GET">
+        <default key="_controller">TheliaEmailManager:History:list</default>
     </route>
 
-    <route id="admin_mail_manager_history_view" path="/admin/mail-manager/history/{historyId}" methods="GET">
-        <default key="_controller">TheliaMailManager:History:view</default>
+    <route id="admin_email_manager_history_view" path="/admin/email-manager/history/{historyId}" methods="GET">
+        <default key="_controller">TheliaEmailManager:History:view</default>
         <requirement key="historyId">\d+</requirement>
     </route>
 
-    <route id="admin_mail_manager_history_resend" path="/admin/mail-manager/history/{historyId}/resend" methods="POST">
-        <default key="_controller">TheliaMailManager:History:resend</default>
+    <route id="admin_email_manager_history_resend" path="/admin/email-manager/history/{historyId}/resend" methods="POST">
+        <default key="_controller">TheliaEmailManager:History:resend</default>
         <requirement key="historyId">\d+</requirement>
     </route>
 

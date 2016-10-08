@@ -7,7 +7,7 @@
     <!-- - - - trace - - - - -->
     <!-- - - - - - - - - - - -->
 
-    <table name="mail_manager_trace" namespace="TheliaMailManager\Model">
+    <table name="email_manager_trace" namespace="TheliaEmailManager\Model">
         <column autoIncrement="true" name="id" primaryKey="true" required="true" type="INTEGER" />
         <column name="hash" required="true" size="32" type="CHAR" />
         <column defaultValue="0" name="disable_history" type="BOOLEAN" />
@@ -35,13 +35,13 @@
     <!-- - - - history - - - -->
     <!-- - - - - - - - - - - -->
 
-    <table name="mail_manager_history" namespace="TheliaMailManager\Model">
+    <table name="email_manager_history" namespace="TheliaEmailManager\Model">
         <column autoIncrement="true" name="id" primaryKey="true" required="true" type="INTEGER" />
         <column name="trace_id" required="true" type="INTEGER" />
         <column name="subject" type="LONGVARCHAR" />
         <column name="body" type="BLOB" />
 
-        <foreign-key foreignTable="mail_manager_trace" name="fk_mail_manager_history__mail_manager_trace" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="email_manager_trace" name="fk_email_manager_history__email_manager_trace" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference foreign="id" local="trace_id" />
         </foreign-key>
 
@@ -53,12 +53,12 @@
     </table>
 
     <!-- - - - - - - - - - - -->
-    <!-- - - - mail -  - - - -->
+    <!-- - - - email -  - - - -->
     <!-- - - - - - - - - - - -->
 
-    <table name="mail_manager_mail" namespace="TheliaMailManager\Model">
+    <table name="email_manager_email" namespace="TheliaEmailManager\Model">
         <column autoIncrement="true" name="id" primaryKey="true" required="true" type="INTEGER" />
-        <column name="mail" required="true" type="VARCHAR" />
+        <column name="email" required="true" type="VARCHAR" />
         <column defaultValue="0" name="disable_send" type="BOOLEAN" />
         <column name="disable_send_date" type="TIMESTAMP" />
         <column name="disable_hash" required="true" size="64" type="CHAR" />
@@ -66,7 +66,7 @@
         <behavior name="timestampable"/>
 
         <unique>
-            <unique-column name="mail" />
+            <unique-column name="email" />
         </unique>
     </table>
 
@@ -74,18 +74,18 @@
     <!-- - history mail  - - -->
     <!-- - - - - - - - - - - -->
 
-    <table name="mail_manager_history_mail" namespace="TheliaMailManager\Model">
+    <table name="email_manager_history_email" namespace="TheliaEmailManager\Model">
         <column autoIncrement="true" name="id" primaryKey="true" required="true" type="INTEGER" />
         <column name="history_id" required="true" type="INTEGER" />
-        <column name="mail_id" required="true" type="INTEGER" />
+        <column name="email_id" required="true" type="INTEGER" />
         <column name="type" valueSet="from,to,cc,bcc,rt" required="true" type="ENUM" />
 
-        <foreign-key foreignTable="mail_manager_history" name="fk_mail_manager_history_mail__mail_manager_history" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="email_manager_history" name="fk_email_manager_history_email__email_manager_history" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference foreign="id" local="history_id" />
         </foreign-key>
 
-        <foreign-key foreignTable="mail_manager_trace" name="fk_mail_manager_history_mail__mail_manager_mail" onDelete="CASCADE" onUpdate="RESTRICT">
-            <reference foreign="id" local="mail_id" />
+        <foreign-key foreignTable="email_manager_trace" name="fk_email_manager_history_email__email_manager_email" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference foreign="id" local="email_id" />
         </foreign-key>
 
         <index>
@@ -97,12 +97,12 @@
         </index>
 
         <index>
-            <index-column name="mail_id" />
+            <index-column name="email_id" />
         </index>
 
         <unique>
             <unique-column name="history_id" />
-            <unique-column name="mail_id" />
+            <unique-column name="email_id" />
             <unique-column name="type" />
         </unique>
     </table>

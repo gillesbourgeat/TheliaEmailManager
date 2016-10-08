@@ -1,6 +1,6 @@
 <?php
 
-namespace TheliaMailManager\Model\Map;
+namespace TheliaEmailManager\Model\Map;
 
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -11,12 +11,12 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
-use TheliaMailManager\Model\MailManagerTraceI18n;
-use TheliaMailManager\Model\MailManagerTraceI18nQuery;
+use TheliaEmailManager\Model\EmailManagerHistoryEmail;
+use TheliaEmailManager\Model\EmailManagerHistoryEmailQuery;
 
 
 /**
- * This class defines the structure of the 'mail_manager_trace_i18n' table.
+ * This class defines the structure of the 'email_manager_history_email' table.
  *
  *
  *
@@ -26,14 +26,14 @@ use TheliaMailManager\Model\MailManagerTraceI18nQuery;
  * (i.e. if it's a text column type).
  *
  */
-class MailManagerTraceI18nTableMap extends TableMap
+class EmailManagerHistoryEmailTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'TheliaMailManager.Model.Map.MailManagerTraceI18nTableMap';
+    const CLASS_NAME = 'TheliaEmailManager.Model.Map.EmailManagerHistoryEmailTableMap';
 
     /**
      * The default database name for this class
@@ -43,17 +43,17 @@ class MailManagerTraceI18nTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'mail_manager_trace_i18n';
+    const TABLE_NAME = 'email_manager_history_email';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\TheliaMailManager\\Model\\MailManagerTraceI18n';
+    const OM_CLASS = '\\TheliaEmailManager\\Model\\EmailManagerHistoryEmail';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'TheliaMailManager.Model.MailManagerTraceI18n';
+    const CLASS_DEFAULT = 'TheliaEmailManager.Model.EmailManagerHistoryEmail';
 
     /**
      * The total number of columns
@@ -73,27 +73,34 @@ class MailManagerTraceI18nTableMap extends TableMap
     /**
      * the column name for the ID field
      */
-    const ID = 'mail_manager_trace_i18n.ID';
+    const ID = 'email_manager_history_email.ID';
 
     /**
-     * the column name for the LOCALE field
+     * the column name for the HISTORY_ID field
      */
-    const LOCALE = 'mail_manager_trace_i18n.LOCALE';
+    const HISTORY_ID = 'email_manager_history_email.HISTORY_ID';
 
     /**
-     * the column name for the TITLE field
+     * the column name for the EMAIL_ID field
      */
-    const TITLE = 'mail_manager_trace_i18n.TITLE';
+    const EMAIL_ID = 'email_manager_history_email.EMAIL_ID';
 
     /**
-     * the column name for the DESCRIPTION field
+     * the column name for the TYPE field
      */
-    const DESCRIPTION = 'mail_manager_trace_i18n.DESCRIPTION';
+    const TYPE = 'email_manager_history_email.TYPE';
 
     /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
+
+    /** The enumerated values for the TYPE field */
+    const TYPE_FROM = 'from';
+    const TYPE_TO = 'to';
+    const TYPE_CC = 'cc';
+    const TYPE_BCC = 'bcc';
+    const TYPE_RT = 'rt';
 
     /**
      * holds an array of fieldnames
@@ -102,11 +109,11 @@ class MailManagerTraceI18nTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Locale', 'Title', 'Description', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'locale', 'title', 'description', ),
-        self::TYPE_COLNAME       => array(MailManagerTraceI18nTableMap::ID, MailManagerTraceI18nTableMap::LOCALE, MailManagerTraceI18nTableMap::TITLE, MailManagerTraceI18nTableMap::DESCRIPTION, ),
-        self::TYPE_RAW_COLNAME   => array('ID', 'LOCALE', 'TITLE', 'DESCRIPTION', ),
-        self::TYPE_FIELDNAME     => array('id', 'locale', 'title', 'description', ),
+        self::TYPE_PHPNAME       => array('Id', 'HistoryId', 'EmailId', 'Type', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'historyId', 'emailId', 'type', ),
+        self::TYPE_COLNAME       => array(EmailManagerHistoryEmailTableMap::ID, EmailManagerHistoryEmailTableMap::HISTORY_ID, EmailManagerHistoryEmailTableMap::EMAIL_ID, EmailManagerHistoryEmailTableMap::TYPE, ),
+        self::TYPE_RAW_COLNAME   => array('ID', 'HISTORY_ID', 'EMAIL_ID', 'TYPE', ),
+        self::TYPE_FIELDNAME     => array('id', 'history_id', 'email_id', 'type', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
@@ -117,13 +124,45 @@ class MailManagerTraceI18nTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Locale' => 1, 'Title' => 2, 'Description' => 3, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'locale' => 1, 'title' => 2, 'description' => 3, ),
-        self::TYPE_COLNAME       => array(MailManagerTraceI18nTableMap::ID => 0, MailManagerTraceI18nTableMap::LOCALE => 1, MailManagerTraceI18nTableMap::TITLE => 2, MailManagerTraceI18nTableMap::DESCRIPTION => 3, ),
-        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'LOCALE' => 1, 'TITLE' => 2, 'DESCRIPTION' => 3, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'locale' => 1, 'title' => 2, 'description' => 3, ),
+        self::TYPE_PHPNAME       => array('Id' => 0, 'HistoryId' => 1, 'EmailId' => 2, 'Type' => 3, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'historyId' => 1, 'emailId' => 2, 'type' => 3, ),
+        self::TYPE_COLNAME       => array(EmailManagerHistoryEmailTableMap::ID => 0, EmailManagerHistoryEmailTableMap::HISTORY_ID => 1, EmailManagerHistoryEmailTableMap::EMAIL_ID => 2, EmailManagerHistoryEmailTableMap::TYPE => 3, ),
+        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'HISTORY_ID' => 1, 'EMAIL_ID' => 2, 'TYPE' => 3, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'history_id' => 1, 'email_id' => 2, 'type' => 3, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
+
+    /** The enumerated values for this table */
+    protected static $enumValueSets = array(
+                EmailManagerHistoryEmailTableMap::TYPE => array(
+                            self::TYPE_FROM,
+            self::TYPE_TO,
+            self::TYPE_CC,
+            self::TYPE_BCC,
+            self::TYPE_RT,
+        ),
+    );
+
+    /**
+     * Gets the list of values for all ENUM columns
+     * @return array
+     */
+    public static function getValueSets()
+    {
+      return static::$enumValueSets;
+    }
+
+    /**
+     * Gets the list of values for an ENUM column
+     * @param string $colname
+     * @return array list of possible values for the column
+     */
+    public static function getValueSet($colname)
+    {
+        $valueSets = self::getValueSets();
+
+        return $valueSets[$colname];
+    }
 
     /**
      * Initialize the table attributes and columns
@@ -135,16 +174,23 @@ class MailManagerTraceI18nTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('mail_manager_trace_i18n');
-        $this->setPhpName('MailManagerTraceI18n');
-        $this->setClassName('\\TheliaMailManager\\Model\\MailManagerTraceI18n');
-        $this->setPackage('TheliaMailManager.Model');
-        $this->setUseIdGenerator(false);
+        $this->setName('email_manager_history_email');
+        $this->setPhpName('EmailManagerHistoryEmail');
+        $this->setClassName('\\TheliaEmailManager\\Model\\EmailManagerHistoryEmail');
+        $this->setPackage('TheliaEmailManager.Model');
+        $this->setUseIdGenerator(true);
         // columns
-        $this->addForeignPrimaryKey('ID', 'Id', 'INTEGER' , 'mail_manager_trace', 'ID', true, null, null);
-        $this->addPrimaryKey('LOCALE', 'Locale', 'VARCHAR', true, 5, 'en_US');
-        $this->addColumn('TITLE', 'Title', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('DESCRIPTION', 'Description', 'VARCHAR', false, 255, null);
+        $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
+        $this->addForeignKey('HISTORY_ID', 'HistoryId', 'INTEGER', 'email_manager_history', 'ID', true, null, null);
+        $this->addForeignKey('EMAIL_ID', 'EmailId', 'INTEGER', 'email_manager_trace', 'ID', true, null, null);
+        $this->addColumn('TYPE', 'Type', 'ENUM', true, null, null);
+        $this->getColumn('TYPE', false)->setValueSet(array (
+  0 => 'from',
+  1 => 'to',
+  2 => 'cc',
+  3 => 'bcc',
+  4 => 'rt',
+));
     } // initialize()
 
     /**
@@ -152,61 +198,9 @@ class MailManagerTraceI18nTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('MailManagerTrace', '\\TheliaMailManager\\Model\\MailManagerTrace', RelationMap::MANY_TO_ONE, array('id' => 'id', ), 'CASCADE', null);
+        $this->addRelation('EmailManagerHistory', '\\TheliaEmailManager\\Model\\EmailManagerHistory', RelationMap::MANY_TO_ONE, array('history_id' => 'id', ), 'CASCADE', 'RESTRICT');
+        $this->addRelation('EmailManagerTrace', '\\TheliaEmailManager\\Model\\EmailManagerTrace', RelationMap::MANY_TO_ONE, array('email_id' => 'id', ), 'CASCADE', 'RESTRICT');
     } // buildRelations()
-
-    /**
-     * Adds an object to the instance pool.
-     *
-     * Propel keeps cached copies of objects in an instance pool when they are retrieved
-     * from the database. In some cases you may need to explicitly add objects
-     * to the cache in order to ensure that the same objects are always returned by find*()
-     * and findPk*() calls.
-     *
-     * @param \TheliaMailManager\Model\MailManagerTraceI18n $obj A \TheliaMailManager\Model\MailManagerTraceI18n object.
-     * @param string $key             (optional) key to use for instance map (for performance boost if key was already calculated externally).
-     */
-    public static function addInstanceToPool($obj, $key = null)
-    {
-        if (Propel::isInstancePoolingEnabled()) {
-            if (null === $key) {
-                $key = serialize(array((string) $obj->getId(), (string) $obj->getLocale()));
-            } // if key === null
-            self::$instances[$key] = $obj;
-        }
-    }
-
-    /**
-     * Removes an object from the instance pool.
-     *
-     * Propel keeps cached copies of objects in an instance pool when they are retrieved
-     * from the database.  In some cases -- especially when you override doDelete
-     * methods in your stub classes -- you may need to explicitly remove objects
-     * from the cache in order to prevent returning objects that no longer exist.
-     *
-     * @param mixed $value A \TheliaMailManager\Model\MailManagerTraceI18n object or a primary key value.
-     */
-    public static function removeInstanceFromPool($value)
-    {
-        if (Propel::isInstancePoolingEnabled() && null !== $value) {
-            if (is_object($value) && $value instanceof \TheliaMailManager\Model\MailManagerTraceI18n) {
-                $key = serialize(array((string) $value->getId(), (string) $value->getLocale()));
-
-            } elseif (is_array($value) && count($value) === 2) {
-                // assume we've been passed a primary key";
-                $key = serialize(array((string) $value[0], (string) $value[1]));
-            } elseif ($value instanceof Criteria) {
-                self::$instances = [];
-
-                return;
-            } else {
-                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \TheliaMailManager\Model\MailManagerTraceI18n object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value, true)));
-                throw $e;
-            }
-
-            unset(self::$instances[$key]);
-        }
-    }
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -222,11 +216,11 @@ class MailManagerTraceI18nTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Locale', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return serialize(array((string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Locale', TableMap::TYPE_PHPNAME, $indexType)]));
+        return (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -244,7 +238,11 @@ class MailManagerTraceI18nTableMap extends TableMap
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
 
-            return $pks;
+            return (int) $row[
+                            $indexType == TableMap::TYPE_NUM
+                            ? 0 + $offset
+                            : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
+                        ];
     }
 
     /**
@@ -260,7 +258,7 @@ class MailManagerTraceI18nTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? MailManagerTraceI18nTableMap::CLASS_DEFAULT : MailManagerTraceI18nTableMap::OM_CLASS;
+        return $withPrefix ? EmailManagerHistoryEmailTableMap::CLASS_DEFAULT : EmailManagerHistoryEmailTableMap::OM_CLASS;
     }
 
     /**
@@ -274,21 +272,21 @@ class MailManagerTraceI18nTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *         rethrown wrapped into a PropelException.
-     * @return array (MailManagerTraceI18n object, last column rank)
+     * @return array (EmailManagerHistoryEmail object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = MailManagerTraceI18nTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = MailManagerTraceI18nTableMap::getInstanceFromPool($key))) {
+        $key = EmailManagerHistoryEmailTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = EmailManagerHistoryEmailTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + MailManagerTraceI18nTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + EmailManagerHistoryEmailTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = MailManagerTraceI18nTableMap::OM_CLASS;
+            $cls = EmailManagerHistoryEmailTableMap::OM_CLASS;
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            MailManagerTraceI18nTableMap::addInstanceToPool($obj, $key);
+            EmailManagerHistoryEmailTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -311,8 +309,8 @@ class MailManagerTraceI18nTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = MailManagerTraceI18nTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = MailManagerTraceI18nTableMap::getInstanceFromPool($key))) {
+            $key = EmailManagerHistoryEmailTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = EmailManagerHistoryEmailTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
@@ -321,7 +319,7 @@ class MailManagerTraceI18nTableMap extends TableMap
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                MailManagerTraceI18nTableMap::addInstanceToPool($obj, $key);
+                EmailManagerHistoryEmailTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -342,15 +340,15 @@ class MailManagerTraceI18nTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(MailManagerTraceI18nTableMap::ID);
-            $criteria->addSelectColumn(MailManagerTraceI18nTableMap::LOCALE);
-            $criteria->addSelectColumn(MailManagerTraceI18nTableMap::TITLE);
-            $criteria->addSelectColumn(MailManagerTraceI18nTableMap::DESCRIPTION);
+            $criteria->addSelectColumn(EmailManagerHistoryEmailTableMap::ID);
+            $criteria->addSelectColumn(EmailManagerHistoryEmailTableMap::HISTORY_ID);
+            $criteria->addSelectColumn(EmailManagerHistoryEmailTableMap::EMAIL_ID);
+            $criteria->addSelectColumn(EmailManagerHistoryEmailTableMap::TYPE);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.LOCALE');
-            $criteria->addSelectColumn($alias . '.TITLE');
-            $criteria->addSelectColumn($alias . '.DESCRIPTION');
+            $criteria->addSelectColumn($alias . '.HISTORY_ID');
+            $criteria->addSelectColumn($alias . '.EMAIL_ID');
+            $criteria->addSelectColumn($alias . '.TYPE');
         }
     }
 
@@ -363,7 +361,7 @@ class MailManagerTraceI18nTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(MailManagerTraceI18nTableMap::DATABASE_NAME)->getTable(MailManagerTraceI18nTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(EmailManagerHistoryEmailTableMap::DATABASE_NAME)->getTable(EmailManagerHistoryEmailTableMap::TABLE_NAME);
     }
 
     /**
@@ -371,16 +369,16 @@ class MailManagerTraceI18nTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-      $dbMap = Propel::getServiceContainer()->getDatabaseMap(MailManagerTraceI18nTableMap::DATABASE_NAME);
-      if (!$dbMap->hasTable(MailManagerTraceI18nTableMap::TABLE_NAME)) {
-        $dbMap->addTableObject(new MailManagerTraceI18nTableMap());
+      $dbMap = Propel::getServiceContainer()->getDatabaseMap(EmailManagerHistoryEmailTableMap::DATABASE_NAME);
+      if (!$dbMap->hasTable(EmailManagerHistoryEmailTableMap::TABLE_NAME)) {
+        $dbMap->addTableObject(new EmailManagerHistoryEmailTableMap());
       }
     }
 
     /**
-     * Performs a DELETE on the database, given a MailManagerTraceI18n or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a EmailManagerHistoryEmail or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or MailManagerTraceI18n object or primary key or array of primary keys
+     * @param mixed               $values Criteria or EmailManagerHistoryEmail object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -391,35 +389,25 @@ class MailManagerTraceI18nTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MailManagerTraceI18nTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(EmailManagerHistoryEmailTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \TheliaMailManager\Model\MailManagerTraceI18n) { // it's a model object
+        } elseif ($values instanceof \TheliaEmailManager\Model\EmailManagerHistoryEmail) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(MailManagerTraceI18nTableMap::DATABASE_NAME);
-            // primary key is composite; we therefore, expect
-            // the primary key passed to be an array of pkey values
-            if (count($values) == count($values, COUNT_RECURSIVE)) {
-                // array is not multi-dimensional
-                $values = array($values);
-            }
-            foreach ($values as $value) {
-                $criterion = $criteria->getNewCriterion(MailManagerTraceI18nTableMap::ID, $value[0]);
-                $criterion->addAnd($criteria->getNewCriterion(MailManagerTraceI18nTableMap::LOCALE, $value[1]));
-                $criteria->addOr($criterion);
-            }
+            $criteria = new Criteria(EmailManagerHistoryEmailTableMap::DATABASE_NAME);
+            $criteria->add(EmailManagerHistoryEmailTableMap::ID, (array) $values, Criteria::IN);
         }
 
-        $query = MailManagerTraceI18nQuery::create()->mergeWith($criteria);
+        $query = EmailManagerHistoryEmailQuery::create()->mergeWith($criteria);
 
-        if ($values instanceof Criteria) { MailManagerTraceI18nTableMap::clearInstancePool();
+        if ($values instanceof Criteria) { EmailManagerHistoryEmailTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
-            foreach ((array) $values as $singleval) { MailManagerTraceI18nTableMap::removeInstanceFromPool($singleval);
+            foreach ((array) $values as $singleval) { EmailManagerHistoryEmailTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -427,20 +415,20 @@ class MailManagerTraceI18nTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the mail_manager_trace_i18n table.
+     * Deletes all rows from the email_manager_history_email table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return MailManagerTraceI18nQuery::create()->doDeleteAll($con);
+        return EmailManagerHistoryEmailQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a MailManagerTraceI18n or Criteria object.
+     * Performs an INSERT on the database, given a EmailManagerHistoryEmail or Criteria object.
      *
-     * @param mixed               $criteria Criteria or MailManagerTraceI18n object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or EmailManagerHistoryEmail object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -449,18 +437,22 @@ class MailManagerTraceI18nTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MailManagerTraceI18nTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(EmailManagerHistoryEmailTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from MailManagerTraceI18n object
+            $criteria = $criteria->buildCriteria(); // build Criteria from EmailManagerHistoryEmail object
+        }
+
+        if ($criteria->containsKey(EmailManagerHistoryEmailTableMap::ID) && $criteria->keyContainsValue(EmailManagerHistoryEmailTableMap::ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.EmailManagerHistoryEmailTableMap::ID.')');
         }
 
 
         // Set the correct dbName
-        $query = MailManagerTraceI18nQuery::create()->mergeWith($criteria);
+        $query = EmailManagerHistoryEmailQuery::create()->mergeWith($criteria);
 
         try {
             // use transaction because $criteria could contain info
@@ -476,7 +468,7 @@ class MailManagerTraceI18nTableMap extends TableMap
         return $pk;
     }
 
-} // MailManagerTraceI18nTableMap
+} // EmailManagerHistoryEmailTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-MailManagerTraceI18nTableMap::buildTableMap();
+EmailManagerHistoryEmailTableMap::buildTableMap();

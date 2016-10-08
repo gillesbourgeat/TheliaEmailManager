@@ -1,21 +1,21 @@
 <?php
 
-namespace TheliaMailManager;
+namespace TheliaEmailManager;
 
 use Propel\Runtime\Connection\ConnectionInterface;
 use Symfony\Component\Finder\Finder;
 use Thelia\Install\Database;
 use Thelia\Module\BaseModule;
-use TheliaMailManager\Util\MailUtil;
+use TheliaEmailManager\Util\EmailUtil;
 
 /**
  * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
-class TheliaMailManager extends BaseModule
+class TheliaEmailManager extends BaseModule
 {
-    const DOMAIN_NAME = 'theliamailmanager';
+    const DOMAIN_NAME = 'TheliaEmailManager';
 
-    const ROUTER = 'router.theliamailmanager';
+    const ROUTER = 'router.TheliaEmailManager';
 
     const SETUP_PATH = __DIR__ . DS . 'setup';
 
@@ -119,7 +119,7 @@ class TheliaMailManager extends BaseModule
     {
         $mails = explode(',', static::getConfigValue(self::CONFIG_REDIRECT_ALL_TO, ""));
 
-        if (!MailUtil::checkMailStructure($mails[0])) {
+        if (!EmailUtil::checkMailStructure($mails[0])) {
             return [];
         }
 
@@ -132,7 +132,7 @@ class TheliaMailManager extends BaseModule
     public static function setRedirectAllTo(array $mails)
     {
         foreach ($mails as $mail) {
-            if (!MailUtil::checkMailStructure($mail)) {
+            if (!EmailUtil::checkMailStructure($mail)) {
                 throw new \InvalidArgumentException('Invalid email : ' . $mail);
             }
         }

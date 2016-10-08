@@ -1,6 +1,6 @@
 <?php
 
-namespace TheliaMailManager\Model\Base;
+namespace TheliaEmailManager\Model\Base;
 
 use \Exception;
 use \PDO;
@@ -9,84 +9,84 @@ use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
-use TheliaMailManager\Model\MailManagerMail as ChildMailManagerMail;
-use TheliaMailManager\Model\MailManagerMailQuery as ChildMailManagerMailQuery;
-use TheliaMailManager\Model\Map\MailManagerMailTableMap;
+use TheliaEmailManager\Model\EmailManagerEmail as ChildEmailManagerEmail;
+use TheliaEmailManager\Model\EmailManagerEmailQuery as ChildEmailManagerEmailQuery;
+use TheliaEmailManager\Model\Map\EmailManagerEmailTableMap;
 
 /**
- * Base class that represents a query for the 'mail_manager_mail' table.
+ * Base class that represents a query for the 'email_manager_email' table.
  *
  *
  *
- * @method     ChildMailManagerMailQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildMailManagerMailQuery orderByMail($order = Criteria::ASC) Order by the mail column
- * @method     ChildMailManagerMailQuery orderByDisableSend($order = Criteria::ASC) Order by the disable_send column
- * @method     ChildMailManagerMailQuery orderByDisableSendDate($order = Criteria::ASC) Order by the disable_send_date column
- * @method     ChildMailManagerMailQuery orderByDisableHash($order = Criteria::ASC) Order by the disable_hash column
- * @method     ChildMailManagerMailQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
- * @method     ChildMailManagerMailQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
+ * @method     ChildEmailManagerEmailQuery orderById($order = Criteria::ASC) Order by the id column
+ * @method     ChildEmailManagerEmailQuery orderByEmail($order = Criteria::ASC) Order by the email column
+ * @method     ChildEmailManagerEmailQuery orderByDisableSend($order = Criteria::ASC) Order by the disable_send column
+ * @method     ChildEmailManagerEmailQuery orderByDisableSendDate($order = Criteria::ASC) Order by the disable_send_date column
+ * @method     ChildEmailManagerEmailQuery orderByDisableHash($order = Criteria::ASC) Order by the disable_hash column
+ * @method     ChildEmailManagerEmailQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
+ * @method     ChildEmailManagerEmailQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
- * @method     ChildMailManagerMailQuery groupById() Group by the id column
- * @method     ChildMailManagerMailQuery groupByMail() Group by the mail column
- * @method     ChildMailManagerMailQuery groupByDisableSend() Group by the disable_send column
- * @method     ChildMailManagerMailQuery groupByDisableSendDate() Group by the disable_send_date column
- * @method     ChildMailManagerMailQuery groupByDisableHash() Group by the disable_hash column
- * @method     ChildMailManagerMailQuery groupByCreatedAt() Group by the created_at column
- * @method     ChildMailManagerMailQuery groupByUpdatedAt() Group by the updated_at column
+ * @method     ChildEmailManagerEmailQuery groupById() Group by the id column
+ * @method     ChildEmailManagerEmailQuery groupByEmail() Group by the email column
+ * @method     ChildEmailManagerEmailQuery groupByDisableSend() Group by the disable_send column
+ * @method     ChildEmailManagerEmailQuery groupByDisableSendDate() Group by the disable_send_date column
+ * @method     ChildEmailManagerEmailQuery groupByDisableHash() Group by the disable_hash column
+ * @method     ChildEmailManagerEmailQuery groupByCreatedAt() Group by the created_at column
+ * @method     ChildEmailManagerEmailQuery groupByUpdatedAt() Group by the updated_at column
  *
- * @method     ChildMailManagerMailQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
- * @method     ChildMailManagerMailQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
- * @method     ChildMailManagerMailQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ * @method     ChildEmailManagerEmailQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
+ * @method     ChildEmailManagerEmailQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
+ * @method     ChildEmailManagerEmailQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildMailManagerMail findOne(ConnectionInterface $con = null) Return the first ChildMailManagerMail matching the query
- * @method     ChildMailManagerMail findOneOrCreate(ConnectionInterface $con = null) Return the first ChildMailManagerMail matching the query, or a new ChildMailManagerMail object populated from the query conditions when no match is found
+ * @method     ChildEmailManagerEmail findOne(ConnectionInterface $con = null) Return the first ChildEmailManagerEmail matching the query
+ * @method     ChildEmailManagerEmail findOneOrCreate(ConnectionInterface $con = null) Return the first ChildEmailManagerEmail matching the query, or a new ChildEmailManagerEmail object populated from the query conditions when no match is found
  *
- * @method     ChildMailManagerMail findOneById(int $id) Return the first ChildMailManagerMail filtered by the id column
- * @method     ChildMailManagerMail findOneByMail(string $mail) Return the first ChildMailManagerMail filtered by the mail column
- * @method     ChildMailManagerMail findOneByDisableSend(boolean $disable_send) Return the first ChildMailManagerMail filtered by the disable_send column
- * @method     ChildMailManagerMail findOneByDisableSendDate(string $disable_send_date) Return the first ChildMailManagerMail filtered by the disable_send_date column
- * @method     ChildMailManagerMail findOneByDisableHash(string $disable_hash) Return the first ChildMailManagerMail filtered by the disable_hash column
- * @method     ChildMailManagerMail findOneByCreatedAt(string $created_at) Return the first ChildMailManagerMail filtered by the created_at column
- * @method     ChildMailManagerMail findOneByUpdatedAt(string $updated_at) Return the first ChildMailManagerMail filtered by the updated_at column
+ * @method     ChildEmailManagerEmail findOneById(int $id) Return the first ChildEmailManagerEmail filtered by the id column
+ * @method     ChildEmailManagerEmail findOneByEmail(string $email) Return the first ChildEmailManagerEmail filtered by the email column
+ * @method     ChildEmailManagerEmail findOneByDisableSend(boolean $disable_send) Return the first ChildEmailManagerEmail filtered by the disable_send column
+ * @method     ChildEmailManagerEmail findOneByDisableSendDate(string $disable_send_date) Return the first ChildEmailManagerEmail filtered by the disable_send_date column
+ * @method     ChildEmailManagerEmail findOneByDisableHash(string $disable_hash) Return the first ChildEmailManagerEmail filtered by the disable_hash column
+ * @method     ChildEmailManagerEmail findOneByCreatedAt(string $created_at) Return the first ChildEmailManagerEmail filtered by the created_at column
+ * @method     ChildEmailManagerEmail findOneByUpdatedAt(string $updated_at) Return the first ChildEmailManagerEmail filtered by the updated_at column
  *
- * @method     array findById(int $id) Return ChildMailManagerMail objects filtered by the id column
- * @method     array findByMail(string $mail) Return ChildMailManagerMail objects filtered by the mail column
- * @method     array findByDisableSend(boolean $disable_send) Return ChildMailManagerMail objects filtered by the disable_send column
- * @method     array findByDisableSendDate(string $disable_send_date) Return ChildMailManagerMail objects filtered by the disable_send_date column
- * @method     array findByDisableHash(string $disable_hash) Return ChildMailManagerMail objects filtered by the disable_hash column
- * @method     array findByCreatedAt(string $created_at) Return ChildMailManagerMail objects filtered by the created_at column
- * @method     array findByUpdatedAt(string $updated_at) Return ChildMailManagerMail objects filtered by the updated_at column
+ * @method     array findById(int $id) Return ChildEmailManagerEmail objects filtered by the id column
+ * @method     array findByEmail(string $email) Return ChildEmailManagerEmail objects filtered by the email column
+ * @method     array findByDisableSend(boolean $disable_send) Return ChildEmailManagerEmail objects filtered by the disable_send column
+ * @method     array findByDisableSendDate(string $disable_send_date) Return ChildEmailManagerEmail objects filtered by the disable_send_date column
+ * @method     array findByDisableHash(string $disable_hash) Return ChildEmailManagerEmail objects filtered by the disable_hash column
+ * @method     array findByCreatedAt(string $created_at) Return ChildEmailManagerEmail objects filtered by the created_at column
+ * @method     array findByUpdatedAt(string $updated_at) Return ChildEmailManagerEmail objects filtered by the updated_at column
  *
  */
-abstract class MailManagerMailQuery extends ModelCriteria
+abstract class EmailManagerEmailQuery extends ModelCriteria
 {
 
     /**
-     * Initializes internal state of \TheliaMailManager\Model\Base\MailManagerMailQuery object.
+     * Initializes internal state of \TheliaEmailManager\Model\Base\EmailManagerEmailQuery object.
      *
      * @param     string $dbName The database name
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'thelia', $modelName = '\\TheliaMailManager\\Model\\MailManagerMail', $modelAlias = null)
+    public function __construct($dbName = 'thelia', $modelName = '\\TheliaEmailManager\\Model\\EmailManagerEmail', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
     /**
-     * Returns a new ChildMailManagerMailQuery object.
+     * Returns a new ChildEmailManagerEmailQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
      * @param     Criteria $criteria Optional Criteria to build the query from
      *
-     * @return ChildMailManagerMailQuery
+     * @return ChildEmailManagerEmailQuery
      */
     public static function create($modelAlias = null, $criteria = null)
     {
-        if ($criteria instanceof \TheliaMailManager\Model\MailManagerMailQuery) {
+        if ($criteria instanceof \TheliaEmailManager\Model\EmailManagerEmailQuery) {
             return $criteria;
         }
-        $query = new \TheliaMailManager\Model\MailManagerMailQuery();
+        $query = new \TheliaEmailManager\Model\EmailManagerEmailQuery();
         if (null !== $modelAlias) {
             $query->setModelAlias($modelAlias);
         }
@@ -109,19 +109,19 @@ abstract class MailManagerMailQuery extends ModelCriteria
      * @param mixed $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
-     * @return ChildMailManagerMail|array|mixed the result, formatted by the current formatter
+     * @return ChildEmailManagerEmail|array|mixed the result, formatted by the current formatter
      */
     public function findPk($key, $con = null)
     {
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = MailManagerMailTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
+        if ((null !== ($obj = EmailManagerEmailTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(MailManagerMailTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(EmailManagerEmailTableMap::DATABASE_NAME);
         }
         $this->basePreSelect($con);
         if ($this->formatter || $this->modelAlias || $this->with || $this->select
@@ -140,11 +140,11 @@ abstract class MailManagerMailQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
-     * @return   ChildMailManagerMail A model object, or null if the key is not found
+     * @return   ChildEmailManagerEmail A model object, or null if the key is not found
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, MAIL, DISABLE_SEND, DISABLE_SEND_DATE, DISABLE_HASH, CREATED_AT, UPDATED_AT FROM mail_manager_mail WHERE ID = :p0';
+        $sql = 'SELECT ID, EMAIL, DISABLE_SEND, DISABLE_SEND_DATE, DISABLE_HASH, CREATED_AT, UPDATED_AT FROM email_manager_email WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -155,9 +155,9 @@ abstract class MailManagerMailQuery extends ModelCriteria
         }
         $obj = null;
         if ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
-            $obj = new ChildMailManagerMail();
+            $obj = new ChildEmailManagerEmail();
             $obj->hydrate($row);
-            MailManagerMailTableMap::addInstanceToPool($obj, (string) $key);
+            EmailManagerEmailTableMap::addInstanceToPool($obj, (string) $key);
         }
         $stmt->closeCursor();
 
@@ -170,7 +170,7 @@ abstract class MailManagerMailQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
-     * @return ChildMailManagerMail|array|mixed the result, formatted by the current formatter
+     * @return ChildEmailManagerEmail|array|mixed the result, formatted by the current formatter
      */
     protected function findPkComplex($key, $con)
     {
@@ -212,12 +212,12 @@ abstract class MailManagerMailQuery extends ModelCriteria
      *
      * @param     mixed $key Primary key to use for the query
      *
-     * @return ChildMailManagerMailQuery The current query, for fluid interface
+     * @return ChildEmailManagerEmailQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
 
-        return $this->addUsingAlias(MailManagerMailTableMap::ID, $key, Criteria::EQUAL);
+        return $this->addUsingAlias(EmailManagerEmailTableMap::ID, $key, Criteria::EQUAL);
     }
 
     /**
@@ -225,12 +225,12 @@ abstract class MailManagerMailQuery extends ModelCriteria
      *
      * @param     array $keys The list of primary key to use for the query
      *
-     * @return ChildMailManagerMailQuery The current query, for fluid interface
+     * @return ChildEmailManagerEmailQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
 
-        return $this->addUsingAlias(MailManagerMailTableMap::ID, $keys, Criteria::IN);
+        return $this->addUsingAlias(EmailManagerEmailTableMap::ID, $keys, Criteria::IN);
     }
 
     /**
@@ -249,18 +249,18 @@ abstract class MailManagerMailQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildMailManagerMailQuery The current query, for fluid interface
+     * @return ChildEmailManagerEmailQuery The current query, for fluid interface
      */
     public function filterById($id = null, $comparison = null)
     {
         if (is_array($id)) {
             $useMinMax = false;
             if (isset($id['min'])) {
-                $this->addUsingAlias(MailManagerMailTableMap::ID, $id['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(EmailManagerEmailTableMap::ID, $id['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($id['max'])) {
-                $this->addUsingAlias(MailManagerMailTableMap::ID, $id['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(EmailManagerEmailTableMap::ID, $id['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -271,36 +271,36 @@ abstract class MailManagerMailQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(MailManagerMailTableMap::ID, $id, $comparison);
+        return $this->addUsingAlias(EmailManagerEmailTableMap::ID, $id, $comparison);
     }
 
     /**
-     * Filter the query on the mail column
+     * Filter the query on the email column
      *
      * Example usage:
      * <code>
-     * $query->filterByMail('fooValue');   // WHERE mail = 'fooValue'
-     * $query->filterByMail('%fooValue%'); // WHERE mail LIKE '%fooValue%'
+     * $query->filterByEmail('fooValue');   // WHERE email = 'fooValue'
+     * $query->filterByEmail('%fooValue%'); // WHERE email LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $mail The value to use as filter.
+     * @param     string $email The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildMailManagerMailQuery The current query, for fluid interface
+     * @return ChildEmailManagerEmailQuery The current query, for fluid interface
      */
-    public function filterByMail($mail = null, $comparison = null)
+    public function filterByEmail($email = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($mail)) {
+            if (is_array($email)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $mail)) {
-                $mail = str_replace('*', '%', $mail);
+            } elseif (preg_match('/[\%\*]/', $email)) {
+                $email = str_replace('*', '%', $email);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(MailManagerMailTableMap::MAIL, $mail, $comparison);
+        return $this->addUsingAlias(EmailManagerEmailTableMap::EMAIL, $email, $comparison);
     }
 
     /**
@@ -319,7 +319,7 @@ abstract class MailManagerMailQuery extends ModelCriteria
      *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildMailManagerMailQuery The current query, for fluid interface
+     * @return ChildEmailManagerEmailQuery The current query, for fluid interface
      */
     public function filterByDisableSend($disableSend = null, $comparison = null)
     {
@@ -327,7 +327,7 @@ abstract class MailManagerMailQuery extends ModelCriteria
             $disable_send = in_array(strtolower($disableSend), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
-        return $this->addUsingAlias(MailManagerMailTableMap::DISABLE_SEND, $disableSend, $comparison);
+        return $this->addUsingAlias(EmailManagerEmailTableMap::DISABLE_SEND, $disableSend, $comparison);
     }
 
     /**
@@ -348,18 +348,18 @@ abstract class MailManagerMailQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildMailManagerMailQuery The current query, for fluid interface
+     * @return ChildEmailManagerEmailQuery The current query, for fluid interface
      */
     public function filterByDisableSendDate($disableSendDate = null, $comparison = null)
     {
         if (is_array($disableSendDate)) {
             $useMinMax = false;
             if (isset($disableSendDate['min'])) {
-                $this->addUsingAlias(MailManagerMailTableMap::DISABLE_SEND_DATE, $disableSendDate['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(EmailManagerEmailTableMap::DISABLE_SEND_DATE, $disableSendDate['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($disableSendDate['max'])) {
-                $this->addUsingAlias(MailManagerMailTableMap::DISABLE_SEND_DATE, $disableSendDate['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(EmailManagerEmailTableMap::DISABLE_SEND_DATE, $disableSendDate['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -370,7 +370,7 @@ abstract class MailManagerMailQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(MailManagerMailTableMap::DISABLE_SEND_DATE, $disableSendDate, $comparison);
+        return $this->addUsingAlias(EmailManagerEmailTableMap::DISABLE_SEND_DATE, $disableSendDate, $comparison);
     }
 
     /**
@@ -386,7 +386,7 @@ abstract class MailManagerMailQuery extends ModelCriteria
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildMailManagerMailQuery The current query, for fluid interface
+     * @return ChildEmailManagerEmailQuery The current query, for fluid interface
      */
     public function filterByDisableHash($disableHash = null, $comparison = null)
     {
@@ -399,7 +399,7 @@ abstract class MailManagerMailQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(MailManagerMailTableMap::DISABLE_HASH, $disableHash, $comparison);
+        return $this->addUsingAlias(EmailManagerEmailTableMap::DISABLE_HASH, $disableHash, $comparison);
     }
 
     /**
@@ -420,18 +420,18 @@ abstract class MailManagerMailQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildMailManagerMailQuery The current query, for fluid interface
+     * @return ChildEmailManagerEmailQuery The current query, for fluid interface
      */
     public function filterByCreatedAt($createdAt = null, $comparison = null)
     {
         if (is_array($createdAt)) {
             $useMinMax = false;
             if (isset($createdAt['min'])) {
-                $this->addUsingAlias(MailManagerMailTableMap::CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(EmailManagerEmailTableMap::CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($createdAt['max'])) {
-                $this->addUsingAlias(MailManagerMailTableMap::CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(EmailManagerEmailTableMap::CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -442,7 +442,7 @@ abstract class MailManagerMailQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(MailManagerMailTableMap::CREATED_AT, $createdAt, $comparison);
+        return $this->addUsingAlias(EmailManagerEmailTableMap::CREATED_AT, $createdAt, $comparison);
     }
 
     /**
@@ -463,18 +463,18 @@ abstract class MailManagerMailQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildMailManagerMailQuery The current query, for fluid interface
+     * @return ChildEmailManagerEmailQuery The current query, for fluid interface
      */
     public function filterByUpdatedAt($updatedAt = null, $comparison = null)
     {
         if (is_array($updatedAt)) {
             $useMinMax = false;
             if (isset($updatedAt['min'])) {
-                $this->addUsingAlias(MailManagerMailTableMap::UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(EmailManagerEmailTableMap::UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($updatedAt['max'])) {
-                $this->addUsingAlias(MailManagerMailTableMap::UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(EmailManagerEmailTableMap::UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -485,27 +485,27 @@ abstract class MailManagerMailQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(MailManagerMailTableMap::UPDATED_AT, $updatedAt, $comparison);
+        return $this->addUsingAlias(EmailManagerEmailTableMap::UPDATED_AT, $updatedAt, $comparison);
     }
 
     /**
      * Exclude object from result
      *
-     * @param   ChildMailManagerMail $mailManagerMail Object to remove from the list of results
+     * @param   ChildEmailManagerEmail $emailManagerEmail Object to remove from the list of results
      *
-     * @return ChildMailManagerMailQuery The current query, for fluid interface
+     * @return ChildEmailManagerEmailQuery The current query, for fluid interface
      */
-    public function prune($mailManagerMail = null)
+    public function prune($emailManagerEmail = null)
     {
-        if ($mailManagerMail) {
-            $this->addUsingAlias(MailManagerMailTableMap::ID, $mailManagerMail->getId(), Criteria::NOT_EQUAL);
+        if ($emailManagerEmail) {
+            $this->addUsingAlias(EmailManagerEmailTableMap::ID, $emailManagerEmail->getId(), Criteria::NOT_EQUAL);
         }
 
         return $this;
     }
 
     /**
-     * Deletes all rows from the mail_manager_mail table.
+     * Deletes all rows from the email_manager_email table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
@@ -513,7 +513,7 @@ abstract class MailManagerMailQuery extends ModelCriteria
     public function doDeleteAll(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MailManagerMailTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(EmailManagerEmailTableMap::DATABASE_NAME);
         }
         $affectedRows = 0; // initialize var to track total num of affected rows
         try {
@@ -524,8 +524,8 @@ abstract class MailManagerMailQuery extends ModelCriteria
             // Because this db requires some delete cascade/set null emulation, we have to
             // clear the cached instance *after* the emulation has happened (since
             // instances get re-added by the select statement contained therein).
-            MailManagerMailTableMap::clearInstancePool();
-            MailManagerMailTableMap::clearRelatedInstancePool();
+            EmailManagerEmailTableMap::clearInstancePool();
+            EmailManagerEmailTableMap::clearRelatedInstancePool();
 
             $con->commit();
         } catch (PropelException $e) {
@@ -537,9 +537,9 @@ abstract class MailManagerMailQuery extends ModelCriteria
     }
 
     /**
-     * Performs a DELETE on the database, given a ChildMailManagerMail or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a ChildEmailManagerEmail or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or ChildMailManagerMail object or primary key or array of primary keys
+     * @param mixed               $values Criteria or ChildEmailManagerEmail object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -550,13 +550,13 @@ abstract class MailManagerMailQuery extends ModelCriteria
      public function delete(ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MailManagerMailTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(EmailManagerEmailTableMap::DATABASE_NAME);
         }
 
         $criteria = $this;
 
         // Set the correct dbName
-        $criteria->setDbName(MailManagerMailTableMap::DATABASE_NAME);
+        $criteria->setDbName(EmailManagerEmailTableMap::DATABASE_NAME);
 
         $affectedRows = 0; // initialize var to track total num of affected rows
 
@@ -566,10 +566,10 @@ abstract class MailManagerMailQuery extends ModelCriteria
             $con->beginTransaction();
 
 
-        MailManagerMailTableMap::removeInstanceFromPool($criteria);
+        EmailManagerEmailTableMap::removeInstanceFromPool($criteria);
 
             $affectedRows += ModelCriteria::delete($con);
-            MailManagerMailTableMap::clearRelatedInstancePool();
+            EmailManagerEmailTableMap::clearRelatedInstancePool();
             $con->commit();
 
             return $affectedRows;
@@ -586,11 +586,11 @@ abstract class MailManagerMailQuery extends ModelCriteria
      *
      * @param      int $nbDays Maximum age of the latest update in days
      *
-     * @return     ChildMailManagerMailQuery The current query, for fluid interface
+     * @return     ChildEmailManagerEmailQuery The current query, for fluid interface
      */
     public function recentlyUpdated($nbDays = 7)
     {
-        return $this->addUsingAlias(MailManagerMailTableMap::UPDATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+        return $this->addUsingAlias(EmailManagerEmailTableMap::UPDATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
     }
 
     /**
@@ -598,51 +598,51 @@ abstract class MailManagerMailQuery extends ModelCriteria
      *
      * @param      int $nbDays Maximum age of in days
      *
-     * @return     ChildMailManagerMailQuery The current query, for fluid interface
+     * @return     ChildEmailManagerEmailQuery The current query, for fluid interface
      */
     public function recentlyCreated($nbDays = 7)
     {
-        return $this->addUsingAlias(MailManagerMailTableMap::CREATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+        return $this->addUsingAlias(EmailManagerEmailTableMap::CREATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
     }
 
     /**
      * Order by update date desc
      *
-     * @return     ChildMailManagerMailQuery The current query, for fluid interface
+     * @return     ChildEmailManagerEmailQuery The current query, for fluid interface
      */
     public function lastUpdatedFirst()
     {
-        return $this->addDescendingOrderByColumn(MailManagerMailTableMap::UPDATED_AT);
+        return $this->addDescendingOrderByColumn(EmailManagerEmailTableMap::UPDATED_AT);
     }
 
     /**
      * Order by update date asc
      *
-     * @return     ChildMailManagerMailQuery The current query, for fluid interface
+     * @return     ChildEmailManagerEmailQuery The current query, for fluid interface
      */
     public function firstUpdatedFirst()
     {
-        return $this->addAscendingOrderByColumn(MailManagerMailTableMap::UPDATED_AT);
+        return $this->addAscendingOrderByColumn(EmailManagerEmailTableMap::UPDATED_AT);
     }
 
     /**
      * Order by create date desc
      *
-     * @return     ChildMailManagerMailQuery The current query, for fluid interface
+     * @return     ChildEmailManagerEmailQuery The current query, for fluid interface
      */
     public function lastCreatedFirst()
     {
-        return $this->addDescendingOrderByColumn(MailManagerMailTableMap::CREATED_AT);
+        return $this->addDescendingOrderByColumn(EmailManagerEmailTableMap::CREATED_AT);
     }
 
     /**
      * Order by create date asc
      *
-     * @return     ChildMailManagerMailQuery The current query, for fluid interface
+     * @return     ChildEmailManagerEmailQuery The current query, for fluid interface
      */
     public function firstCreatedFirst()
     {
-        return $this->addAscendingOrderByColumn(MailManagerMailTableMap::CREATED_AT);
+        return $this->addAscendingOrderByColumn(EmailManagerEmailTableMap::CREATED_AT);
     }
 
-} // MailManagerMailQuery
+} // EmailManagerEmailQuery

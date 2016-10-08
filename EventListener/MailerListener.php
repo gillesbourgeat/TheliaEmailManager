@@ -1,8 +1,8 @@
 <?php
 
-namespace TheliaMailManager\EventListener;
+namespace TheliaEmailManager\EventListener;
 
-use TheliaMailManager\Plugin\SwiftEventListenerPlugin;
+use TheliaEmailManager\Plugin\SwiftEventListenerPlugin;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Thelia\Core\Event\MailTransporterEvent;
@@ -26,7 +26,7 @@ class MailerListener implements EventSubscriberInterface
     {
         if (!$event->hasTransporter()) {
             $event->setMailerTransporter(
-                ConfigQuery::isSmtpEnable() ? $this->configureSmtp() : \Swift_MailTransport::newInstance()
+                ConfigQuery::isSmtpEnable() ? $this->configureSmtp() : \Swift_emailTransport::newInstance()
             );
         }
 

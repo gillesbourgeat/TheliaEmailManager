@@ -4,10 +4,10 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ---------------------------------------------------------------------
--- mail_manager_trace
+-- email_manager_trace
 -- ---------------------------------------------------------------------
 
-CREATE TABLE `mail_manager_trace`
+CREATE TABLE `email_manager_trace`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `hash` CHAR(32) NOT NULL,
@@ -21,14 +21,14 @@ CREATE TABLE `mail_manager_trace`
     `created_at` DATETIME,
     `updated_at` DATETIME,
     PRIMARY KEY (`id`),
-    UNIQUE INDEX `mail_manager_trace_U_1` (`hash`)
+    UNIQUE INDEX `email_manager_trace_U_1` (`hash`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
--- mail_manager_history
+-- email_manager_history
 -- ---------------------------------------------------------------------
 
-CREATE TABLE `mail_manager_history`
+CREATE TABLE `email_manager_history`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `trace_id` INTEGER NOT NULL,
@@ -38,71 +38,71 @@ CREATE TABLE `mail_manager_history`
     `updated_at` DATETIME,
     PRIMARY KEY (`id`),
     INDEX `idx_arh_customer_profile_is_default` (`trace_id`),
-    CONSTRAINT `fk_mail_manager_history__mail_manager_trace`
+    CONSTRAINT `fk_email_manager_history__email_manager_trace`
         FOREIGN KEY (`trace_id`)
-        REFERENCES `mail_manager_trace` (`id`)
+        REFERENCES `email_manager_trace` (`id`)
         ON UPDATE RESTRICT
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
--- mail_manager_mail
+-- email_manager_email
 -- ---------------------------------------------------------------------
 
-CREATE TABLE `mail_manager_mail`
+CREATE TABLE `email_manager_email`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `mail` VARCHAR(255) NOT NULL,
+    `email` VARCHAR(255) NOT NULL,
     `disable_send` TINYINT(1) DEFAULT 0,
     `disable_send_date` DATETIME,
     `disable_hash` CHAR(64) NOT NULL,
     `created_at` DATETIME,
     `updated_at` DATETIME,
     PRIMARY KEY (`id`),
-    UNIQUE INDEX `mail_manager_mail_U_1` (`mail`)
+    UNIQUE INDEX `email_manager_email_U_1` (`email`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
--- mail_manager_history_mail
+-- email_manager_history_email
 -- ---------------------------------------------------------------------
 
-CREATE TABLE `mail_manager_history_mail`
+CREATE TABLE `email_manager_history_email`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `history_id` INTEGER NOT NULL,
-    `mail_id` INTEGER NOT NULL,
+    `email_id` INTEGER NOT NULL,
     `type` TINYINT NOT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE INDEX `mail_manager_history_mail_U_1` (`history_id`, `mail_id`, `type`),
-    INDEX `mail_manager_history_mail_I_1` (`history_id`),
-    INDEX `mail_manager_history_mail_I_2` (`type`),
-    INDEX `mail_manager_history_mail_I_3` (`mail_id`),
-    CONSTRAINT `fk_mail_manager_history_mail__mail_manager_history`
+    UNIQUE INDEX `email_manager_history_email_U_1` (`history_id`, `email_id`, `type`),
+    INDEX `email_manager_history_email_I_1` (`history_id`),
+    INDEX `email_manager_history_email_I_2` (`type`),
+    INDEX `email_manager_history_email_I_3` (`email_id`),
+    CONSTRAINT `fk_email_manager_history_email__email_manager_history`
         FOREIGN KEY (`history_id`)
-        REFERENCES `mail_manager_history` (`id`)
+        REFERENCES `email_manager_history` (`id`)
         ON UPDATE RESTRICT
         ON DELETE CASCADE,
-    CONSTRAINT `fk_mail_manager_history_mail__mail_manager_mail`
-        FOREIGN KEY (`mail_id`)
-        REFERENCES `mail_manager_trace` (`id`)
+    CONSTRAINT `fk_email_manager_history_email__email_manager_email`
+        FOREIGN KEY (`email_id`)
+        REFERENCES `email_manager_trace` (`id`)
         ON UPDATE RESTRICT
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
--- mail_manager_trace_i18n
+-- email_manager_trace_i18n
 -- ---------------------------------------------------------------------
 
-CREATE TABLE `mail_manager_trace_i18n`
+CREATE TABLE `email_manager_trace_i18n`
 (
     `id` INTEGER NOT NULL,
     `locale` VARCHAR(5) DEFAULT 'en_US' NOT NULL,
     `title` TEXT,
     `description` VARCHAR(255),
     PRIMARY KEY (`id`,`locale`),
-    CONSTRAINT `mail_manager_trace_i18n_FK_1`
+    CONSTRAINT `email_manager_trace_i18n_FK_1`
         FOREIGN KEY (`id`)
-        REFERENCES `mail_manager_trace` (`id`)
+        REFERENCES `email_manager_trace` (`id`)
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
 

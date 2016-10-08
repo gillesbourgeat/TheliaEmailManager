@@ -1,6 +1,6 @@
 <?php
 
-namespace TheliaMailManager\Model\Base;
+namespace TheliaEmailManager\Model\Base;
 
 use \Exception;
 use \PDO;
@@ -12,76 +12,76 @@ use Propel\Runtime\Collection\Collection;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
-use TheliaMailManager\Model\MailManagerTraceI18n as ChildMailManagerTraceI18n;
-use TheliaMailManager\Model\MailManagerTraceI18nQuery as ChildMailManagerTraceI18nQuery;
-use TheliaMailManager\Model\Map\MailManagerTraceI18nTableMap;
+use TheliaEmailManager\Model\EmailManagerTraceI18n as ChildEmailManagerTraceI18n;
+use TheliaEmailManager\Model\EmailManagerTraceI18nQuery as ChildEmailManagerTraceI18nQuery;
+use TheliaEmailManager\Model\Map\EmailManagerTraceI18nTableMap;
 
 /**
- * Base class that represents a query for the 'mail_manager_trace_i18n' table.
+ * Base class that represents a query for the 'email_manager_trace_i18n' table.
  *
  *
  *
- * @method     ChildMailManagerTraceI18nQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildMailManagerTraceI18nQuery orderByLocale($order = Criteria::ASC) Order by the locale column
- * @method     ChildMailManagerTraceI18nQuery orderByTitle($order = Criteria::ASC) Order by the title column
- * @method     ChildMailManagerTraceI18nQuery orderByDescription($order = Criteria::ASC) Order by the description column
+ * @method     ChildEmailManagerTraceI18nQuery orderById($order = Criteria::ASC) Order by the id column
+ * @method     ChildEmailManagerTraceI18nQuery orderByLocale($order = Criteria::ASC) Order by the locale column
+ * @method     ChildEmailManagerTraceI18nQuery orderByTitle($order = Criteria::ASC) Order by the title column
+ * @method     ChildEmailManagerTraceI18nQuery orderByDescription($order = Criteria::ASC) Order by the description column
  *
- * @method     ChildMailManagerTraceI18nQuery groupById() Group by the id column
- * @method     ChildMailManagerTraceI18nQuery groupByLocale() Group by the locale column
- * @method     ChildMailManagerTraceI18nQuery groupByTitle() Group by the title column
- * @method     ChildMailManagerTraceI18nQuery groupByDescription() Group by the description column
+ * @method     ChildEmailManagerTraceI18nQuery groupById() Group by the id column
+ * @method     ChildEmailManagerTraceI18nQuery groupByLocale() Group by the locale column
+ * @method     ChildEmailManagerTraceI18nQuery groupByTitle() Group by the title column
+ * @method     ChildEmailManagerTraceI18nQuery groupByDescription() Group by the description column
  *
- * @method     ChildMailManagerTraceI18nQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
- * @method     ChildMailManagerTraceI18nQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
- * @method     ChildMailManagerTraceI18nQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ * @method     ChildEmailManagerTraceI18nQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
+ * @method     ChildEmailManagerTraceI18nQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
+ * @method     ChildEmailManagerTraceI18nQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildMailManagerTraceI18nQuery leftJoinMailManagerTrace($relationAlias = null) Adds a LEFT JOIN clause to the query using the MailManagerTrace relation
- * @method     ChildMailManagerTraceI18nQuery rightJoinMailManagerTrace($relationAlias = null) Adds a RIGHT JOIN clause to the query using the MailManagerTrace relation
- * @method     ChildMailManagerTraceI18nQuery innerJoinMailManagerTrace($relationAlias = null) Adds a INNER JOIN clause to the query using the MailManagerTrace relation
+ * @method     ChildEmailManagerTraceI18nQuery leftJoinEmailManagerTrace($relationAlias = null) Adds a LEFT JOIN clause to the query using the EmailManagerTrace relation
+ * @method     ChildEmailManagerTraceI18nQuery rightJoinEmailManagerTrace($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EmailManagerTrace relation
+ * @method     ChildEmailManagerTraceI18nQuery innerJoinEmailManagerTrace($relationAlias = null) Adds a INNER JOIN clause to the query using the EmailManagerTrace relation
  *
- * @method     ChildMailManagerTraceI18n findOne(ConnectionInterface $con = null) Return the first ChildMailManagerTraceI18n matching the query
- * @method     ChildMailManagerTraceI18n findOneOrCreate(ConnectionInterface $con = null) Return the first ChildMailManagerTraceI18n matching the query, or a new ChildMailManagerTraceI18n object populated from the query conditions when no match is found
+ * @method     ChildEmailManagerTraceI18n findOne(ConnectionInterface $con = null) Return the first ChildEmailManagerTraceI18n matching the query
+ * @method     ChildEmailManagerTraceI18n findOneOrCreate(ConnectionInterface $con = null) Return the first ChildEmailManagerTraceI18n matching the query, or a new ChildEmailManagerTraceI18n object populated from the query conditions when no match is found
  *
- * @method     ChildMailManagerTraceI18n findOneById(int $id) Return the first ChildMailManagerTraceI18n filtered by the id column
- * @method     ChildMailManagerTraceI18n findOneByLocale(string $locale) Return the first ChildMailManagerTraceI18n filtered by the locale column
- * @method     ChildMailManagerTraceI18n findOneByTitle(string $title) Return the first ChildMailManagerTraceI18n filtered by the title column
- * @method     ChildMailManagerTraceI18n findOneByDescription(string $description) Return the first ChildMailManagerTraceI18n filtered by the description column
+ * @method     ChildEmailManagerTraceI18n findOneById(int $id) Return the first ChildEmailManagerTraceI18n filtered by the id column
+ * @method     ChildEmailManagerTraceI18n findOneByLocale(string $locale) Return the first ChildEmailManagerTraceI18n filtered by the locale column
+ * @method     ChildEmailManagerTraceI18n findOneByTitle(string $title) Return the first ChildEmailManagerTraceI18n filtered by the title column
+ * @method     ChildEmailManagerTraceI18n findOneByDescription(string $description) Return the first ChildEmailManagerTraceI18n filtered by the description column
  *
- * @method     array findById(int $id) Return ChildMailManagerTraceI18n objects filtered by the id column
- * @method     array findByLocale(string $locale) Return ChildMailManagerTraceI18n objects filtered by the locale column
- * @method     array findByTitle(string $title) Return ChildMailManagerTraceI18n objects filtered by the title column
- * @method     array findByDescription(string $description) Return ChildMailManagerTraceI18n objects filtered by the description column
+ * @method     array findById(int $id) Return ChildEmailManagerTraceI18n objects filtered by the id column
+ * @method     array findByLocale(string $locale) Return ChildEmailManagerTraceI18n objects filtered by the locale column
+ * @method     array findByTitle(string $title) Return ChildEmailManagerTraceI18n objects filtered by the title column
+ * @method     array findByDescription(string $description) Return ChildEmailManagerTraceI18n objects filtered by the description column
  *
  */
-abstract class MailManagerTraceI18nQuery extends ModelCriteria
+abstract class EmailManagerTraceI18nQuery extends ModelCriteria
 {
 
     /**
-     * Initializes internal state of \TheliaMailManager\Model\Base\MailManagerTraceI18nQuery object.
+     * Initializes internal state of \TheliaEmailManager\Model\Base\EmailManagerTraceI18nQuery object.
      *
      * @param     string $dbName The database name
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'thelia', $modelName = '\\TheliaMailManager\\Model\\MailManagerTraceI18n', $modelAlias = null)
+    public function __construct($dbName = 'thelia', $modelName = '\\TheliaEmailManager\\Model\\EmailManagerTraceI18n', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
     /**
-     * Returns a new ChildMailManagerTraceI18nQuery object.
+     * Returns a new ChildEmailManagerTraceI18nQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
      * @param     Criteria $criteria Optional Criteria to build the query from
      *
-     * @return ChildMailManagerTraceI18nQuery
+     * @return ChildEmailManagerTraceI18nQuery
      */
     public static function create($modelAlias = null, $criteria = null)
     {
-        if ($criteria instanceof \TheliaMailManager\Model\MailManagerTraceI18nQuery) {
+        if ($criteria instanceof \TheliaEmailManager\Model\EmailManagerTraceI18nQuery) {
             return $criteria;
         }
-        $query = new \TheliaMailManager\Model\MailManagerTraceI18nQuery();
+        $query = new \TheliaEmailManager\Model\EmailManagerTraceI18nQuery();
         if (null !== $modelAlias) {
             $query->setModelAlias($modelAlias);
         }
@@ -104,19 +104,19 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
      * @param array[$id, $locale] $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
-     * @return ChildMailManagerTraceI18n|array|mixed the result, formatted by the current formatter
+     * @return ChildEmailManagerTraceI18n|array|mixed the result, formatted by the current formatter
      */
     public function findPk($key, $con = null)
     {
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = MailManagerTraceI18nTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
+        if ((null !== ($obj = EmailManagerTraceI18nTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(MailManagerTraceI18nTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(EmailManagerTraceI18nTableMap::DATABASE_NAME);
         }
         $this->basePreSelect($con);
         if ($this->formatter || $this->modelAlias || $this->with || $this->select
@@ -135,11 +135,11 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
-     * @return   ChildMailManagerTraceI18n A model object, or null if the key is not found
+     * @return   ChildEmailManagerTraceI18n A model object, or null if the key is not found
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, LOCALE, TITLE, DESCRIPTION FROM mail_manager_trace_i18n WHERE ID = :p0 AND LOCALE = :p1';
+        $sql = 'SELECT ID, LOCALE, TITLE, DESCRIPTION FROM email_manager_trace_i18n WHERE ID = :p0 AND LOCALE = :p1';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
@@ -151,9 +151,9 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
         }
         $obj = null;
         if ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
-            $obj = new ChildMailManagerTraceI18n();
+            $obj = new ChildEmailManagerTraceI18n();
             $obj->hydrate($row);
-            MailManagerTraceI18nTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
+            EmailManagerTraceI18nTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
         }
         $stmt->closeCursor();
 
@@ -166,7 +166,7 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
-     * @return ChildMailManagerTraceI18n|array|mixed the result, formatted by the current formatter
+     * @return ChildEmailManagerTraceI18n|array|mixed the result, formatted by the current formatter
      */
     protected function findPkComplex($key, $con)
     {
@@ -208,12 +208,12 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
      *
      * @param     mixed $key Primary key to use for the query
      *
-     * @return ChildMailManagerTraceI18nQuery The current query, for fluid interface
+     * @return ChildEmailManagerTraceI18nQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
-        $this->addUsingAlias(MailManagerTraceI18nTableMap::ID, $key[0], Criteria::EQUAL);
-        $this->addUsingAlias(MailManagerTraceI18nTableMap::LOCALE, $key[1], Criteria::EQUAL);
+        $this->addUsingAlias(EmailManagerTraceI18nTableMap::ID, $key[0], Criteria::EQUAL);
+        $this->addUsingAlias(EmailManagerTraceI18nTableMap::LOCALE, $key[1], Criteria::EQUAL);
 
         return $this;
     }
@@ -223,7 +223,7 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
      *
      * @param     array $keys The list of primary key to use for the query
      *
-     * @return ChildMailManagerTraceI18nQuery The current query, for fluid interface
+     * @return ChildEmailManagerTraceI18nQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
@@ -231,8 +231,8 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
             return $this->add(null, '1<>1', Criteria::CUSTOM);
         }
         foreach ($keys as $key) {
-            $cton0 = $this->getNewCriterion(MailManagerTraceI18nTableMap::ID, $key[0], Criteria::EQUAL);
-            $cton1 = $this->getNewCriterion(MailManagerTraceI18nTableMap::LOCALE, $key[1], Criteria::EQUAL);
+            $cton0 = $this->getNewCriterion(EmailManagerTraceI18nTableMap::ID, $key[0], Criteria::EQUAL);
+            $cton1 = $this->getNewCriterion(EmailManagerTraceI18nTableMap::LOCALE, $key[1], Criteria::EQUAL);
             $cton0->addAnd($cton1);
             $this->addOr($cton0);
         }
@@ -250,7 +250,7 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
      * $query->filterById(array('min' => 12)); // WHERE id > 12
      * </code>
      *
-     * @see       filterByMailManagerTrace()
+     * @see       filterByEmailManagerTrace()
      *
      * @param     mixed $id The value to use as filter.
      *              Use scalar values for equality.
@@ -258,18 +258,18 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildMailManagerTraceI18nQuery The current query, for fluid interface
+     * @return ChildEmailManagerTraceI18nQuery The current query, for fluid interface
      */
     public function filterById($id = null, $comparison = null)
     {
         if (is_array($id)) {
             $useMinMax = false;
             if (isset($id['min'])) {
-                $this->addUsingAlias(MailManagerTraceI18nTableMap::ID, $id['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(EmailManagerTraceI18nTableMap::ID, $id['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($id['max'])) {
-                $this->addUsingAlias(MailManagerTraceI18nTableMap::ID, $id['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(EmailManagerTraceI18nTableMap::ID, $id['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -280,7 +280,7 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(MailManagerTraceI18nTableMap::ID, $id, $comparison);
+        return $this->addUsingAlias(EmailManagerTraceI18nTableMap::ID, $id, $comparison);
     }
 
     /**
@@ -296,7 +296,7 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildMailManagerTraceI18nQuery The current query, for fluid interface
+     * @return ChildEmailManagerTraceI18nQuery The current query, for fluid interface
      */
     public function filterByLocale($locale = null, $comparison = null)
     {
@@ -309,7 +309,7 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(MailManagerTraceI18nTableMap::LOCALE, $locale, $comparison);
+        return $this->addUsingAlias(EmailManagerTraceI18nTableMap::LOCALE, $locale, $comparison);
     }
 
     /**
@@ -325,7 +325,7 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildMailManagerTraceI18nQuery The current query, for fluid interface
+     * @return ChildEmailManagerTraceI18nQuery The current query, for fluid interface
      */
     public function filterByTitle($title = null, $comparison = null)
     {
@@ -338,7 +338,7 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(MailManagerTraceI18nTableMap::TITLE, $title, $comparison);
+        return $this->addUsingAlias(EmailManagerTraceI18nTableMap::TITLE, $title, $comparison);
     }
 
     /**
@@ -354,7 +354,7 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildMailManagerTraceI18nQuery The current query, for fluid interface
+     * @return ChildEmailManagerTraceI18nQuery The current query, for fluid interface
      */
     public function filterByDescription($description = null, $comparison = null)
     {
@@ -367,46 +367,46 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(MailManagerTraceI18nTableMap::DESCRIPTION, $description, $comparison);
+        return $this->addUsingAlias(EmailManagerTraceI18nTableMap::DESCRIPTION, $description, $comparison);
     }
 
     /**
-     * Filter the query by a related \TheliaMailManager\Model\MailManagerTrace object
+     * Filter the query by a related \TheliaEmailManager\Model\EmailManagerTrace object
      *
-     * @param \TheliaMailManager\Model\MailManagerTrace|ObjectCollection $mailManagerTrace The related object(s) to use as filter
+     * @param \TheliaEmailManager\Model\EmailManagerTrace|ObjectCollection $emailManagerTrace The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildMailManagerTraceI18nQuery The current query, for fluid interface
+     * @return ChildEmailManagerTraceI18nQuery The current query, for fluid interface
      */
-    public function filterByMailManagerTrace($mailManagerTrace, $comparison = null)
+    public function filterByEmailManagerTrace($emailManagerTrace, $comparison = null)
     {
-        if ($mailManagerTrace instanceof \TheliaMailManager\Model\MailManagerTrace) {
+        if ($emailManagerTrace instanceof \TheliaEmailManager\Model\EmailManagerTrace) {
             return $this
-                ->addUsingAlias(MailManagerTraceI18nTableMap::ID, $mailManagerTrace->getId(), $comparison);
-        } elseif ($mailManagerTrace instanceof ObjectCollection) {
+                ->addUsingAlias(EmailManagerTraceI18nTableMap::ID, $emailManagerTrace->getId(), $comparison);
+        } elseif ($emailManagerTrace instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(MailManagerTraceI18nTableMap::ID, $mailManagerTrace->toKeyValue('PrimaryKey', 'Id'), $comparison);
+                ->addUsingAlias(EmailManagerTraceI18nTableMap::ID, $emailManagerTrace->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
-            throw new PropelException('filterByMailManagerTrace() only accepts arguments of type \TheliaMailManager\Model\MailManagerTrace or Collection');
+            throw new PropelException('filterByEmailManagerTrace() only accepts arguments of type \TheliaEmailManager\Model\EmailManagerTrace or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the MailManagerTrace relation
+     * Adds a JOIN clause to the query using the EmailManagerTrace relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return ChildMailManagerTraceI18nQuery The current query, for fluid interface
+     * @return ChildEmailManagerTraceI18nQuery The current query, for fluid interface
      */
-    public function joinMailManagerTrace($relationAlias = null, $joinType = 'LEFT JOIN')
+    public function joinEmailManagerTrace($relationAlias = null, $joinType = 'LEFT JOIN')
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('MailManagerTrace');
+        $relationMap = $tableMap->getRelation('EmailManagerTrace');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -421,14 +421,14 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'MailManagerTrace');
+            $this->addJoinObject($join, 'EmailManagerTrace');
         }
 
         return $this;
     }
 
     /**
-     * Use the MailManagerTrace relation MailManagerTrace object
+     * Use the EmailManagerTrace relation EmailManagerTrace object
      *
      * @see useQuery()
      *
@@ -436,27 +436,27 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return   \TheliaMailManager\Model\MailManagerTraceQuery A secondary query class using the current class as primary query
+     * @return   \TheliaEmailManager\Model\EmailManagerTraceQuery A secondary query class using the current class as primary query
      */
-    public function useMailManagerTraceQuery($relationAlias = null, $joinType = 'LEFT JOIN')
+    public function useEmailManagerTraceQuery($relationAlias = null, $joinType = 'LEFT JOIN')
     {
         return $this
-            ->joinMailManagerTrace($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'MailManagerTrace', '\TheliaMailManager\Model\MailManagerTraceQuery');
+            ->joinEmailManagerTrace($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'EmailManagerTrace', '\TheliaEmailManager\Model\EmailManagerTraceQuery');
     }
 
     /**
      * Exclude object from result
      *
-     * @param   ChildMailManagerTraceI18n $mailManagerTraceI18n Object to remove from the list of results
+     * @param   ChildEmailManagerTraceI18n $emailManagerTraceI18n Object to remove from the list of results
      *
-     * @return ChildMailManagerTraceI18nQuery The current query, for fluid interface
+     * @return ChildEmailManagerTraceI18nQuery The current query, for fluid interface
      */
-    public function prune($mailManagerTraceI18n = null)
+    public function prune($emailManagerTraceI18n = null)
     {
-        if ($mailManagerTraceI18n) {
-            $this->addCond('pruneCond0', $this->getAliasedColName(MailManagerTraceI18nTableMap::ID), $mailManagerTraceI18n->getId(), Criteria::NOT_EQUAL);
-            $this->addCond('pruneCond1', $this->getAliasedColName(MailManagerTraceI18nTableMap::LOCALE), $mailManagerTraceI18n->getLocale(), Criteria::NOT_EQUAL);
+        if ($emailManagerTraceI18n) {
+            $this->addCond('pruneCond0', $this->getAliasedColName(EmailManagerTraceI18nTableMap::ID), $emailManagerTraceI18n->getId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(EmailManagerTraceI18nTableMap::LOCALE), $emailManagerTraceI18n->getLocale(), Criteria::NOT_EQUAL);
             $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 
@@ -464,7 +464,7 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
     }
 
     /**
-     * Deletes all rows from the mail_manager_trace_i18n table.
+     * Deletes all rows from the email_manager_trace_i18n table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
@@ -472,7 +472,7 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
     public function doDeleteAll(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MailManagerTraceI18nTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(EmailManagerTraceI18nTableMap::DATABASE_NAME);
         }
         $affectedRows = 0; // initialize var to track total num of affected rows
         try {
@@ -483,8 +483,8 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
             // Because this db requires some delete cascade/set null emulation, we have to
             // clear the cached instance *after* the emulation has happened (since
             // instances get re-added by the select statement contained therein).
-            MailManagerTraceI18nTableMap::clearInstancePool();
-            MailManagerTraceI18nTableMap::clearRelatedInstancePool();
+            EmailManagerTraceI18nTableMap::clearInstancePool();
+            EmailManagerTraceI18nTableMap::clearRelatedInstancePool();
 
             $con->commit();
         } catch (PropelException $e) {
@@ -496,9 +496,9 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
     }
 
     /**
-     * Performs a DELETE on the database, given a ChildMailManagerTraceI18n or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a ChildEmailManagerTraceI18n or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or ChildMailManagerTraceI18n object or primary key or array of primary keys
+     * @param mixed               $values Criteria or ChildEmailManagerTraceI18n object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -509,13 +509,13 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
      public function delete(ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MailManagerTraceI18nTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(EmailManagerTraceI18nTableMap::DATABASE_NAME);
         }
 
         $criteria = $this;
 
         // Set the correct dbName
-        $criteria->setDbName(MailManagerTraceI18nTableMap::DATABASE_NAME);
+        $criteria->setDbName(EmailManagerTraceI18nTableMap::DATABASE_NAME);
 
         $affectedRows = 0; // initialize var to track total num of affected rows
 
@@ -525,10 +525,10 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
             $con->beginTransaction();
 
 
-        MailManagerTraceI18nTableMap::removeInstanceFromPool($criteria);
+        EmailManagerTraceI18nTableMap::removeInstanceFromPool($criteria);
 
             $affectedRows += ModelCriteria::delete($con);
-            MailManagerTraceI18nTableMap::clearRelatedInstancePool();
+            EmailManagerTraceI18nTableMap::clearRelatedInstancePool();
             $con->commit();
 
             return $affectedRows;
@@ -538,4 +538,4 @@ abstract class MailManagerTraceI18nQuery extends ModelCriteria
         }
     }
 
-} // MailManagerTraceI18nQuery
+} // EmailManagerTraceI18nQuery

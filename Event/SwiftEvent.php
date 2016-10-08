@@ -1,6 +1,6 @@
 <?php
 
-namespace TheliaMailManager\Event;
+namespace TheliaEmailManager\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 
