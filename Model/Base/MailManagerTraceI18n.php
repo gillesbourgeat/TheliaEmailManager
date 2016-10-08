@@ -2,7 +2,6 @@
 
 namespace TheliaMailManager\Model\Base;
 
-use \DateTime;
 use \Exception;
 use \PDO;
 use Propel\Runtime\Propel;
@@ -15,21 +14,17 @@ use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
-use Propel\Runtime\Util\PropelDateTime;
 use TheliaMailManager\Model\MailManagerTrace as ChildMailManagerTrace;
-use TheliaMailManager\Model\MailManagerTraceComment as ChildMailManagerTraceComment;
-use TheliaMailManager\Model\MailManagerTraceCommentQuery as ChildMailManagerTraceCommentQuery;
+use TheliaMailManager\Model\MailManagerTraceI18nQuery as ChildMailManagerTraceI18nQuery;
 use TheliaMailManager\Model\MailManagerTraceQuery as ChildMailManagerTraceQuery;
-use TheliaMailManager\Model\Map\MailManagerTraceCommentTableMap;
-use Thelia\Model\AdminQuery;
-use Thelia\Model\Admin as ChildAdmin;
+use TheliaMailManager\Model\Map\MailManagerTraceI18nTableMap;
 
-abstract class MailManagerTraceComment implements ActiveRecordInterface
+abstract class MailManagerTraceI18n implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\TheliaMailManager\\Model\\Map\\MailManagerTraceCommentTableMap';
+    const TABLE_MAP = '\\TheliaMailManager\\Model\\Map\\MailManagerTraceI18nTableMap';
 
 
     /**
@@ -65,44 +60,28 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the trace_id field.
-     * @var        int
-     */
-    protected $trace_id;
-
-    /**
-     * The value for the admin_id field.
-     * @var        int
-     */
-    protected $admin_id;
-
-    /**
-     * The value for the comment field.
+     * The value for the locale field.
+     * Note: this column has a database default value of: 'en_US'
      * @var        string
      */
-    protected $comment;
+    protected $locale;
 
     /**
-     * The value for the created_at field.
+     * The value for the title field.
      * @var        string
      */
-    protected $created_at;
+    protected $title;
 
     /**
-     * The value for the updated_at field.
+     * The value for the description field.
      * @var        string
      */
-    protected $updated_at;
+    protected $description;
 
     /**
      * @var        MailManagerTrace
      */
     protected $aMailManagerTrace;
-
-    /**
-     * @var        Admin
-     */
-    protected $aAdmin;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -113,10 +92,23 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * Initializes internal state of TheliaMailManager\Model\Base\MailManagerTraceComment object.
+     * Applies default values to this object.
+     * This method should be called from the object's constructor (or
+     * equivalent initialization method).
+     * @see __construct()
+     */
+    public function applyDefaultValues()
+    {
+        $this->locale = 'en_US';
+    }
+
+    /**
+     * Initializes internal state of TheliaMailManager\Model\Base\MailManagerTraceI18n object.
+     * @see applyDefaults()
      */
     public function __construct()
     {
+        $this->applyDefaultValues();
     }
 
     /**
@@ -208,9 +200,9 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>MailManagerTraceComment</code> instance.  If
-     * <code>obj</code> is an instance of <code>MailManagerTraceComment</code>, delegates to
-     * <code>equals(MailManagerTraceComment)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>MailManagerTraceI18n</code> instance.  If
+     * <code>obj</code> is an instance of <code>MailManagerTraceI18n</code>, delegates to
+     * <code>equals(MailManagerTraceI18n)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -293,7 +285,7 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return MailManagerTraceComment The current object, for fluid interface
+     * @return MailManagerTraceI18n The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -325,7 +317,7 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param string $data The source data to import from
      *
-     * @return MailManagerTraceComment The current object, for fluid interface
+     * @return MailManagerTraceI18n The current object, for fluid interface
      */
     public function importFrom($parser, $data)
     {
@@ -382,83 +374,43 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
     }
 
     /**
-     * Get the [trace_id] column value.
-     *
-     * @return   int
-     */
-    public function getTraceId()
-    {
-
-        return $this->trace_id;
-    }
-
-    /**
-     * Get the [admin_id] column value.
-     *
-     * @return   int
-     */
-    public function getAdminId()
-    {
-
-        return $this->admin_id;
-    }
-
-    /**
-     * Get the [comment] column value.
+     * Get the [locale] column value.
      *
      * @return   string
      */
-    public function getComment()
+    public function getLocale()
     {
 
-        return $this->comment;
+        return $this->locale;
     }
 
     /**
-     * Get the [optionally formatted] temporal [created_at] column value.
+     * Get the [title] column value.
      *
-     *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw \DateTime object will be returned.
-     *
-     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
-     *
-     * @throws PropelException - if unable to parse/validate the date/time value.
+     * @return   string
      */
-    public function getCreatedAt($format = NULL)
+    public function getTitle()
     {
-        if ($format === null) {
-            return $this->created_at;
-        } else {
-            return $this->created_at instanceof \DateTime ? $this->created_at->format($format) : null;
-        }
+
+        return $this->title;
     }
 
     /**
-     * Get the [optionally formatted] temporal [updated_at] column value.
+     * Get the [description] column value.
      *
-     *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw \DateTime object will be returned.
-     *
-     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
-     *
-     * @throws PropelException - if unable to parse/validate the date/time value.
+     * @return   string
      */
-    public function getUpdatedAt($format = NULL)
+    public function getDescription()
     {
-        if ($format === null) {
-            return $this->updated_at;
-        } else {
-            return $this->updated_at instanceof \DateTime ? $this->updated_at->format($format) : null;
-        }
+
+        return $this->description;
     }
 
     /**
      * Set the value of [id] column.
      *
      * @param      int $v new value
-     * @return   \TheliaMailManager\Model\MailManagerTraceComment The current object (for fluent API support)
+     * @return   \TheliaMailManager\Model\MailManagerTraceI18n The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -468,28 +420,7 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[MailManagerTraceCommentTableMap::ID] = true;
-        }
-
-
-        return $this;
-    } // setId()
-
-    /**
-     * Set the value of [trace_id] column.
-     *
-     * @param      int $v new value
-     * @return   \TheliaMailManager\Model\MailManagerTraceComment The current object (for fluent API support)
-     */
-    public function setTraceId($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->trace_id !== $v) {
-            $this->trace_id = $v;
-            $this->modifiedColumns[MailManagerTraceCommentTableMap::TRACE_ID] = true;
+            $this->modifiedColumns[MailManagerTraceI18nTableMap::ID] = true;
         }
 
         if ($this->aMailManagerTrace !== null && $this->aMailManagerTrace->getId() !== $v) {
@@ -498,95 +429,70 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
 
 
         return $this;
-    } // setTraceId()
+    } // setId()
 
     /**
-     * Set the value of [admin_id] column.
-     *
-     * @param      int $v new value
-     * @return   \TheliaMailManager\Model\MailManagerTraceComment The current object (for fluent API support)
-     */
-    public function setAdminId($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->admin_id !== $v) {
-            $this->admin_id = $v;
-            $this->modifiedColumns[MailManagerTraceCommentTableMap::ADMIN_ID] = true;
-        }
-
-        if ($this->aAdmin !== null && $this->aAdmin->getId() !== $v) {
-            $this->aAdmin = null;
-        }
-
-
-        return $this;
-    } // setAdminId()
-
-    /**
-     * Set the value of [comment] column.
+     * Set the value of [locale] column.
      *
      * @param      string $v new value
-     * @return   \TheliaMailManager\Model\MailManagerTraceComment The current object (for fluent API support)
+     * @return   \TheliaMailManager\Model\MailManagerTraceI18n The current object (for fluent API support)
      */
-    public function setComment($v)
+    public function setLocale($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->comment !== $v) {
-            $this->comment = $v;
-            $this->modifiedColumns[MailManagerTraceCommentTableMap::COMMENT] = true;
+        if ($this->locale !== $v) {
+            $this->locale = $v;
+            $this->modifiedColumns[MailManagerTraceI18nTableMap::LOCALE] = true;
         }
 
 
         return $this;
-    } // setComment()
+    } // setLocale()
 
     /**
-     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+     * Set the value of [title] column.
      *
-     * @param      mixed $v string, integer (timestamp), or \DateTime value.
-     *               Empty strings are treated as NULL.
-     * @return   \TheliaMailManager\Model\MailManagerTraceComment The current object (for fluent API support)
+     * @param      string $v new value
+     * @return   \TheliaMailManager\Model\MailManagerTraceI18n The current object (for fluent API support)
      */
-    public function setCreatedAt($v)
+    public function setTitle($v)
     {
-        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
-        if ($this->created_at !== null || $dt !== null) {
-            if ($dt !== $this->created_at) {
-                $this->created_at = $dt;
-                $this->modifiedColumns[MailManagerTraceCommentTableMap::CREATED_AT] = true;
-            }
-        } // if either are not null
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->title !== $v) {
+            $this->title = $v;
+            $this->modifiedColumns[MailManagerTraceI18nTableMap::TITLE] = true;
+        }
 
 
         return $this;
-    } // setCreatedAt()
+    } // setTitle()
 
     /**
-     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+     * Set the value of [description] column.
      *
-     * @param      mixed $v string, integer (timestamp), or \DateTime value.
-     *               Empty strings are treated as NULL.
-     * @return   \TheliaMailManager\Model\MailManagerTraceComment The current object (for fluent API support)
+     * @param      string $v new value
+     * @return   \TheliaMailManager\Model\MailManagerTraceI18n The current object (for fluent API support)
      */
-    public function setUpdatedAt($v)
+    public function setDescription($v)
     {
-        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
-        if ($this->updated_at !== null || $dt !== null) {
-            if ($dt !== $this->updated_at) {
-                $this->updated_at = $dt;
-                $this->modifiedColumns[MailManagerTraceCommentTableMap::UPDATED_AT] = true;
-            }
-        } // if either are not null
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->description !== $v) {
+            $this->description = $v;
+            $this->modifiedColumns[MailManagerTraceI18nTableMap::DESCRIPTION] = true;
+        }
 
 
         return $this;
-    } // setUpdatedAt()
+    } // setDescription()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -598,6 +504,10 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->locale !== 'en_US') {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -625,29 +535,17 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
         try {
 
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : MailManagerTraceCommentTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : MailManagerTraceI18nTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : MailManagerTraceCommentTableMap::translateFieldName('TraceId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->trace_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : MailManagerTraceI18nTableMap::translateFieldName('Locale', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->locale = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : MailManagerTraceCommentTableMap::translateFieldName('AdminId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->admin_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : MailManagerTraceI18nTableMap::translateFieldName('Title', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->title = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : MailManagerTraceCommentTableMap::translateFieldName('Comment', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->comment = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : MailManagerTraceCommentTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
-            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : MailManagerTraceCommentTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
-            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : MailManagerTraceI18nTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->description = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -656,10 +554,10 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 6; // 6 = MailManagerTraceCommentTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 4; // 4 = MailManagerTraceI18nTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException("Error populating \TheliaMailManager\Model\MailManagerTraceComment object", 0, $e);
+            throw new PropelException("Error populating \TheliaMailManager\Model\MailManagerTraceI18n object", 0, $e);
         }
     }
 
@@ -678,11 +576,8 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aMailManagerTrace !== null && $this->trace_id !== $this->aMailManagerTrace->getId()) {
+        if ($this->aMailManagerTrace !== null && $this->id !== $this->aMailManagerTrace->getId()) {
             $this->aMailManagerTrace = null;
-        }
-        if ($this->aAdmin !== null && $this->admin_id !== $this->aAdmin->getId()) {
-            $this->aAdmin = null;
         }
     } // ensureConsistency
 
@@ -707,13 +602,13 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(MailManagerTraceCommentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(MailManagerTraceI18nTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildMailManagerTraceCommentQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildMailManagerTraceI18nQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -724,7 +619,6 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aMailManagerTrace = null;
-            $this->aAdmin = null;
         } // if (deep)
     }
 
@@ -734,8 +628,8 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see MailManagerTraceComment::setDeleted()
-     * @see MailManagerTraceComment::isDeleted()
+     * @see MailManagerTraceI18n::setDeleted()
+     * @see MailManagerTraceI18n::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -744,12 +638,12 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MailManagerTraceCommentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(MailManagerTraceI18nTableMap::DATABASE_NAME);
         }
 
         $con->beginTransaction();
         try {
-            $deleteQuery = ChildMailManagerTraceCommentQuery::create()
+            $deleteQuery = ChildMailManagerTraceI18nQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -786,7 +680,7 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MailManagerTraceCommentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(MailManagerTraceI18nTableMap::DATABASE_NAME);
         }
 
         $con->beginTransaction();
@@ -795,19 +689,8 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
             $ret = $this->preSave($con);
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
-                // timestampable behavior
-                if (!$this->isColumnModified(MailManagerTraceCommentTableMap::CREATED_AT)) {
-                    $this->setCreatedAt(time());
-                }
-                if (!$this->isColumnModified(MailManagerTraceCommentTableMap::UPDATED_AT)) {
-                    $this->setUpdatedAt(time());
-                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
-                // timestampable behavior
-                if ($this->isModified() && !$this->isColumnModified(MailManagerTraceCommentTableMap::UPDATED_AT)) {
-                    $this->setUpdatedAt(time());
-                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -817,7 +700,7 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                MailManagerTraceCommentTableMap::addInstanceToPool($this);
+                MailManagerTraceI18nTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -859,13 +742,6 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
                 $this->setMailManagerTrace($this->aMailManagerTrace);
             }
 
-            if ($this->aAdmin !== null) {
-                if ($this->aAdmin->isModified() || $this->aAdmin->isNew()) {
-                    $affectedRows += $this->aAdmin->save($con);
-                }
-                $this->setAdmin($this->aAdmin);
-            }
-
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -897,33 +773,23 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[MailManagerTraceCommentTableMap::ID] = true;
-        if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . MailManagerTraceCommentTableMap::ID . ')');
-        }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(MailManagerTraceCommentTableMap::ID)) {
+        if ($this->isColumnModified(MailManagerTraceI18nTableMap::ID)) {
             $modifiedColumns[':p' . $index++]  = 'ID';
         }
-        if ($this->isColumnModified(MailManagerTraceCommentTableMap::TRACE_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'TRACE_ID';
+        if ($this->isColumnModified(MailManagerTraceI18nTableMap::LOCALE)) {
+            $modifiedColumns[':p' . $index++]  = 'LOCALE';
         }
-        if ($this->isColumnModified(MailManagerTraceCommentTableMap::ADMIN_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'ADMIN_ID';
+        if ($this->isColumnModified(MailManagerTraceI18nTableMap::TITLE)) {
+            $modifiedColumns[':p' . $index++]  = 'TITLE';
         }
-        if ($this->isColumnModified(MailManagerTraceCommentTableMap::COMMENT)) {
-            $modifiedColumns[':p' . $index++]  = 'COMMENT';
-        }
-        if ($this->isColumnModified(MailManagerTraceCommentTableMap::CREATED_AT)) {
-            $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
-        }
-        if ($this->isColumnModified(MailManagerTraceCommentTableMap::UPDATED_AT)) {
-            $modifiedColumns[':p' . $index++]  = 'UPDATED_AT';
+        if ($this->isColumnModified(MailManagerTraceI18nTableMap::DESCRIPTION)) {
+            $modifiedColumns[':p' . $index++]  = 'DESCRIPTION';
         }
 
         $sql = sprintf(
-            'INSERT INTO mail_manager_trace_comment (%s) VALUES (%s)',
+            'INSERT INTO mail_manager_trace_i18n (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -935,20 +801,14 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
                     case 'ID':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'TRACE_ID':
-                        $stmt->bindValue($identifier, $this->trace_id, PDO::PARAM_INT);
+                    case 'LOCALE':
+                        $stmt->bindValue($identifier, $this->locale, PDO::PARAM_STR);
                         break;
-                    case 'ADMIN_ID':
-                        $stmt->bindValue($identifier, $this->admin_id, PDO::PARAM_INT);
+                    case 'TITLE':
+                        $stmt->bindValue($identifier, $this->title, PDO::PARAM_STR);
                         break;
-                    case 'COMMENT':
-                        $stmt->bindValue($identifier, $this->comment, PDO::PARAM_STR);
-                        break;
-                    case 'CREATED_AT':
-                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
-                        break;
-                    case 'UPDATED_AT':
-                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                    case 'DESCRIPTION':
+                        $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -957,13 +817,6 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), 0, $e);
         }
-
-        try {
-            $pk = $con->lastInsertId();
-        } catch (Exception $e) {
-            throw new PropelException('Unable to get autoincrement id.', 0, $e);
-        }
-        $this->setId($pk);
 
         $this->setNew(false);
     }
@@ -996,7 +849,7 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = MailManagerTraceCommentTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = MailManagerTraceI18nTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -1016,19 +869,13 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getTraceId();
+                return $this->getLocale();
                 break;
             case 2:
-                return $this->getAdminId();
+                return $this->getTitle();
                 break;
             case 3:
-                return $this->getComment();
-                break;
-            case 4:
-                return $this->getCreatedAt();
-                break;
-            case 5:
-                return $this->getUpdatedAt();
+                return $this->getDescription();
                 break;
             default:
                 return null;
@@ -1053,18 +900,16 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
      */
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
-        if (isset($alreadyDumpedObjects['MailManagerTraceComment'][$this->getPrimaryKey()])) {
+        if (isset($alreadyDumpedObjects['MailManagerTraceI18n'][serialize($this->getPrimaryKey())])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['MailManagerTraceComment'][$this->getPrimaryKey()] = true;
-        $keys = MailManagerTraceCommentTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['MailManagerTraceI18n'][serialize($this->getPrimaryKey())] = true;
+        $keys = MailManagerTraceI18nTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getTraceId(),
-            $keys[2] => $this->getAdminId(),
-            $keys[3] => $this->getComment(),
-            $keys[4] => $this->getCreatedAt(),
-            $keys[5] => $this->getUpdatedAt(),
+            $keys[1] => $this->getLocale(),
+            $keys[2] => $this->getTitle(),
+            $keys[3] => $this->getDescription(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1074,9 +919,6 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
         if ($includeForeignObjects) {
             if (null !== $this->aMailManagerTrace) {
                 $result['MailManagerTrace'] = $this->aMailManagerTrace->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->aAdmin) {
-                $result['Admin'] = $this->aAdmin->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -1096,7 +938,7 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = MailManagerTraceCommentTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = MailManagerTraceI18nTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1116,19 +958,13 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setTraceId($value);
+                $this->setLocale($value);
                 break;
             case 2:
-                $this->setAdminId($value);
+                $this->setTitle($value);
                 break;
             case 3:
-                $this->setComment($value);
-                break;
-            case 4:
-                $this->setCreatedAt($value);
-                break;
-            case 5:
-                $this->setUpdatedAt($value);
+                $this->setDescription($value);
                 break;
         } // switch()
     }
@@ -1152,14 +988,12 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = MailManagerTraceCommentTableMap::getFieldNames($keyType);
+        $keys = MailManagerTraceI18nTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setTraceId($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setAdminId($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setComment($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setCreatedAt($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setUpdatedAt($arr[$keys[5]]);
+        if (array_key_exists($keys[1], $arr)) $this->setLocale($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setTitle($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setDescription($arr[$keys[3]]);
     }
 
     /**
@@ -1169,14 +1003,12 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(MailManagerTraceCommentTableMap::DATABASE_NAME);
+        $criteria = new Criteria(MailManagerTraceI18nTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(MailManagerTraceCommentTableMap::ID)) $criteria->add(MailManagerTraceCommentTableMap::ID, $this->id);
-        if ($this->isColumnModified(MailManagerTraceCommentTableMap::TRACE_ID)) $criteria->add(MailManagerTraceCommentTableMap::TRACE_ID, $this->trace_id);
-        if ($this->isColumnModified(MailManagerTraceCommentTableMap::ADMIN_ID)) $criteria->add(MailManagerTraceCommentTableMap::ADMIN_ID, $this->admin_id);
-        if ($this->isColumnModified(MailManagerTraceCommentTableMap::COMMENT)) $criteria->add(MailManagerTraceCommentTableMap::COMMENT, $this->comment);
-        if ($this->isColumnModified(MailManagerTraceCommentTableMap::CREATED_AT)) $criteria->add(MailManagerTraceCommentTableMap::CREATED_AT, $this->created_at);
-        if ($this->isColumnModified(MailManagerTraceCommentTableMap::UPDATED_AT)) $criteria->add(MailManagerTraceCommentTableMap::UPDATED_AT, $this->updated_at);
+        if ($this->isColumnModified(MailManagerTraceI18nTableMap::ID)) $criteria->add(MailManagerTraceI18nTableMap::ID, $this->id);
+        if ($this->isColumnModified(MailManagerTraceI18nTableMap::LOCALE)) $criteria->add(MailManagerTraceI18nTableMap::LOCALE, $this->locale);
+        if ($this->isColumnModified(MailManagerTraceI18nTableMap::TITLE)) $criteria->add(MailManagerTraceI18nTableMap::TITLE, $this->title);
+        if ($this->isColumnModified(MailManagerTraceI18nTableMap::DESCRIPTION)) $criteria->add(MailManagerTraceI18nTableMap::DESCRIPTION, $this->description);
 
         return $criteria;
     }
@@ -1191,30 +1023,37 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(MailManagerTraceCommentTableMap::DATABASE_NAME);
-        $criteria->add(MailManagerTraceCommentTableMap::ID, $this->id);
+        $criteria = new Criteria(MailManagerTraceI18nTableMap::DATABASE_NAME);
+        $criteria->add(MailManagerTraceI18nTableMap::ID, $this->id);
+        $criteria->add(MailManagerTraceI18nTableMap::LOCALE, $this->locale);
 
         return $criteria;
     }
 
     /**
-     * Returns the primary key for this object (row).
-     * @return   int
+     * Returns the composite primary key for this object.
+     * The array elements will be in same order as specified in XML.
+     * @return array
      */
     public function getPrimaryKey()
     {
-        return $this->getId();
+        $pks = array();
+        $pks[0] = $this->getId();
+        $pks[1] = $this->getLocale();
+
+        return $pks;
     }
 
     /**
-     * Generic method to set the primary key (id column).
+     * Set the [composite] primary key.
      *
-     * @param       int $key Primary key.
+     * @param      array $keys The elements of the composite key (order must match the order in XML file).
      * @return void
      */
-    public function setPrimaryKey($key)
+    public function setPrimaryKey($keys)
     {
-        $this->setId($key);
+        $this->setId($keys[0]);
+        $this->setLocale($keys[1]);
     }
 
     /**
@@ -1224,7 +1063,7 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
     public function isPrimaryKeyNull()
     {
 
-        return null === $this->getId();
+        return (null === $this->getId()) && (null === $this->getLocale());
     }
 
     /**
@@ -1233,21 +1072,19 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \TheliaMailManager\Model\MailManagerTraceComment (or compatible) type.
+     * @param      object $copyObj An object of \TheliaMailManager\Model\MailManagerTraceI18n (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setTraceId($this->getTraceId());
-        $copyObj->setAdminId($this->getAdminId());
-        $copyObj->setComment($this->getComment());
-        $copyObj->setCreatedAt($this->getCreatedAt());
-        $copyObj->setUpdatedAt($this->getUpdatedAt());
+        $copyObj->setId($this->getId());
+        $copyObj->setLocale($this->getLocale());
+        $copyObj->setTitle($this->getTitle());
+        $copyObj->setDescription($this->getDescription());
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1260,7 +1097,7 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
      * objects.
      *
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return                 \TheliaMailManager\Model\MailManagerTraceComment Clone of current object.
+     * @return                 \TheliaMailManager\Model\MailManagerTraceI18n Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1277,15 +1114,15 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
      * Declares an association between this object and a ChildMailManagerTrace object.
      *
      * @param                  ChildMailManagerTrace $v
-     * @return                 \TheliaMailManager\Model\MailManagerTraceComment The current object (for fluent API support)
+     * @return                 \TheliaMailManager\Model\MailManagerTraceI18n The current object (for fluent API support)
      * @throws PropelException
      */
     public function setMailManagerTrace(ChildMailManagerTrace $v = null)
     {
         if ($v === null) {
-            $this->setTraceId(NULL);
+            $this->setId(NULL);
         } else {
-            $this->setTraceId($v->getId());
+            $this->setId($v->getId());
         }
 
         $this->aMailManagerTrace = $v;
@@ -1293,7 +1130,7 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the ChildMailManagerTrace object, it will not be re-added.
         if ($v !== null) {
-            $v->addMailManagerTraceComment($this);
+            $v->addMailManagerTraceI18n($this);
         }
 
 
@@ -1310,69 +1147,18 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
      */
     public function getMailManagerTrace(ConnectionInterface $con = null)
     {
-        if ($this->aMailManagerTrace === null && ($this->trace_id !== null)) {
-            $this->aMailManagerTrace = ChildMailManagerTraceQuery::create()->findPk($this->trace_id, $con);
+        if ($this->aMailManagerTrace === null && ($this->id !== null)) {
+            $this->aMailManagerTrace = ChildMailManagerTraceQuery::create()->findPk($this->id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aMailManagerTrace->addMailManagerTraceComments($this);
+                $this->aMailManagerTrace->addMailManagerTraceI18ns($this);
              */
         }
 
         return $this->aMailManagerTrace;
-    }
-
-    /**
-     * Declares an association between this object and a ChildAdmin object.
-     *
-     * @param                  ChildAdmin $v
-     * @return                 \TheliaMailManager\Model\MailManagerTraceComment The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setAdmin(ChildAdmin $v = null)
-    {
-        if ($v === null) {
-            $this->setAdminId(NULL);
-        } else {
-            $this->setAdminId($v->getId());
-        }
-
-        $this->aAdmin = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildAdmin object, it will not be re-added.
-        if ($v !== null) {
-            $v->addMailManagerTraceComment($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildAdmin object
-     *
-     * @param      ConnectionInterface $con Optional Connection object.
-     * @return                 ChildAdmin The associated ChildAdmin object.
-     * @throws PropelException
-     */
-    public function getAdmin(ConnectionInterface $con = null)
-    {
-        if ($this->aAdmin === null && ($this->admin_id !== null)) {
-            $this->aAdmin = AdminQuery::create()->findPk($this->admin_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aAdmin->addMailManagerTraceComments($this);
-             */
-        }
-
-        return $this->aAdmin;
     }
 
     /**
@@ -1381,13 +1167,12 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
     public function clear()
     {
         $this->id = null;
-        $this->trace_id = null;
-        $this->admin_id = null;
-        $this->comment = null;
-        $this->created_at = null;
-        $this->updated_at = null;
+        $this->locale = null;
+        $this->title = null;
+        $this->description = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
+        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);
@@ -1408,7 +1193,6 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
         } // if ($deep)
 
         $this->aMailManagerTrace = null;
-        $this->aAdmin = null;
     }
 
     /**
@@ -1418,21 +1202,7 @@ abstract class MailManagerTraceComment implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(MailManagerTraceCommentTableMap::DEFAULT_STRING_FORMAT);
-    }
-
-    // timestampable behavior
-
-    /**
-     * Mark the current object so that the update date doesn't get updated during next save
-     *
-     * @return     ChildMailManagerTraceComment The current object (for fluent API support)
-     */
-    public function keepUpdateDateUnchanged()
-    {
-        $this->modifiedColumns[MailManagerTraceCommentTableMap::UPDATED_AT] = true;
-
-        return $this;
+        return (string) $this->exportTo(MailManagerTraceI18nTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

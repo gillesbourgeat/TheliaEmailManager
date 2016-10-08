@@ -9,10 +9,10 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `mail_manager_trace`;
 
 -- ---------------------------------------------------------------------
--- mail_manager_trace_comment
+-- mail_manager_trace_i18n
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `mail_manager_trace_comment`;
+DROP TABLE IF EXISTS `mail_manager_trace_i18n`;
 
 -- ---------------------------------------------------------------------
 -- mail_manager_history

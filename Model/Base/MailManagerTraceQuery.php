@@ -13,6 +13,7 @@ use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
 use TheliaMailManager\Model\MailManagerTrace as ChildMailManagerTrace;
+use TheliaMailManager\Model\MailManagerTraceI18nQuery as ChildMailManagerTraceI18nQuery;
 use TheliaMailManager\Model\MailManagerTraceQuery as ChildMailManagerTraceQuery;
 use TheliaMailManager\Model\Map\MailManagerTraceTableMap;
 
@@ -49,10 +50,6 @@ use TheliaMailManager\Model\Map\MailManagerTraceTableMap;
  * @method     ChildMailManagerTraceQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildMailManagerTraceQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildMailManagerTraceQuery leftJoinMailManagerTraceComment($relationAlias = null) Adds a LEFT JOIN clause to the query using the MailManagerTraceComment relation
- * @method     ChildMailManagerTraceQuery rightJoinMailManagerTraceComment($relationAlias = null) Adds a RIGHT JOIN clause to the query using the MailManagerTraceComment relation
- * @method     ChildMailManagerTraceQuery innerJoinMailManagerTraceComment($relationAlias = null) Adds a INNER JOIN clause to the query using the MailManagerTraceComment relation
- *
  * @method     ChildMailManagerTraceQuery leftJoinMailManagerHistory($relationAlias = null) Adds a LEFT JOIN clause to the query using the MailManagerHistory relation
  * @method     ChildMailManagerTraceQuery rightJoinMailManagerHistory($relationAlias = null) Adds a RIGHT JOIN clause to the query using the MailManagerHistory relation
  * @method     ChildMailManagerTraceQuery innerJoinMailManagerHistory($relationAlias = null) Adds a INNER JOIN clause to the query using the MailManagerHistory relation
@@ -60,6 +57,10 @@ use TheliaMailManager\Model\Map\MailManagerTraceTableMap;
  * @method     ChildMailManagerTraceQuery leftJoinMailManagerHistoryMail($relationAlias = null) Adds a LEFT JOIN clause to the query using the MailManagerHistoryMail relation
  * @method     ChildMailManagerTraceQuery rightJoinMailManagerHistoryMail($relationAlias = null) Adds a RIGHT JOIN clause to the query using the MailManagerHistoryMail relation
  * @method     ChildMailManagerTraceQuery innerJoinMailManagerHistoryMail($relationAlias = null) Adds a INNER JOIN clause to the query using the MailManagerHistoryMail relation
+ *
+ * @method     ChildMailManagerTraceQuery leftJoinMailManagerTraceI18n($relationAlias = null) Adds a LEFT JOIN clause to the query using the MailManagerTraceI18n relation
+ * @method     ChildMailManagerTraceQuery rightJoinMailManagerTraceI18n($relationAlias = null) Adds a RIGHT JOIN clause to the query using the MailManagerTraceI18n relation
+ * @method     ChildMailManagerTraceQuery innerJoinMailManagerTraceI18n($relationAlias = null) Adds a INNER JOIN clause to the query using the MailManagerTraceI18n relation
  *
  * @method     ChildMailManagerTrace findOne(ConnectionInterface $con = null) Return the first ChildMailManagerTrace matching the query
  * @method     ChildMailManagerTrace findOneOrCreate(ConnectionInterface $con = null) Return the first ChildMailManagerTrace matching the query, or a new ChildMailManagerTrace object populated from the query conditions when no match is found
@@ -672,79 +673,6 @@ abstract class MailManagerTraceQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TheliaMailManager\Model\MailManagerTraceComment object
-     *
-     * @param \TheliaMailManager\Model\MailManagerTraceComment|ObjectCollection $mailManagerTraceComment  the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildMailManagerTraceQuery The current query, for fluid interface
-     */
-    public function filterByMailManagerTraceComment($mailManagerTraceComment, $comparison = null)
-    {
-        if ($mailManagerTraceComment instanceof \TheliaMailManager\Model\MailManagerTraceComment) {
-            return $this
-                ->addUsingAlias(MailManagerTraceTableMap::ID, $mailManagerTraceComment->getTraceId(), $comparison);
-        } elseif ($mailManagerTraceComment instanceof ObjectCollection) {
-            return $this
-                ->useMailManagerTraceCommentQuery()
-                ->filterByPrimaryKeys($mailManagerTraceComment->getPrimaryKeys())
-                ->endUse();
-        } else {
-            throw new PropelException('filterByMailManagerTraceComment() only accepts arguments of type \TheliaMailManager\Model\MailManagerTraceComment or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the MailManagerTraceComment relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return ChildMailManagerTraceQuery The current query, for fluid interface
-     */
-    public function joinMailManagerTraceComment($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('MailManagerTraceComment');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'MailManagerTraceComment');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the MailManagerTraceComment relation MailManagerTraceComment object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return   \TheliaMailManager\Model\MailManagerTraceCommentQuery A secondary query class using the current class as primary query
-     */
-    public function useMailManagerTraceCommentQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinMailManagerTraceComment($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'MailManagerTraceComment', '\TheliaMailManager\Model\MailManagerTraceCommentQuery');
-    }
-
-    /**
      * Filter the query by a related \TheliaMailManager\Model\MailManagerHistory object
      *
      * @param \TheliaMailManager\Model\MailManagerHistory|ObjectCollection $mailManagerHistory  the related object to use as filter
@@ -891,6 +819,79 @@ abstract class MailManagerTraceQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \TheliaMailManager\Model\MailManagerTraceI18n object
+     *
+     * @param \TheliaMailManager\Model\MailManagerTraceI18n|ObjectCollection $mailManagerTraceI18n  the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildMailManagerTraceQuery The current query, for fluid interface
+     */
+    public function filterByMailManagerTraceI18n($mailManagerTraceI18n, $comparison = null)
+    {
+        if ($mailManagerTraceI18n instanceof \TheliaMailManager\Model\MailManagerTraceI18n) {
+            return $this
+                ->addUsingAlias(MailManagerTraceTableMap::ID, $mailManagerTraceI18n->getId(), $comparison);
+        } elseif ($mailManagerTraceI18n instanceof ObjectCollection) {
+            return $this
+                ->useMailManagerTraceI18nQuery()
+                ->filterByPrimaryKeys($mailManagerTraceI18n->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByMailManagerTraceI18n() only accepts arguments of type \TheliaMailManager\Model\MailManagerTraceI18n or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the MailManagerTraceI18n relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ChildMailManagerTraceQuery The current query, for fluid interface
+     */
+    public function joinMailManagerTraceI18n($relationAlias = null, $joinType = 'LEFT JOIN')
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('MailManagerTraceI18n');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'MailManagerTraceI18n');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the MailManagerTraceI18n relation MailManagerTraceI18n object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \TheliaMailManager\Model\MailManagerTraceI18nQuery A secondary query class using the current class as primary query
+     */
+    public function useMailManagerTraceI18nQuery($relationAlias = null, $joinType = 'LEFT JOIN')
+    {
+        return $this
+            ->joinMailManagerTraceI18n($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'MailManagerTraceI18n', '\TheliaMailManager\Model\MailManagerTraceI18nQuery');
+    }
+
+    /**
      * Exclude object from result
      *
      * @param   ChildMailManagerTrace $mailManagerTrace Object to remove from the list of results
@@ -979,6 +980,63 @@ abstract class MailManagerTraceQuery extends ModelCriteria
             $con->rollBack();
             throw $e;
         }
+    }
+
+    // i18n behavior
+
+    /**
+     * Adds a JOIN clause to the query using the i18n relation
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildMailManagerTraceQuery The current query, for fluid interface
+     */
+    public function joinI18n($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $relationName = $relationAlias ? $relationAlias : 'MailManagerTraceI18n';
+
+        return $this
+            ->joinMailManagerTraceI18n($relationAlias, $joinType)
+            ->addJoinCondition($relationName, $relationName . '.Locale = ?', $locale);
+    }
+
+    /**
+     * Adds a JOIN clause to the query and hydrates the related I18n object.
+     * Shortcut for $c->joinI18n($locale)->with()
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildMailManagerTraceQuery The current query, for fluid interface
+     */
+    public function joinWithI18n($locale = 'en_US', $joinType = Criteria::LEFT_JOIN)
+    {
+        $this
+            ->joinI18n($locale, null, $joinType)
+            ->with('MailManagerTraceI18n');
+        $this->with['MailManagerTraceI18n']->setIsWithOneToMany(false);
+
+        return $this;
+    }
+
+    /**
+     * Use the I18n relation query object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildMailManagerTraceI18nQuery A secondary query class using the current class as primary query
+     */
+    public function useI18nQuery($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinI18n($locale, $relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'MailManagerTraceI18n', '\TheliaMailManager\Model\MailManagerTraceI18nQuery');
     }
 
     // timestampable behavior

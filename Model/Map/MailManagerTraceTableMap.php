@@ -130,6 +130,15 @@ class MailManagerTraceTableMap extends TableMap
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
 
+    // i18n behavior
+
+    /**
+     * The default locale to use for translations.
+     *
+     * @var string
+     */
+    const DEFAULT_LOCALE = 'en_US';
+
     /**
      * holds an array of fieldnames
      *
@@ -194,9 +203,9 @@ class MailManagerTraceTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('MailManagerTraceComment', '\\TheliaMailManager\\Model\\MailManagerTraceComment', RelationMap::ONE_TO_MANY, array('id' => 'trace_id', ), 'CASCADE', 'RESTRICT', 'MailManagerTraceComments');
         $this->addRelation('MailManagerHistory', '\\TheliaMailManager\\Model\\MailManagerHistory', RelationMap::ONE_TO_MANY, array('id' => 'trace_id', ), 'CASCADE', 'RESTRICT', 'MailManagerHistories');
         $this->addRelation('MailManagerHistoryMail', '\\TheliaMailManager\\Model\\MailManagerHistoryMail', RelationMap::ONE_TO_MANY, array('id' => 'mail_id', ), 'CASCADE', 'RESTRICT', 'MailManagerHistoryMails');
+        $this->addRelation('MailManagerTraceI18n', '\\TheliaMailManager\\Model\\MailManagerTraceI18n', RelationMap::ONE_TO_MANY, array('id' => 'id', ), 'CASCADE', null, 'MailManagerTraceI18ns');
     } // buildRelations()
 
     /**
@@ -208,6 +217,7 @@ class MailManagerTraceTableMap extends TableMap
     public function getBehaviors()
     {
         return array(
+            'i18n' => array('i18n_table' => '%TABLE%_i18n', 'i18n_phpname' => '%PHPNAME%I18n', 'i18n_columns' => 'title, description', 'locale_column' => 'locale', 'locale_length' => '5', 'default_locale' => '', 'locale_alias' => '', ),
             'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
         );
     } // getBehaviors()
@@ -218,9 +228,9 @@ class MailManagerTraceTableMap extends TableMap
     {
         // Invalidate objects in ".$this->getClassNameFromBuilder($joinedTableTableMapBuilder)." instance pool,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
-                MailManagerTraceCommentTableMap::clearInstancePool();
                 MailManagerHistoryTableMap::clearInstancePool();
                 MailManagerHistoryMailTableMap::clearInstancePool();
+                MailManagerTraceI18nTableMap::clearInstancePool();
             }
 
     /**

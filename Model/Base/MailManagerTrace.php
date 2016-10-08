@@ -22,8 +22,8 @@ use TheliaMailManager\Model\MailManagerHistoryMail as ChildMailManagerHistoryMai
 use TheliaMailManager\Model\MailManagerHistoryMailQuery as ChildMailManagerHistoryMailQuery;
 use TheliaMailManager\Model\MailManagerHistoryQuery as ChildMailManagerHistoryQuery;
 use TheliaMailManager\Model\MailManagerTrace as ChildMailManagerTrace;
-use TheliaMailManager\Model\MailManagerTraceComment as ChildMailManagerTraceComment;
-use TheliaMailManager\Model\MailManagerTraceCommentQuery as ChildMailManagerTraceCommentQuery;
+use TheliaMailManager\Model\MailManagerTraceI18n as ChildMailManagerTraceI18n;
+use TheliaMailManager\Model\MailManagerTraceI18nQuery as ChildMailManagerTraceI18nQuery;
 use TheliaMailManager\Model\MailManagerTraceQuery as ChildMailManagerTraceQuery;
 use TheliaMailManager\Model\Map\MailManagerTraceTableMap;
 
@@ -146,12 +146,6 @@ abstract class MailManagerTrace implements ActiveRecordInterface
     protected $updated_at;
 
     /**
-     * @var        ObjectCollection|ChildMailManagerTraceComment[] Collection to store aggregation of ChildMailManagerTraceComment objects.
-     */
-    protected $collMailManagerTraceComments;
-    protected $collMailManagerTraceCommentsPartial;
-
-    /**
      * @var        ObjectCollection|ChildMailManagerHistory[] Collection to store aggregation of ChildMailManagerHistory objects.
      */
     protected $collMailManagerHistories;
@@ -164,6 +158,12 @@ abstract class MailManagerTrace implements ActiveRecordInterface
     protected $collMailManagerHistoryMailsPartial;
 
     /**
+     * @var        ObjectCollection|ChildMailManagerTraceI18n[] Collection to store aggregation of ChildMailManagerTraceI18n objects.
+     */
+    protected $collMailManagerTraceI18ns;
+    protected $collMailManagerTraceI18nsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -171,11 +171,19 @@ abstract class MailManagerTrace implements ActiveRecordInterface
      */
     protected $alreadyInSave = false;
 
+    // i18n behavior
+
     /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection
+     * Current locale
+     * @var        string
      */
-    protected $mailManagerTraceCommentsScheduledForDeletion = null;
+    protected $currentLocale = 'en_US';
+
+    /**
+     * Current translation objects
+     * @var        array[ChildMailManagerTraceI18n]
+     */
+    protected $currentTranslations;
 
     /**
      * An array of objects scheduled for deletion.
@@ -188,6 +196,12 @@ abstract class MailManagerTrace implements ActiveRecordInterface
      * @var ObjectCollection
      */
     protected $mailManagerHistoryMailsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection
+     */
+    protected $mailManagerTraceI18nsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -1027,11 +1041,11 @@ abstract class MailManagerTrace implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collMailManagerTraceComments = null;
-
             $this->collMailManagerHistories = null;
 
             $this->collMailManagerHistoryMails = null;
+
+            $this->collMailManagerTraceI18ns = null;
 
         } // if (deep)
     }
@@ -1166,23 +1180,6 @@ abstract class MailManagerTrace implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->mailManagerTraceCommentsScheduledForDeletion !== null) {
-                if (!$this->mailManagerTraceCommentsScheduledForDeletion->isEmpty()) {
-                    \TheliaMailManager\Model\MailManagerTraceCommentQuery::create()
-                        ->filterByPrimaryKeys($this->mailManagerTraceCommentsScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->mailManagerTraceCommentsScheduledForDeletion = null;
-                }
-            }
-
-                if ($this->collMailManagerTraceComments !== null) {
-            foreach ($this->collMailManagerTraceComments as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
             if ($this->mailManagerHistoriesScheduledForDeletion !== null) {
                 if (!$this->mailManagerHistoriesScheduledForDeletion->isEmpty()) {
                     \TheliaMailManager\Model\MailManagerHistoryQuery::create()
@@ -1211,6 +1208,23 @@ abstract class MailManagerTrace implements ActiveRecordInterface
 
                 if ($this->collMailManagerHistoryMails !== null) {
             foreach ($this->collMailManagerHistoryMails as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->mailManagerTraceI18nsScheduledForDeletion !== null) {
+                if (!$this->mailManagerTraceI18nsScheduledForDeletion->isEmpty()) {
+                    \TheliaMailManager\Model\MailManagerTraceI18nQuery::create()
+                        ->filterByPrimaryKeys($this->mailManagerTraceI18nsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->mailManagerTraceI18nsScheduledForDeletion = null;
+                }
+            }
+
+                if ($this->collMailManagerTraceI18ns !== null) {
+            foreach ($this->collMailManagerTraceI18ns as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1462,14 +1476,14 @@ abstract class MailManagerTrace implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->collMailManagerTraceComments) {
-                $result['MailManagerTraceComments'] = $this->collMailManagerTraceComments->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
             if (null !== $this->collMailManagerHistories) {
                 $result['MailManagerHistories'] = $this->collMailManagerHistories->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collMailManagerHistoryMails) {
                 $result['MailManagerHistoryMails'] = $this->collMailManagerHistoryMails->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collMailManagerTraceI18ns) {
+                $result['MailManagerTraceI18ns'] = $this->collMailManagerTraceI18ns->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1682,12 +1696,6 @@ abstract class MailManagerTrace implements ActiveRecordInterface
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
-            foreach ($this->getMailManagerTraceComments() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addMailManagerTraceComment($relObj->copy($deepCopy));
-                }
-            }
-
             foreach ($this->getMailManagerHistories() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addMailManagerHistory($relObj->copy($deepCopy));
@@ -1697,6 +1705,12 @@ abstract class MailManagerTrace implements ActiveRecordInterface
             foreach ($this->getMailManagerHistoryMails() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addMailManagerHistoryMail($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getMailManagerTraceI18ns() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addMailManagerTraceI18n($relObj->copy($deepCopy));
                 }
             }
 
@@ -1741,258 +1755,15 @@ abstract class MailManagerTrace implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('MailManagerTraceComment' == $relationName) {
-            return $this->initMailManagerTraceComments();
-        }
         if ('MailManagerHistory' == $relationName) {
             return $this->initMailManagerHistories();
         }
         if ('MailManagerHistoryMail' == $relationName) {
             return $this->initMailManagerHistoryMails();
         }
-    }
-
-    /**
-     * Clears out the collMailManagerTraceComments collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addMailManagerTraceComments()
-     */
-    public function clearMailManagerTraceComments()
-    {
-        $this->collMailManagerTraceComments = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collMailManagerTraceComments collection loaded partially.
-     */
-    public function resetPartialMailManagerTraceComments($v = true)
-    {
-        $this->collMailManagerTraceCommentsPartial = $v;
-    }
-
-    /**
-     * Initializes the collMailManagerTraceComments collection.
-     *
-     * By default this just sets the collMailManagerTraceComments collection to an empty array (like clearcollMailManagerTraceComments());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initMailManagerTraceComments($overrideExisting = true)
-    {
-        if (null !== $this->collMailManagerTraceComments && !$overrideExisting) {
-            return;
+        if ('MailManagerTraceI18n' == $relationName) {
+            return $this->initMailManagerTraceI18ns();
         }
-        $this->collMailManagerTraceComments = new ObjectCollection();
-        $this->collMailManagerTraceComments->setModel('\TheliaMailManager\Model\MailManagerTraceComment');
-    }
-
-    /**
-     * Gets an array of ChildMailManagerTraceComment objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildMailManagerTrace is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return Collection|ChildMailManagerTraceComment[] List of ChildMailManagerTraceComment objects
-     * @throws PropelException
-     */
-    public function getMailManagerTraceComments($criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collMailManagerTraceCommentsPartial && !$this->isNew();
-        if (null === $this->collMailManagerTraceComments || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collMailManagerTraceComments) {
-                // return empty collection
-                $this->initMailManagerTraceComments();
-            } else {
-                $collMailManagerTraceComments = ChildMailManagerTraceCommentQuery::create(null, $criteria)
-                    ->filterByMailManagerTrace($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collMailManagerTraceCommentsPartial && count($collMailManagerTraceComments)) {
-                        $this->initMailManagerTraceComments(false);
-
-                        foreach ($collMailManagerTraceComments as $obj) {
-                            if (false == $this->collMailManagerTraceComments->contains($obj)) {
-                                $this->collMailManagerTraceComments->append($obj);
-                            }
-                        }
-
-                        $this->collMailManagerTraceCommentsPartial = true;
-                    }
-
-                    reset($collMailManagerTraceComments);
-
-                    return $collMailManagerTraceComments;
-                }
-
-                if ($partial && $this->collMailManagerTraceComments) {
-                    foreach ($this->collMailManagerTraceComments as $obj) {
-                        if ($obj->isNew()) {
-                            $collMailManagerTraceComments[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collMailManagerTraceComments = $collMailManagerTraceComments;
-                $this->collMailManagerTraceCommentsPartial = false;
-            }
-        }
-
-        return $this->collMailManagerTraceComments;
-    }
-
-    /**
-     * Sets a collection of MailManagerTraceComment objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $mailManagerTraceComments A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return   ChildMailManagerTrace The current object (for fluent API support)
-     */
-    public function setMailManagerTraceComments(Collection $mailManagerTraceComments, ConnectionInterface $con = null)
-    {
-        $mailManagerTraceCommentsToDelete = $this->getMailManagerTraceComments(new Criteria(), $con)->diff($mailManagerTraceComments);
-
-
-        $this->mailManagerTraceCommentsScheduledForDeletion = $mailManagerTraceCommentsToDelete;
-
-        foreach ($mailManagerTraceCommentsToDelete as $mailManagerTraceCommentRemoved) {
-            $mailManagerTraceCommentRemoved->setMailManagerTrace(null);
-        }
-
-        $this->collMailManagerTraceComments = null;
-        foreach ($mailManagerTraceComments as $mailManagerTraceComment) {
-            $this->addMailManagerTraceComment($mailManagerTraceComment);
-        }
-
-        $this->collMailManagerTraceComments = $mailManagerTraceComments;
-        $this->collMailManagerTraceCommentsPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related MailManagerTraceComment objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related MailManagerTraceComment objects.
-     * @throws PropelException
-     */
-    public function countMailManagerTraceComments(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collMailManagerTraceCommentsPartial && !$this->isNew();
-        if (null === $this->collMailManagerTraceComments || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collMailManagerTraceComments) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getMailManagerTraceComments());
-            }
-
-            $query = ChildMailManagerTraceCommentQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByMailManagerTrace($this)
-                ->count($con);
-        }
-
-        return count($this->collMailManagerTraceComments);
-    }
-
-    /**
-     * Method called to associate a ChildMailManagerTraceComment object to this object
-     * through the ChildMailManagerTraceComment foreign key attribute.
-     *
-     * @param    ChildMailManagerTraceComment $l ChildMailManagerTraceComment
-     * @return   \TheliaMailManager\Model\MailManagerTrace The current object (for fluent API support)
-     */
-    public function addMailManagerTraceComment(ChildMailManagerTraceComment $l)
-    {
-        if ($this->collMailManagerTraceComments === null) {
-            $this->initMailManagerTraceComments();
-            $this->collMailManagerTraceCommentsPartial = true;
-        }
-
-        if (!in_array($l, $this->collMailManagerTraceComments->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddMailManagerTraceComment($l);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param MailManagerTraceComment $mailManagerTraceComment The mailManagerTraceComment object to add.
-     */
-    protected function doAddMailManagerTraceComment($mailManagerTraceComment)
-    {
-        $this->collMailManagerTraceComments[]= $mailManagerTraceComment;
-        $mailManagerTraceComment->setMailManagerTrace($this);
-    }
-
-    /**
-     * @param  MailManagerTraceComment $mailManagerTraceComment The mailManagerTraceComment object to remove.
-     * @return ChildMailManagerTrace The current object (for fluent API support)
-     */
-    public function removeMailManagerTraceComment($mailManagerTraceComment)
-    {
-        if ($this->getMailManagerTraceComments()->contains($mailManagerTraceComment)) {
-            $this->collMailManagerTraceComments->remove($this->collMailManagerTraceComments->search($mailManagerTraceComment));
-            if (null === $this->mailManagerTraceCommentsScheduledForDeletion) {
-                $this->mailManagerTraceCommentsScheduledForDeletion = clone $this->collMailManagerTraceComments;
-                $this->mailManagerTraceCommentsScheduledForDeletion->clear();
-            }
-            $this->mailManagerTraceCommentsScheduledForDeletion[]= clone $mailManagerTraceComment;
-            $mailManagerTraceComment->setMailManagerTrace(null);
-        }
-
-        return $this;
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this MailManagerTrace is new, it will return
-     * an empty collection; or if this MailManagerTrace has previously
-     * been saved, it will retrieve related MailManagerTraceComments from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in MailManagerTrace.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return Collection|ChildMailManagerTraceComment[] List of ChildMailManagerTraceComment objects
-     */
-    public function getMailManagerTraceCommentsJoinAdmin($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildMailManagerTraceCommentQuery::create(null, $criteria);
-        $query->joinWith('Admin', $joinBehavior);
-
-        return $this->getMailManagerTraceComments($query, $con);
     }
 
     /**
@@ -2457,6 +2228,231 @@ abstract class MailManagerTrace implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collMailManagerTraceI18ns collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addMailManagerTraceI18ns()
+     */
+    public function clearMailManagerTraceI18ns()
+    {
+        $this->collMailManagerTraceI18ns = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collMailManagerTraceI18ns collection loaded partially.
+     */
+    public function resetPartialMailManagerTraceI18ns($v = true)
+    {
+        $this->collMailManagerTraceI18nsPartial = $v;
+    }
+
+    /**
+     * Initializes the collMailManagerTraceI18ns collection.
+     *
+     * By default this just sets the collMailManagerTraceI18ns collection to an empty array (like clearcollMailManagerTraceI18ns());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initMailManagerTraceI18ns($overrideExisting = true)
+    {
+        if (null !== $this->collMailManagerTraceI18ns && !$overrideExisting) {
+            return;
+        }
+        $this->collMailManagerTraceI18ns = new ObjectCollection();
+        $this->collMailManagerTraceI18ns->setModel('\TheliaMailManager\Model\MailManagerTraceI18n');
+    }
+
+    /**
+     * Gets an array of ChildMailManagerTraceI18n objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildMailManagerTrace is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return Collection|ChildMailManagerTraceI18n[] List of ChildMailManagerTraceI18n objects
+     * @throws PropelException
+     */
+    public function getMailManagerTraceI18ns($criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collMailManagerTraceI18nsPartial && !$this->isNew();
+        if (null === $this->collMailManagerTraceI18ns || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collMailManagerTraceI18ns) {
+                // return empty collection
+                $this->initMailManagerTraceI18ns();
+            } else {
+                $collMailManagerTraceI18ns = ChildMailManagerTraceI18nQuery::create(null, $criteria)
+                    ->filterByMailManagerTrace($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collMailManagerTraceI18nsPartial && count($collMailManagerTraceI18ns)) {
+                        $this->initMailManagerTraceI18ns(false);
+
+                        foreach ($collMailManagerTraceI18ns as $obj) {
+                            if (false == $this->collMailManagerTraceI18ns->contains($obj)) {
+                                $this->collMailManagerTraceI18ns->append($obj);
+                            }
+                        }
+
+                        $this->collMailManagerTraceI18nsPartial = true;
+                    }
+
+                    reset($collMailManagerTraceI18ns);
+
+                    return $collMailManagerTraceI18ns;
+                }
+
+                if ($partial && $this->collMailManagerTraceI18ns) {
+                    foreach ($this->collMailManagerTraceI18ns as $obj) {
+                        if ($obj->isNew()) {
+                            $collMailManagerTraceI18ns[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collMailManagerTraceI18ns = $collMailManagerTraceI18ns;
+                $this->collMailManagerTraceI18nsPartial = false;
+            }
+        }
+
+        return $this->collMailManagerTraceI18ns;
+    }
+
+    /**
+     * Sets a collection of MailManagerTraceI18n objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $mailManagerTraceI18ns A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return   ChildMailManagerTrace The current object (for fluent API support)
+     */
+    public function setMailManagerTraceI18ns(Collection $mailManagerTraceI18ns, ConnectionInterface $con = null)
+    {
+        $mailManagerTraceI18nsToDelete = $this->getMailManagerTraceI18ns(new Criteria(), $con)->diff($mailManagerTraceI18ns);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->mailManagerTraceI18nsScheduledForDeletion = clone $mailManagerTraceI18nsToDelete;
+
+        foreach ($mailManagerTraceI18nsToDelete as $mailManagerTraceI18nRemoved) {
+            $mailManagerTraceI18nRemoved->setMailManagerTrace(null);
+        }
+
+        $this->collMailManagerTraceI18ns = null;
+        foreach ($mailManagerTraceI18ns as $mailManagerTraceI18n) {
+            $this->addMailManagerTraceI18n($mailManagerTraceI18n);
+        }
+
+        $this->collMailManagerTraceI18ns = $mailManagerTraceI18ns;
+        $this->collMailManagerTraceI18nsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related MailManagerTraceI18n objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related MailManagerTraceI18n objects.
+     * @throws PropelException
+     */
+    public function countMailManagerTraceI18ns(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collMailManagerTraceI18nsPartial && !$this->isNew();
+        if (null === $this->collMailManagerTraceI18ns || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collMailManagerTraceI18ns) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getMailManagerTraceI18ns());
+            }
+
+            $query = ChildMailManagerTraceI18nQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByMailManagerTrace($this)
+                ->count($con);
+        }
+
+        return count($this->collMailManagerTraceI18ns);
+    }
+
+    /**
+     * Method called to associate a ChildMailManagerTraceI18n object to this object
+     * through the ChildMailManagerTraceI18n foreign key attribute.
+     *
+     * @param    ChildMailManagerTraceI18n $l ChildMailManagerTraceI18n
+     * @return   \TheliaMailManager\Model\MailManagerTrace The current object (for fluent API support)
+     */
+    public function addMailManagerTraceI18n(ChildMailManagerTraceI18n $l)
+    {
+        if ($l && $locale = $l->getLocale()) {
+            $this->setLocale($locale);
+            $this->currentTranslations[$locale] = $l;
+        }
+        if ($this->collMailManagerTraceI18ns === null) {
+            $this->initMailManagerTraceI18ns();
+            $this->collMailManagerTraceI18nsPartial = true;
+        }
+
+        if (!in_array($l, $this->collMailManagerTraceI18ns->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddMailManagerTraceI18n($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param MailManagerTraceI18n $mailManagerTraceI18n The mailManagerTraceI18n object to add.
+     */
+    protected function doAddMailManagerTraceI18n($mailManagerTraceI18n)
+    {
+        $this->collMailManagerTraceI18ns[]= $mailManagerTraceI18n;
+        $mailManagerTraceI18n->setMailManagerTrace($this);
+    }
+
+    /**
+     * @param  MailManagerTraceI18n $mailManagerTraceI18n The mailManagerTraceI18n object to remove.
+     * @return ChildMailManagerTrace The current object (for fluent API support)
+     */
+    public function removeMailManagerTraceI18n($mailManagerTraceI18n)
+    {
+        if ($this->getMailManagerTraceI18ns()->contains($mailManagerTraceI18n)) {
+            $this->collMailManagerTraceI18ns->remove($this->collMailManagerTraceI18ns->search($mailManagerTraceI18n));
+            if (null === $this->mailManagerTraceI18nsScheduledForDeletion) {
+                $this->mailManagerTraceI18nsScheduledForDeletion = clone $this->collMailManagerTraceI18ns;
+                $this->mailManagerTraceI18nsScheduledForDeletion->clear();
+            }
+            $this->mailManagerTraceI18nsScheduledForDeletion[]= clone $mailManagerTraceI18n;
+            $mailManagerTraceI18n->setMailManagerTrace(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
@@ -2494,11 +2490,6 @@ abstract class MailManagerTrace implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collMailManagerTraceComments) {
-                foreach ($this->collMailManagerTraceComments as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
             if ($this->collMailManagerHistories) {
                 foreach ($this->collMailManagerHistories as $o) {
                     $o->clearAllReferences($deep);
@@ -2509,11 +2500,20 @@ abstract class MailManagerTrace implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collMailManagerTraceI18ns) {
+                foreach ($this->collMailManagerTraceI18ns as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
-        $this->collMailManagerTraceComments = null;
+        // i18n behavior
+        $this->currentLocale = 'en_US';
+        $this->currentTranslations = null;
+
         $this->collMailManagerHistories = null;
         $this->collMailManagerHistoryMails = null;
+        $this->collMailManagerTraceI18ns = null;
     }
 
     /**
@@ -2524,6 +2524,153 @@ abstract class MailManagerTrace implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(MailManagerTraceTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // i18n behavior
+
+    /**
+     * Sets the locale for translations
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     *
+     * @return    ChildMailManagerTrace The current object (for fluent API support)
+     */
+    public function setLocale($locale = 'en_US')
+    {
+        $this->currentLocale = $locale;
+
+        return $this;
+    }
+
+    /**
+     * Gets the locale for translations
+     *
+     * @return    string $locale Locale to use for the translation, e.g. 'fr_FR'
+     */
+    public function getLocale()
+    {
+        return $this->currentLocale;
+    }
+
+    /**
+     * Returns the current translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildMailManagerTraceI18n */
+    public function getTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!isset($this->currentTranslations[$locale])) {
+            if (null !== $this->collMailManagerTraceI18ns) {
+                foreach ($this->collMailManagerTraceI18ns as $translation) {
+                    if ($translation->getLocale() == $locale) {
+                        $this->currentTranslations[$locale] = $translation;
+
+                        return $translation;
+                    }
+                }
+            }
+            if ($this->isNew()) {
+                $translation = new ChildMailManagerTraceI18n();
+                $translation->setLocale($locale);
+            } else {
+                $translation = ChildMailManagerTraceI18nQuery::create()
+                    ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                    ->findOneOrCreate($con);
+                $this->currentTranslations[$locale] = $translation;
+            }
+            $this->addMailManagerTraceI18n($translation);
+        }
+
+        return $this->currentTranslations[$locale];
+    }
+
+    /**
+     * Remove the translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return    ChildMailManagerTrace The current object (for fluent API support)
+     */
+    public function removeTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!$this->isNew()) {
+            ChildMailManagerTraceI18nQuery::create()
+                ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                ->delete($con);
+        }
+        if (isset($this->currentTranslations[$locale])) {
+            unset($this->currentTranslations[$locale]);
+        }
+        foreach ($this->collMailManagerTraceI18ns as $key => $translation) {
+            if ($translation->getLocale() == $locale) {
+                unset($this->collMailManagerTraceI18ns[$key]);
+                break;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Returns the current translation
+     *
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildMailManagerTraceI18n */
+    public function getCurrentTranslation(ConnectionInterface $con = null)
+    {
+        return $this->getTranslation($this->getLocale(), $con);
+    }
+
+
+        /**
+         * Get the [title] column value.
+         *
+         * @return   string
+         */
+        public function getTitle()
+        {
+        return $this->getCurrentTranslation()->getTitle();
+    }
+
+
+        /**
+         * Set the value of [title] column.
+         *
+         * @param      string $v new value
+         * @return   \TheliaMailManager\Model\MailManagerTraceI18n The current object (for fluent API support)
+         */
+        public function setTitle($v)
+        {    $this->getCurrentTranslation()->setTitle($v);
+
+        return $this;
+    }
+
+
+        /**
+         * Get the [description] column value.
+         *
+         * @return   string
+         */
+        public function getDescription()
+        {
+        return $this->getCurrentTranslation()->getDescription();
+    }
+
+
+        /**
+         * Set the value of [description] column.
+         *
+         * @param      string $v new value
+         * @return   \TheliaMailManager\Model\MailManagerTraceI18n The current object (for fluent API support)
+         */
+        public function setDescription($v)
+        {    $this->getCurrentTranslation()->setDescription($v);
+
+        return $this;
     }
 
     // timestampable behavior

@@ -25,33 +25,6 @@ CREATE TABLE `mail_manager_trace`
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
--- mail_manager_trace_comment
--- ---------------------------------------------------------------------
-
-CREATE TABLE `mail_manager_trace_comment`
-(
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `trace_id` INTEGER NOT NULL,
-    `admin_id` INTEGER,
-    `comment` TEXT,
-    `created_at` DATETIME,
-    `updated_at` DATETIME,
-    PRIMARY KEY (`id`),
-    INDEX `mail_manager_trace_comment_I_1` (`trace_id`),
-    INDEX `FI_mail_manager_trace_comment__admin` (`admin_id`),
-    CONSTRAINT `fk_mail_manager_trace_comment__mail_manager_trace`
-        FOREIGN KEY (`trace_id`)
-        REFERENCES `mail_manager_trace` (`id`)
-        ON UPDATE RESTRICT
-        ON DELETE CASCADE,
-    CONSTRAINT `fk_mail_manager_trace_comment__admin`
-        FOREIGN KEY (`admin_id`)
-        REFERENCES `admin` (`id`)
-        ON UPDATE RESTRICT
-        ON DELETE CASCADE
-) ENGINE=InnoDB;
-
--- ---------------------------------------------------------------------
 -- mail_manager_history
 -- ---------------------------------------------------------------------
 
@@ -113,6 +86,23 @@ CREATE TABLE `mail_manager_history_mail`
         FOREIGN KEY (`mail_id`)
         REFERENCES `mail_manager_trace` (`id`)
         ON UPDATE RESTRICT
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- mail_manager_trace_i18n
+-- ---------------------------------------------------------------------
+
+CREATE TABLE `mail_manager_trace_i18n`
+(
+    `id` INTEGER NOT NULL,
+    `locale` VARCHAR(5) DEFAULT 'en_US' NOT NULL,
+    `title` TEXT,
+    `description` VARCHAR(255),
+    PRIMARY KEY (`id`,`locale`),
+    CONSTRAINT `mail_manager_trace_i18n_FK_1`
+        FOREIGN KEY (`id`)
+        REFERENCES `mail_manager_trace` (`id`)
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
 

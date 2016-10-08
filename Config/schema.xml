@@ -17,37 +17,18 @@
         <column name="email_bcc" type="ARRAY" />
         <column name="email_redirect" type="ARRAY" />
         <column name="detail" required="true" type="LONGVARCHAR" />
+        <column name="title" type="LONGVARCHAR" />
+        <column name="description" type="VARCHAR" />
+
+        <behavior name="i18n">
+            <parameter name="i18n_columns" value="title, description"/>
+        </behavior>
 
         <behavior name="timestampable"/>
 
         <unique>
             <unique-column name="hash" />
         </unique>
-    </table>
-
-    <!-- - - - - - - - - - - -->
-    <!-- - trace comment - - -->
-    <!-- - - - - - - - - - - -->
-
-    <table name="mail_manager_trace_comment" namespace="TheliaMailManager\Model">
-        <column autoIncrement="true" name="id" primaryKey="true" required="true" type="INTEGER" />
-        <column name="trace_id" required="true" type="INTEGER" />
-        <column name="admin_id" type="INTEGER" />
-        <column name="comment" type="LONGVARCHAR" />
-
-        <foreign-key foreignTable="mail_manager_trace" name="fk_mail_manager_trace_comment__mail_manager_trace" onDelete="CASCADE" onUpdate="RESTRICT">
-            <reference foreign="id" local="trace_id" />
-        </foreign-key>
-
-        <foreign-key foreignTable="admin" name="fk_mail_manager_trace_comment__admin" onDelete="CASCADE" onUpdate="RESTRICT">
-            <reference foreign="id" local="admin_id" />
-        </foreign-key>
-
-        <behavior name="timestampable"/>
-
-        <index>
-            <index-column name="trace_id" />
-        </index>
     </table>
 
     <!-- - - - - - - - - - - -->
