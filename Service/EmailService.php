@@ -2,7 +2,9 @@
 
 namespace TheliaEmailManager\Service;
 
+use Symfony\Component\Routing\Router;
 use Symfony\Component\Validator\Constraints\Date;
+use Thelia\Tools\URL;
 use TheliaEmailManager\Exception\InvalidEmailException;
 use TheliaEmailManager\Exception\InvalidHashException;
 use TheliaEmailManager\Model\EmailManagerEmail;
@@ -14,6 +16,9 @@ use TheliaEmailManager\Util\EmailUtil;
  */
 class EmailService
 {
+    /** @var Router */
+    protected $router;
+
     /**
      * For disable sending email to customer thanks to the hash
      * @param string $hash
@@ -52,7 +57,12 @@ class EmailService
             $this->generateDisableUrl($model);
         }
 
-        return $model->getDisableHash();
+        return URL::getInstance()->absoluteUrl(
+            $this->router->generate(
+                'email_manager_disable_sending',
+                ['hash' => $model->getDisableHash()]
+            )
+        );
     }
 
     /**

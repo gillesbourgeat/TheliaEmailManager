@@ -44,7 +44,7 @@
     </route>
 
     <!-- - Front - -->
-    <route id="email_manager_customer_disable" path="/email-manager/disable/{hash}" methods="GET">
+    <route id="email_manager_disable_sending" path="/email-manager/disable/{hash}" methods="GET">
         <default key="_controller">TheliaEmailManager:Email:disableEmail</default>
         <requirement key="hash">[a-zA-Z0-9]{64}</requirement>
     </route>

@@ -6,6 +6,7 @@
 
     <services>
         <service id="thelia.email.manager.email.service" class="TheliaEmailManager\Service\EmailService">
+            <argument type="service" id="router.emailmanager" />
         </service>
         <service id="thelia.email.manager.smarty" class="TheliaEmailManager\Plugin\SmartyPlugin">
             <tag name="thelia.parser.register_plugin"/>
