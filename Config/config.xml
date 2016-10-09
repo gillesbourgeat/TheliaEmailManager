@@ -5,6 +5,12 @@
         xsi:schemaLocation="http://thelia.net/schema/dic/config http://thelia.net/schema/dic/config/thelia-1.0.xsd">
 
     <services>
+        <service id="thelia.email.manager.email.service" class="TheliaEmailManager\Service\EmailService">
+        </service>
+        <service id="thelia.email.manager.smarty" class="TheliaEmailManager\Plugin\SmartyPlugin">
+            <tag name="thelia.parser.register_plugin"/>
+            <argument type="service" id="thelia.email.manager.email.service" />
+        </service>
         <service id="thelia.email.manager.listener" class="TheliaEmailManager\EventListener\MailerListener">
             <tag name="kernel.event_subscriber"/>
         </service>

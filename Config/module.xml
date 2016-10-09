@@ -4,38 +4,23 @@
         xsi:schemaLocation="http://thelia.net/schema/dic/module http://thelia.net/schema/dic/module/module-2_2.xsd">
     <fullnamespace>TheliaEmailManager\TheliaEmailManager</fullnamespace>
     <descriptive locale="en_US">
-        <title>Automatically generated module - please update module.xml file</title>
-        <!--
-        <subtitle></subtitle>
-        <description></description>
-        <postscriptum></postscriptum>
-        -->
+        <title>Module to manage emails sent by Thelia</title>
     </descriptive>
     <descriptive locale="fr_FR">
-        <title>Module généré automatiquement - éditez le fichier module.xml</title>
+        <title>Module pour gérer les e-mails envoyés par Thelia</title>
     </descriptive>
-    <!-- <logo></logo> -->
-    <!--<images-folder>images</images-folder>-->
     <languages>
         <language>en_US</language>
         <language>fr_FR</language>
     </languages>
-    <version></version>
+    <version>0.9.0</version>
     <authors>
         <author>
-            <name></name>
-            <email></email>
+            <name>Gilles Bourgeat</name>
+            <email>gilles.bourgeat@gmail.com</email>
         </author>
     </authors>
     <type>classic</type>
-    <!--
-    module dependencies
-    <required>
-        <module version="&gt;=0.1">Front</module>
-        <module version="~1.0">HookCart</module>
-        <module version="&gt;0.2">HookSearch</module>
-    </required>
-    -->
     <thelia>2.2.0</thelia>
-    <stability>other</stability>
+    <stability>beta</stability>
 </module>

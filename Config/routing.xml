@@ -43,4 +43,10 @@
         <requirement key="historyId">\d+</requirement>
     </route>
 
+    <!-- - Front - -->
+    <route id="email_manager_customer_disable" path="/email-manager/disable/{hash}" methods="GET">
+        <default key="_controller">TheliaEmailManager:Email:disableEmail</default>
+        <requirement key="hash">[a-zA-Z0-9]{64}</requirement>
+    </route>
+
 </routes>
