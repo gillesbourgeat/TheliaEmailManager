@@ -32,7 +32,7 @@ class EmailService
         }
 
         $model
-            ->setDisableSendDate(new Date())
+            ->setDisableSendDate(new \DateTime())
             ->setDisableSend(true)
             ->save();
 
@@ -75,6 +75,6 @@ class EmailService
         }
 
         $key = md5($model->getEmail()) . uniqid(true);
-        $model->setDisableHash(hash('sha512', $key));
+        $model->setDisableHash(hash('sha256', $key));
     }
 }

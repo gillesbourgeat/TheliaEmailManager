@@ -1,0 +1,40 @@
+{extends file="layout.tpl"}
+
+{block name="meta" append}
+    <meta name="robots" content="noindex, nofollow">
+{/block}
+
+{* Breadcrumb *}
+{block name='no-return-functions' append}
+    {$breadcrumbs = [
+    ['title' => {intl l="Desactivate email sending" d="theliaemailmanager.fo.default"}]
+    ]}
+{/block}
+
+{block name="body-class"}page-deactivate-email-sending{/block}
+
+{block name="main-content"}
+<div class="main">
+    <article class="col-main" role="main" aria-labelledby="main-label">
+        {if $success}
+            <div class="alert alert-success">
+                {intl l="The sending email has been deactivated for the email : %email" email=$email d="theliaemailmanager.fo.default"}
+                <br/>
+                {intl l="You can reactivate the sending from your account." d="theliaemailmanager.fo.default"}
+                <a href="{url path="/account"}">
+                    {intl l="View my account !" d="theliaemailmanager.fo.default"}
+                </a>
+            </div>
+        {else}
+            <div class="alert alert-warning">
+                {intl l="Sorry ! This link is more valid for deactivate the emails sending." d="theliaemailmanager.fo.default"}
+                <br/>
+                {intl l="You can deactivate emails sending from your account." d="theliaemailmanager.fo.default"}
+                <a href="{url path="/account"}">
+                    {intl l="View my account !" d="theliaemailmanager.fo.default"}
+                </a>
+            </div>
+        {/if}
+    </article>
+</div>
+{/block}
