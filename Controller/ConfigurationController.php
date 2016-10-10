@@ -9,7 +9,7 @@ use TheliaEmailManager\TheliaEmailManager;
 /**
  * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
-class ConfigController extends BaseAdminController
+class ConfigurationController extends BaseAdminController
 {
     /** @var string */
     protected $currentRouter = TheliaEmailManager::ROUTER;
