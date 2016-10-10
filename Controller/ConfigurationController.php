@@ -14,7 +14,7 @@ class ConfigurationController extends BaseAdminController
     /** @var string */
     protected $currentRouter = TheliaEmailManager::ROUTER;
 
-    public function viwAction(Request $request)
+    public function viewAction(Request $request)
     {
         return $this->render('TheliaEmailManager/configuration');
     }

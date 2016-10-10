@@ -12,7 +12,10 @@
             <tag name="thelia.parser.register_plugin"/>
             <argument type="service" id="thelia.email.manager.email.service" />
         </service>
-        <service id="thelia.email.manager.listener" class="TheliaEmailManager\EventListener\MailerListener">
+        <service id="thelia.email.manager.thelia.listener" class="TheliaEmailManager\EventListener\MailerListener">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+        <service id="thelia.email.manager.swift.listener" class="TheliaEmailManager\EventListener\SwiftListener">
             <tag name="kernel.event_subscriber"/>
         </service>
     </services>

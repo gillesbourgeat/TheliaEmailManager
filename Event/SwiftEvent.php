@@ -24,7 +24,7 @@ class SwiftEvent extends Event
     /**
      * @return \Swift_Events_SendEvent
      */
-    public function getEvt()
+    public function getSwiftEvent()
     {
         return $this->swiftEvent;
     }

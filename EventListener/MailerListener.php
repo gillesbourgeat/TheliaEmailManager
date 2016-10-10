@@ -26,7 +26,7 @@ class MailerListener implements EventSubscriberInterface
     {
         if (!$event->hasTransporter()) {
             $event->setMailerTransporter(
-                ConfigQuery::isSmtpEnable() ? $this->configureSmtp() : \Swift_emailTransport::newInstance()
+                ConfigQuery::isSmtpEnable() ? $this->configureSmtp() : \Swift_MailTransport::newInstance()
             );
         }
 
