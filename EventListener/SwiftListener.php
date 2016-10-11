@@ -21,9 +21,7 @@ class SwiftListener implements EventSubscriberInterface
     {
         if (null !== $emailManagerTrace = $this->getEmailManagerTrace($event)) {
 
-            unset($this->emailManagerTraceCache[spl_object_hash($event->getSwiftEvent())]);
         }
-        exit;
     }
 
     public function beforeSend(SwiftEvent $event)
@@ -53,36 +51,31 @@ class SwiftListener implements EventSubscriberInterface
      */
     protected function getEmailManagerTrace(SwiftEvent $event)
     {
-        $objectIdentifier = spl_object_hash($event->getSwiftEvent());
-        if (!isset($this->emailManagerTraceCache[$objectIdentifier])) {
-            $trace = $this->getTrace();
-            if (count($trace)) {
-                $hash = $this->getHash($trace);
+        $trace = $this->getTrace();
+        if (count($trace)) {
+            $hash = $this->getHash($trace);
 
-                if (null === $emailManagerTrace = EmailManagerTraceQuery::create()->findOneByHash($hash)) {
-                    $emailManagerTrace = (new EmailManagerTrace())
-                        ->setHash($hash)
-                        ->setDetail(serialize($this->getFullTrace()));
+            if (null === $emailManagerTrace = EmailManagerTraceQuery::create()->findOneByHash($hash)) {
+                $emailManagerTrace = (new EmailManagerTrace())
+                    ->setHash($hash)
+                    ->setDetail(serialize($this->getFullTrace()));
 
-                    $title = $this->getTitleFromTrace($trace);
+                $title = $this->getTitleFromTrace($trace);
 
-                    $languages = LangQuery::create()->filterByActive(true)->find();
+                $languages = LangQuery::create()->filterByActive(true)->find();
 
-                    /** @var Lang $language */
-                    foreach ($languages as $language) {
-                        $emailManagerTrace->setLocale($language->getLocale())->setTitle($title);
-                    }
-
-                    $emailManagerTrace->save();
+                /** @var Lang $language */
+                foreach ($languages as $language) {
+                    $emailManagerTrace->setLocale($language->getLocale())->setTitle($title);
                 }
 
-                $this->emailManagerTraceCache[$objectIdentifier] = $emailManagerTrace;
+                $emailManagerTrace->save();
             }
 
-            return null;
+            return $emailManagerTrace;
         }
 
-        return $this->emailManagerTraceCache[$objectIdentifier];
+        return null;
     }
 
     /**
