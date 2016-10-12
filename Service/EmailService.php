@@ -46,16 +46,7 @@ class EmailService
      */
     public function getDisableUrl($email)
     {
-        if (!EmailUtil::checkMailStructure($email)) {
-            throw new InvalidEmailException("Invalid email : " . $email);
-        }
-
-        if (null === $model = EmailManagerEmailQuery::create()->findOneByEmail($email)) {
-            $model = new EmailManagerEmail();
-            $model->setEmail($email);
-            $model->save();
-            $this->generateDisableUrl($model);
-        }
+        $model = $this->getEmailManagerEmail($email);
 
         return URL::getInstance()->absoluteUrl(
             $this->router->generate(
@@ -63,6 +54,27 @@ class EmailService
                 ['hash' => $model->getDisableHash()]
             )
         );
+    }
+
+    /**
+     * @param string $email
+     * @return EmailManagerEmail
+     * @throws InvalidEmailException
+     */
+    public function getEmailManagerEmail($email)
+    {
+        if (!EmailUtil::checkMailStructure($email)) {
+            throw new InvalidEmailException("Invalid email : " . $email);
+        }
+
+        if (null === $model = EmailManagerEmailQuery::create()->findOneByEmail($email)) {
+            $model = new EmailManagerEmail();
+            $model->setEmail($email);
+            $this->generateDisableUrl($model);
+            $model->save();
+        }
+
+        return $model;
     }
 
     /**

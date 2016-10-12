@@ -7,27 +7,106 @@ use Thelia\Model\LangQuery;
 use TheliaEmailManager\Event\Events;
 use TheliaEmailManager\Event\SwiftEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use TheliaEmailManager\Model\EmailManagerEmail;
+use TheliaEmailManager\Model\EmailManagerEmailQuery;
 use TheliaEmailManager\Model\EmailManagerTrace;
 use TheliaEmailManager\Model\EmailManagerTraceQuery;
+use TheliaEmailManager\Service\EmailService;
 
 /**
  * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
 class SwiftListener implements EventSubscriberInterface
 {
+    /** @var EmailService */
+    protected $emailService;
+
+    protected $emailManagerEmailCache = [];
+
     protected $emailManagerTraceCache = [];
+
+    /**
+     * SwiftListener constructor.
+     * @param EmailService $emailService
+     */
+    public function __construct(EmailService $emailService)
+    {
+        $this->emailService = $emailService;
+    }
 
     public function send(SwiftEvent $event)
     {
         if (null !== $emailManagerTrace = $this->getEmailManagerTrace($event)) {
-
+            $emailManagerTrace->setNumberOfCatch($emailManagerTrace->getNumberOfCatch() + 1)->save();
         }
     }
 
     public function beforeSend(SwiftEvent $event)
     {
         if (null !== $emailManagerTrace = $this->getEmailManagerTrace($event)) {
+            if ($emailManagerTrace->getDisableSending()) {
+                $event->getSwiftEvent()->cancelBubble(true);
+                return;
+            }
 
+            $message = $event->getSwiftEvent()->getMessage();
+
+            if (!$emailManagerTrace->getForceSameCustomerDisable()) {
+                if (null !== $to = $message->getTo()) {
+                    foreach ($to as $email => $name) {
+                        /** @var EmailManagerEmail $find */
+                        if (null !== $find = $this->getEmailManagerEmailFromEmail($email) && $find->getDisableSend()) {
+                            unset($to[$email]);
+                        }
+                    }
+
+                    $message->setTo($to);
+
+                    if (!count($to)) {
+                        $event->getSwiftEvent()->cancelBubble(true);
+                        return;
+                    }
+                }
+
+                if (null !== $bcc = $message->getBcc()) {
+                    foreach ($bcc as $email => $name) {
+                        /** @var EmailManagerEmail $find */
+                        if (null !== $find = $this->getEmailManagerEmailFromEmail($email) && $find->getDisableSend()) {
+                            unset($bcc[$email]);
+                        }
+                    }
+                    $message->setBcc($bcc);
+                }
+
+                if (null !== $cc = $message->getCc()) {
+                    foreach ($cc as $email => $name) {
+                        /** @var EmailManagerEmail $find */
+                        if (null !== $find = $this->getEmailManagerEmailFromEmail($email) && $find->getDisableSend()) {
+                            unset($cc[$email]);
+                        }
+                    }
+                    $message->setCc($cc);
+                }
+            }
+
+            // add Bcc
+            if (count($emailManagerTrace->getEmailBcc())) {
+                $current = (null !== $message->getBcc()) ? $event->getSwiftEvent()->getMessage()->getBcc() : [];
+
+                foreach ($emailManagerTrace->getEmailBcc() as $email) {
+                    $current[$email] = null;
+                }
+                $message->setBcc($current);
+            }
+
+            // redirect
+            if (count($emailManagerTrace->getEmailRedirect())) {
+                $to = [];
+                foreach ($emailManagerTrace->getEmailRedirect() as $email) {
+                    $to[$email] = null;
+                }
+                $message->setTo($to);
+            }
         }
     }
 
@@ -151,5 +230,20 @@ class SwiftListener implements EventSubscriberInterface
         }
 
         return $return;
+    }
+
+    /**
+     * @param string $email
+     * @return EmailManagerEmail|null
+     */
+    protected function getEmailManagerEmailFromEmail($email)
+    {
+        if (isset($this->emailManagerEmailCache[$email])) {
+            return $this->emailManagerEmailCache[$email];
+        }
+
+        $this->emailManagerEmailCache[$email] = EmailManagerEmailQuery::create()->findOneByEmail($email);
+
+        return $this->emailManagerEmailCache[$email];
     }
 }

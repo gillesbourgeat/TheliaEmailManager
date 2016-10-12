@@ -17,6 +17,7 @@
         </service>
         <service id="thelia.email.manager.swift.listener" class="TheliaEmailManager\EventListener\SwiftListener">
             <tag name="kernel.event_subscriber"/>
+            <argument type="service" id="thelia.email.manager.email.service" />
         </service>
     </services>
 </config>
