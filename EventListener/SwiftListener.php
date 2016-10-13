@@ -8,7 +8,8 @@ use TheliaEmailManager\Event\Events;
 use TheliaEmailManager\Event\SwiftEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use TheliaEmailManager\Model\EmailManagerEmail;
-use TheliaEmailManager\Model\EmailManagerEmailQuery;
+use TheliaEmailManager\Model\EmailManagerHistory;
+use TheliaEmailManager\Model\EmailManagerHistoryEmail;
 use TheliaEmailManager\Model\EmailManagerTrace;
 use TheliaEmailManager\Model\EmailManagerTraceQuery;
 use TheliaEmailManager\Service\EmailService;
@@ -21,8 +22,10 @@ class SwiftListener implements EventSubscriberInterface
     /** @var EmailService */
     protected $emailService;
 
+    /** @var EmailManagerEmail[] */
     protected $emailManagerEmailCache = [];
 
+    /** @var EmailManagerTrace[] */
     protected $emailManagerTraceCache = [];
 
     /**
@@ -36,77 +39,148 @@ class SwiftListener implements EventSubscriberInterface
 
     public function send(SwiftEvent $event)
     {
-        if (null !== $emailManagerTrace = $this->getEmailManagerTrace($event)) {
-            $emailManagerTrace->setNumberOfCatch($emailManagerTrace->getNumberOfCatch() + 1)->save();
+        if (null === $emailManagerTrace = $this->getEmailManagerTrace($event)) {
+            return;
+        }
+
+        $message = $event->getSwiftEvent()->getMessage();
+
+        if (!$emailManagerTrace->getDisableHistory()) {
+            $history = (new EmailManagerHistory())
+                ->setTraceId($emailManagerTrace->getId())
+                ->setSubject($message->getSubject())
+                ->setBody($message->getBody());
+
+            $history->save();
+
+            if (null !== $from = $message->getFrom()) {
+                foreach ($from as $email => $name) {
+                    (new EmailManagerHistoryEmail())
+                        ->setEmailId($this->getEmailManagerEmailFromEmail($email)->getId())
+                        ->setType('from')
+                        ->setHistoryId($history->getId())
+                        ->save();
+                }
+            }
+
+            if (null !== $to = $message->getTo()) {
+                foreach ($to as $email => $name) {
+                    (new EmailManagerHistoryEmail())
+                        ->setEmailId($this->getEmailManagerEmailFromEmail($email)->getId())
+                        ->setType('to')
+                        ->setHistoryId($history->getId())
+                        ->save();
+                }
+            }
+
+            if (null !== $cc = $message->getCc()) {
+                foreach ($cc as $email => $name) {
+                    (new EmailManagerHistoryEmail())
+                        ->setEmailId($this->getEmailManagerEmailFromEmail($email)->getId())
+                        ->setType('cc')
+                        ->setHistoryId($history->getId())
+                        ->save();
+                }
+            }
+
+            if (null !== $bcc = $message->getBcc()) {
+                foreach ($bcc as $email => $name) {
+                    (new EmailManagerHistoryEmail())
+                        ->setEmailId($this->getEmailManagerEmailFromEmail($email)->getId())
+                        ->setType('bcc')
+                        ->setHistoryId($history->getId())
+                        ->save();
+                }
+            }
+
+            if (null !== $replyTo = $message->getReplyTo()) {
+                foreach ($replyTo as $email => $name) {
+                    (new EmailManagerHistoryEmail())
+                        ->setEmailId($this->getEmailManagerEmailFromEmail($email)->getId())
+                        ->setType('rt')
+                        ->setHistoryId($history->getId())
+                        ->save();
+                }
+            }
         }
     }
 
     public function beforeSend(SwiftEvent $event)
     {
-        if (null !== $emailManagerTrace = $this->getEmailManagerTrace($event)) {
-            if ($emailManagerTrace->getDisableSending()) {
-                $event->getSwiftEvent()->cancelBubble(true);
-                return;
-            }
+        if (null === $emailManagerTrace = $this->getEmailManagerTrace($event)) {
+            return;
+        }
 
-            $message = $event->getSwiftEvent()->getMessage();
+        $emailManagerTrace->setNumberOfCatch($emailManagerTrace->getNumberOfCatch() + 1)->save();
 
-            if (!$emailManagerTrace->getForceSameCustomerDisable()) {
-                if (null !== $to = $message->getTo()) {
-                    foreach ($to as $email => $name) {
-                        /** @var EmailManagerEmail $find */
-                        if (null !== $find = $this->getEmailManagerEmailFromEmail($email) && $find->getDisableSend()) {
+        if ($emailManagerTrace->getDisableSending()) {
+            $event->getSwiftEvent()->cancelBubble(true);
+            return;
+        }
+
+        $message = $event->getSwiftEvent()->getMessage();
+
+        if (!$emailManagerTrace->getForceSameCustomerDisable()) {
+            if (null !== $to = $message->getTo()) {
+                foreach ($to as $email => $name) {
+                    /** @var EmailManagerEmail $find */
+                    if (null !== $find = $this->getEmailManagerEmailFromEmail($email)) {
+                        if ($find->getDisableSend()) {
                             unset($to[$email]);
                         }
                     }
-
-                    $message->setTo($to);
-
-                    if (!count($to)) {
-                        $event->getSwiftEvent()->cancelBubble(true);
-                        return;
-                    }
                 }
 
-                if (null !== $bcc = $message->getBcc()) {
-                    foreach ($bcc as $email => $name) {
-                        /** @var EmailManagerEmail $find */
-                        if (null !== $find = $this->getEmailManagerEmailFromEmail($email) && $find->getDisableSend()) {
+                $message->setTo($to);
+
+                if (!count($to)) {
+                    $event->getSwiftEvent()->cancelBubble(true);
+                    return;
+                }
+            }
+
+            if (null !== $bcc = $message->getBcc()) {
+                foreach ($bcc as $email => $name) {
+                    /** @var EmailManagerEmail $find */
+                    if (null !== $find = $this->getEmailManagerEmailFromEmail($email)) {
+                        if ($find->getDisableSend()) {
                             unset($bcc[$email]);
                         }
                     }
-                    $message->setBcc($bcc);
                 }
+                $message->setBcc($bcc);
+            }
 
-                if (null !== $cc = $message->getCc()) {
-                    foreach ($cc as $email => $name) {
-                        /** @var EmailManagerEmail $find */
-                        if (null !== $find = $this->getEmailManagerEmailFromEmail($email) && $find->getDisableSend()) {
+            if (null !== $cc = $message->getCc()) {
+                foreach ($cc as $email => $name) {
+                    /** @var EmailManagerEmail $find */
+                    if (null !== $find = $this->getEmailManagerEmailFromEmail($email)) {
+                        if ($find->getDisableSend()) {
                             unset($cc[$email]);
                         }
                     }
-                    $message->setCc($cc);
                 }
+                $message->setCc($cc);
             }
+        }
 
-            // add Bcc
-            if (count($emailManagerTrace->getEmailBcc())) {
-                $current = (null !== $message->getBcc()) ? $event->getSwiftEvent()->getMessage()->getBcc() : [];
+        // add Bcc
+        if (count($emailManagerTrace->getEmailBcc())) {
+            $current = (null !== $message->getBcc()) ? $event->getSwiftEvent()->getMessage()->getBcc() : [];
 
-                foreach ($emailManagerTrace->getEmailBcc() as $email) {
-                    $current[$email] = null;
-                }
-                $message->setBcc($current);
+            foreach ($emailManagerTrace->getEmailBcc() as $email) {
+                $current[$email] = null;
             }
+            $message->setBcc($current);
+        }
 
-            // redirect
-            if (count($emailManagerTrace->getEmailRedirect())) {
-                $to = [];
-                foreach ($emailManagerTrace->getEmailRedirect() as $email) {
-                    $to[$email] = null;
-                }
-                $message->setTo($to);
+        // redirect
+        if (count($emailManagerTrace->getEmailRedirect())) {
+            $to = [];
+            foreach ($emailManagerTrace->getEmailRedirect() as $email) {
+                $to[$email] = null;
             }
+            $message->setTo($to);
         }
     }
 
@@ -134,24 +208,28 @@ class SwiftListener implements EventSubscriberInterface
         if (count($trace)) {
             $hash = $this->getHash($trace);
 
-            if (null === $emailManagerTrace = EmailManagerTraceQuery::create()->findOneByHash($hash)) {
-                $emailManagerTrace = (new EmailManagerTrace())
-                    ->setHash($hash)
-                    ->setDetail(serialize($this->getFullTrace()));
+            if (!isset($this->emailManagerTraceCache[$hash])) {
+                if (null === $emailManagerTrace = EmailManagerTraceQuery::create()->findOneByHash($hash)) {
+                    $emailManagerTrace = (new EmailManagerTrace())
+                        ->setHash($hash)
+                        ->setDetail(serialize($this->getFullTrace()));
 
-                $title = $this->getTitleFromTrace($trace);
+                    $title = $this->getTitleFromTrace($trace);
 
-                $languages = LangQuery::create()->filterByActive(true)->find();
+                    $languages = LangQuery::create()->filterByActive(true)->find();
 
-                /** @var Lang $language */
-                foreach ($languages as $language) {
-                    $emailManagerTrace->setLocale($language->getLocale())->setTitle($title);
+                    /** @var Lang $language */
+                    foreach ($languages as $language) {
+                        $emailManagerTrace->setLocale($language->getLocale())->setTitle($title);
+                    }
+
+                    $emailManagerTrace->save();
                 }
 
-                $emailManagerTrace->save();
+                $this->emailManagerTraceCache[$hash] = $emailManagerTrace;
             }
 
-            return $emailManagerTrace;
+            return $this->emailManagerTraceCache[$hash];
         }
 
         return null;
@@ -242,7 +320,7 @@ class SwiftListener implements EventSubscriberInterface
             return $this->emailManagerEmailCache[$email];
         }
 
-        $this->emailManagerEmailCache[$email] = EmailManagerEmailQuery::create()->findOneByEmail($email);
+        $this->emailManagerEmailCache[$email] = $this->emailService->getEmailManagerEmail($email);
 
         return $this->emailManagerEmailCache[$email];
     }
