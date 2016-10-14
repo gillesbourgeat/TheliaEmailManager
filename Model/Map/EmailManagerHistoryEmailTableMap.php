@@ -182,7 +182,7 @@ class EmailManagerHistoryEmailTableMap extends TableMap
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
         $this->addForeignKey('HISTORY_ID', 'HistoryId', 'INTEGER', 'email_manager_history', 'ID', true, null, null);
-        $this->addForeignKey('EMAIL_ID', 'EmailId', 'INTEGER', 'email_manager_trace', 'ID', true, null, null);
+        $this->addForeignKey('EMAIL_ID', 'EmailId', 'INTEGER', 'email_manager_email', 'ID', true, null, null);
         $this->addColumn('TYPE', 'Type', 'ENUM', true, null, null);
         $this->getColumn('TYPE', false)->setValueSet(array (
   0 => 'from',
@@ -199,7 +199,7 @@ class EmailManagerHistoryEmailTableMap extends TableMap
     public function buildRelations()
     {
         $this->addRelation('EmailManagerHistory', '\\TheliaEmailManager\\Model\\EmailManagerHistory', RelationMap::MANY_TO_ONE, array('history_id' => 'id', ), 'CASCADE', 'RESTRICT');
-        $this->addRelation('EmailManagerTrace', '\\TheliaEmailManager\\Model\\EmailManagerTrace', RelationMap::MANY_TO_ONE, array('email_id' => 'id', ), 'CASCADE', 'RESTRICT');
+        $this->addRelation('EmailManagerEmail', '\\TheliaEmailManager\\Model\\EmailManagerEmail', RelationMap::MANY_TO_ONE, array('email_id' => 'id', ), 'CASCADE', 'RESTRICT');
     } // buildRelations()
 
     /**

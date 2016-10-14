@@ -1618,10 +1618,10 @@ abstract class EmailManagerHistory implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return Collection|ChildEmailManagerHistoryEmail[] List of ChildEmailManagerHistoryEmail objects
      */
-    public function getEmailManagerHistoryEmailsJoinEmailManagerTrace($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getEmailManagerHistoryEmailsJoinEmailManagerEmail($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildEmailManagerHistoryEmailQuery::create(null, $criteria);
-        $query->joinWith('EmailManagerTrace', $joinBehavior);
+        $query->joinWith('EmailManagerEmail', $joinBehavior);
 
         return $this->getEmailManagerHistoryEmails($query, $con);
     }

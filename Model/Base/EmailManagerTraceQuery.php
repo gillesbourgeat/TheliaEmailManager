@@ -54,10 +54,6 @@ use TheliaEmailManager\Model\Map\EmailManagerTraceTableMap;
  * @method     ChildEmailManagerTraceQuery rightJoinEmailManagerHistory($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EmailManagerHistory relation
  * @method     ChildEmailManagerTraceQuery innerJoinEmailManagerHistory($relationAlias = null) Adds a INNER JOIN clause to the query using the EmailManagerHistory relation
  *
- * @method     ChildEmailManagerTraceQuery leftJoinEmailManagerHistoryEmail($relationAlias = null) Adds a LEFT JOIN clause to the query using the EmailManagerHistoryEmail relation
- * @method     ChildEmailManagerTraceQuery rightJoinEmailManagerHistoryEmail($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EmailManagerHistoryEmail relation
- * @method     ChildEmailManagerTraceQuery innerJoinEmailManagerHistoryEmail($relationAlias = null) Adds a INNER JOIN clause to the query using the EmailManagerHistoryEmail relation
- *
  * @method     ChildEmailManagerTraceQuery leftJoinEmailManagerTraceI18n($relationAlias = null) Adds a LEFT JOIN clause to the query using the EmailManagerTraceI18n relation
  * @method     ChildEmailManagerTraceQuery rightJoinEmailManagerTraceI18n($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EmailManagerTraceI18n relation
  * @method     ChildEmailManagerTraceQuery innerJoinEmailManagerTraceI18n($relationAlias = null) Adds a INNER JOIN clause to the query using the EmailManagerTraceI18n relation
@@ -743,79 +739,6 @@ abstract class EmailManagerTraceQuery extends ModelCriteria
         return $this
             ->joinEmailManagerHistory($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'EmailManagerHistory', '\TheliaEmailManager\Model\EmailManagerHistoryQuery');
-    }
-
-    /**
-     * Filter the query by a related \TheliaEmailManager\Model\EmailManagerHistoryEmail object
-     *
-     * @param \TheliaEmailManager\Model\EmailManagerHistoryEmail|ObjectCollection $emailManagerHistoryEmail  the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildEmailManagerTraceQuery The current query, for fluid interface
-     */
-    public function filterByEmailManagerHistoryEmail($emailManagerHistoryEmail, $comparison = null)
-    {
-        if ($emailManagerHistoryEmail instanceof \TheliaEmailManager\Model\EmailManagerHistoryEmail) {
-            return $this
-                ->addUsingAlias(EmailManagerTraceTableMap::ID, $emailManagerHistoryEmail->getEmailId(), $comparison);
-        } elseif ($emailManagerHistoryEmail instanceof ObjectCollection) {
-            return $this
-                ->useEmailManagerHistoryEmailQuery()
-                ->filterByPrimaryKeys($emailManagerHistoryEmail->getPrimaryKeys())
-                ->endUse();
-        } else {
-            throw new PropelException('filterByEmailManagerHistoryEmail() only accepts arguments of type \TheliaEmailManager\Model\EmailManagerHistoryEmail or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the EmailManagerHistoryEmail relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return ChildEmailManagerTraceQuery The current query, for fluid interface
-     */
-    public function joinEmailManagerHistoryEmail($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('EmailManagerHistoryEmail');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'EmailManagerHistoryEmail');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the EmailManagerHistoryEmail relation EmailManagerHistoryEmail object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return   \TheliaEmailManager\Model\EmailManagerHistoryEmailQuery A secondary query class using the current class as primary query
-     */
-    public function useEmailManagerHistoryEmailQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinEmailManagerHistoryEmail($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'EmailManagerHistoryEmail', '\TheliaEmailManager\Model\EmailManagerHistoryEmailQuery');
     }
 
     /**

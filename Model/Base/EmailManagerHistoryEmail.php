@@ -14,11 +14,11 @@ use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use TheliaEmailManager\Model\EmailManagerEmail as ChildEmailManagerEmail;
+use TheliaEmailManager\Model\EmailManagerEmailQuery as ChildEmailManagerEmailQuery;
 use TheliaEmailManager\Model\EmailManagerHistory as ChildEmailManagerHistory;
 use TheliaEmailManager\Model\EmailManagerHistoryEmailQuery as ChildEmailManagerHistoryEmailQuery;
 use TheliaEmailManager\Model\EmailManagerHistoryQuery as ChildEmailManagerHistoryQuery;
-use TheliaEmailManager\Model\EmailManagerTrace as ChildEmailManagerTrace;
-use TheliaEmailManager\Model\EmailManagerTraceQuery as ChildEmailManagerTraceQuery;
 use TheliaEmailManager\Model\Map\EmailManagerHistoryEmailTableMap;
 
 abstract class EmailManagerHistoryEmail implements ActiveRecordInterface
@@ -85,9 +85,9 @@ abstract class EmailManagerHistoryEmail implements ActiveRecordInterface
     protected $aEmailManagerHistory;
 
     /**
-     * @var        EmailManagerTrace
+     * @var        EmailManagerEmail
      */
-    protected $aEmailManagerTrace;
+    protected $aEmailManagerEmail;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -469,8 +469,8 @@ abstract class EmailManagerHistoryEmail implements ActiveRecordInterface
             $this->modifiedColumns[EmailManagerHistoryEmailTableMap::EMAIL_ID] = true;
         }
 
-        if ($this->aEmailManagerTrace !== null && $this->aEmailManagerTrace->getId() !== $v) {
-            $this->aEmailManagerTrace = null;
+        if ($this->aEmailManagerEmail !== null && $this->aEmailManagerEmail->getId() !== $v) {
+            $this->aEmailManagerEmail = null;
         }
 
 
@@ -583,8 +583,8 @@ abstract class EmailManagerHistoryEmail implements ActiveRecordInterface
         if ($this->aEmailManagerHistory !== null && $this->history_id !== $this->aEmailManagerHistory->getId()) {
             $this->aEmailManagerHistory = null;
         }
-        if ($this->aEmailManagerTrace !== null && $this->email_id !== $this->aEmailManagerTrace->getId()) {
-            $this->aEmailManagerTrace = null;
+        if ($this->aEmailManagerEmail !== null && $this->email_id !== $this->aEmailManagerEmail->getId()) {
+            $this->aEmailManagerEmail = null;
         }
     } // ensureConsistency
 
@@ -626,7 +626,7 @@ abstract class EmailManagerHistoryEmail implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aEmailManagerHistory = null;
-            $this->aEmailManagerTrace = null;
+            $this->aEmailManagerEmail = null;
         } // if (deep)
     }
 
@@ -750,11 +750,11 @@ abstract class EmailManagerHistoryEmail implements ActiveRecordInterface
                 $this->setEmailManagerHistory($this->aEmailManagerHistory);
             }
 
-            if ($this->aEmailManagerTrace !== null) {
-                if ($this->aEmailManagerTrace->isModified() || $this->aEmailManagerTrace->isNew()) {
-                    $affectedRows += $this->aEmailManagerTrace->save($con);
+            if ($this->aEmailManagerEmail !== null) {
+                if ($this->aEmailManagerEmail->isModified() || $this->aEmailManagerEmail->isNew()) {
+                    $affectedRows += $this->aEmailManagerEmail->save($con);
                 }
-                $this->setEmailManagerTrace($this->aEmailManagerTrace);
+                $this->setEmailManagerEmail($this->aEmailManagerEmail);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -946,8 +946,8 @@ abstract class EmailManagerHistoryEmail implements ActiveRecordInterface
             if (null !== $this->aEmailManagerHistory) {
                 $result['EmailManagerHistory'] = $this->aEmailManagerHistory->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
-            if (null !== $this->aEmailManagerTrace) {
-                $result['EmailManagerTrace'] = $this->aEmailManagerTrace->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            if (null !== $this->aEmailManagerEmail) {
+                $result['EmailManagerEmail'] = $this->aEmailManagerEmail->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -1188,13 +1188,13 @@ abstract class EmailManagerHistoryEmail implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildEmailManagerTrace object.
+     * Declares an association between this object and a ChildEmailManagerEmail object.
      *
-     * @param                  ChildEmailManagerTrace $v
+     * @param                  ChildEmailManagerEmail $v
      * @return                 \TheliaEmailManager\Model\EmailManagerHistoryEmail The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setEmailManagerTrace(ChildEmailManagerTrace $v = null)
+    public function setEmailManagerEmail(ChildEmailManagerEmail $v = null)
     {
         if ($v === null) {
             $this->setEmailId(NULL);
@@ -1202,10 +1202,10 @@ abstract class EmailManagerHistoryEmail implements ActiveRecordInterface
             $this->setEmailId($v->getId());
         }
 
-        $this->aEmailManagerTrace = $v;
+        $this->aEmailManagerEmail = $v;
 
         // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildEmailManagerTrace object, it will not be re-added.
+        // If this object has already been added to the ChildEmailManagerEmail object, it will not be re-added.
         if ($v !== null) {
             $v->addEmailManagerHistoryEmail($this);
         }
@@ -1216,26 +1216,26 @@ abstract class EmailManagerHistoryEmail implements ActiveRecordInterface
 
 
     /**
-     * Get the associated ChildEmailManagerTrace object
+     * Get the associated ChildEmailManagerEmail object
      *
      * @param      ConnectionInterface $con Optional Connection object.
-     * @return                 ChildEmailManagerTrace The associated ChildEmailManagerTrace object.
+     * @return                 ChildEmailManagerEmail The associated ChildEmailManagerEmail object.
      * @throws PropelException
      */
-    public function getEmailManagerTrace(ConnectionInterface $con = null)
+    public function getEmailManagerEmail(ConnectionInterface $con = null)
     {
-        if ($this->aEmailManagerTrace === null && ($this->email_id !== null)) {
-            $this->aEmailManagerTrace = ChildEmailManagerTraceQuery::create()->findPk($this->email_id, $con);
+        if ($this->aEmailManagerEmail === null && ($this->email_id !== null)) {
+            $this->aEmailManagerEmail = ChildEmailManagerEmailQuery::create()->findPk($this->email_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aEmailManagerTrace->addEmailManagerHistoryEmails($this);
+                $this->aEmailManagerEmail->addEmailManagerHistoryEmails($this);
              */
         }
 
-        return $this->aEmailManagerTrace;
+        return $this->aEmailManagerEmail;
     }
 
     /**
@@ -1269,7 +1269,7 @@ abstract class EmailManagerHistoryEmail implements ActiveRecordInterface
         } // if ($deep)
 
         $this->aEmailManagerHistory = null;
-        $this->aEmailManagerTrace = null;
+        $this->aEmailManagerEmail = null;
     }
 
     /**

@@ -84,7 +84,7 @@ CREATE TABLE `email_manager_history_email`
         ON DELETE CASCADE,
     CONSTRAINT `fk_email_manager_history_email__email_manager_email`
         FOREIGN KEY (`email_id`)
-        REFERENCES `email_manager_trace` (`id`)
+        REFERENCES `email_manager_email` (`id`)
         ON UPDATE RESTRICT
         ON DELETE CASCADE
 ) ENGINE=InnoDB;

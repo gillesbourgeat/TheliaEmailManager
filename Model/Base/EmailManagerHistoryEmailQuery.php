@@ -39,9 +39,9 @@ use TheliaEmailManager\Model\Map\EmailManagerHistoryEmailTableMap;
  * @method     ChildEmailManagerHistoryEmailQuery rightJoinEmailManagerHistory($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EmailManagerHistory relation
  * @method     ChildEmailManagerHistoryEmailQuery innerJoinEmailManagerHistory($relationAlias = null) Adds a INNER JOIN clause to the query using the EmailManagerHistory relation
  *
- * @method     ChildEmailManagerHistoryEmailQuery leftJoinEmailManagerTrace($relationAlias = null) Adds a LEFT JOIN clause to the query using the EmailManagerTrace relation
- * @method     ChildEmailManagerHistoryEmailQuery rightJoinEmailManagerTrace($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EmailManagerTrace relation
- * @method     ChildEmailManagerHistoryEmailQuery innerJoinEmailManagerTrace($relationAlias = null) Adds a INNER JOIN clause to the query using the EmailManagerTrace relation
+ * @method     ChildEmailManagerHistoryEmailQuery leftJoinEmailManagerEmail($relationAlias = null) Adds a LEFT JOIN clause to the query using the EmailManagerEmail relation
+ * @method     ChildEmailManagerHistoryEmailQuery rightJoinEmailManagerEmail($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EmailManagerEmail relation
+ * @method     ChildEmailManagerHistoryEmailQuery innerJoinEmailManagerEmail($relationAlias = null) Adds a INNER JOIN clause to the query using the EmailManagerEmail relation
  *
  * @method     ChildEmailManagerHistoryEmail findOne(ConnectionInterface $con = null) Return the first ChildEmailManagerHistoryEmail matching the query
  * @method     ChildEmailManagerHistoryEmail findOneOrCreate(ConnectionInterface $con = null) Return the first ChildEmailManagerHistoryEmail matching the query, or a new ChildEmailManagerHistoryEmail object populated from the query conditions when no match is found
@@ -326,7 +326,7 @@ abstract class EmailManagerHistoryEmailQuery extends ModelCriteria
      * $query->filterByEmailId(array('min' => 12)); // WHERE email_id > 12
      * </code>
      *
-     * @see       filterByEmailManagerTrace()
+     * @see       filterByEmailManagerEmail()
      *
      * @param     mixed $emailId The value to use as filter.
      *              Use scalar values for equality.
@@ -468,42 +468,42 @@ abstract class EmailManagerHistoryEmailQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TheliaEmailManager\Model\EmailManagerTrace object
+     * Filter the query by a related \TheliaEmailManager\Model\EmailManagerEmail object
      *
-     * @param \TheliaEmailManager\Model\EmailManagerTrace|ObjectCollection $emailManagerTrace The related object(s) to use as filter
+     * @param \TheliaEmailManager\Model\EmailManagerEmail|ObjectCollection $emailManagerEmail The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildEmailManagerHistoryEmailQuery The current query, for fluid interface
      */
-    public function filterByEmailManagerTrace($emailManagerTrace, $comparison = null)
+    public function filterByEmailManagerEmail($emailManagerEmail, $comparison = null)
     {
-        if ($emailManagerTrace instanceof \TheliaEmailManager\Model\EmailManagerTrace) {
+        if ($emailManagerEmail instanceof \TheliaEmailManager\Model\EmailManagerEmail) {
             return $this
-                ->addUsingAlias(EmailManagerHistoryEmailTableMap::EMAIL_ID, $emailManagerTrace->getId(), $comparison);
-        } elseif ($emailManagerTrace instanceof ObjectCollection) {
+                ->addUsingAlias(EmailManagerHistoryEmailTableMap::EMAIL_ID, $emailManagerEmail->getId(), $comparison);
+        } elseif ($emailManagerEmail instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(EmailManagerHistoryEmailTableMap::EMAIL_ID, $emailManagerTrace->toKeyValue('PrimaryKey', 'Id'), $comparison);
+                ->addUsingAlias(EmailManagerHistoryEmailTableMap::EMAIL_ID, $emailManagerEmail->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
-            throw new PropelException('filterByEmailManagerTrace() only accepts arguments of type \TheliaEmailManager\Model\EmailManagerTrace or Collection');
+            throw new PropelException('filterByEmailManagerEmail() only accepts arguments of type \TheliaEmailManager\Model\EmailManagerEmail or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the EmailManagerTrace relation
+     * Adds a JOIN clause to the query using the EmailManagerEmail relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return ChildEmailManagerHistoryEmailQuery The current query, for fluid interface
      */
-    public function joinEmailManagerTrace($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinEmailManagerEmail($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('EmailManagerTrace');
+        $relationMap = $tableMap->getRelation('EmailManagerEmail');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -518,14 +518,14 @@ abstract class EmailManagerHistoryEmailQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'EmailManagerTrace');
+            $this->addJoinObject($join, 'EmailManagerEmail');
         }
 
         return $this;
     }
 
     /**
-     * Use the EmailManagerTrace relation EmailManagerTrace object
+     * Use the EmailManagerEmail relation EmailManagerEmail object
      *
      * @see useQuery()
      *
@@ -533,13 +533,13 @@ abstract class EmailManagerHistoryEmailQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return   \TheliaEmailManager\Model\EmailManagerTraceQuery A secondary query class using the current class as primary query
+     * @return   \TheliaEmailManager\Model\EmailManagerEmailQuery A secondary query class using the current class as primary query
      */
-    public function useEmailManagerTraceQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useEmailManagerEmailQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinEmailManagerTrace($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'EmailManagerTrace', '\TheliaEmailManager\Model\EmailManagerTraceQuery');
+            ->joinEmailManagerEmail($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'EmailManagerEmail', '\TheliaEmailManager\Model\EmailManagerEmailQuery');
     }
 
     /**

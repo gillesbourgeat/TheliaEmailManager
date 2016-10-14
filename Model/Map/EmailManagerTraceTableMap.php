@@ -204,7 +204,6 @@ class EmailManagerTraceTableMap extends TableMap
     public function buildRelations()
     {
         $this->addRelation('EmailManagerHistory', '\\TheliaEmailManager\\Model\\EmailManagerHistory', RelationMap::ONE_TO_MANY, array('id' => 'trace_id', ), 'CASCADE', 'RESTRICT', 'EmailManagerHistories');
-        $this->addRelation('EmailManagerHistoryEmail', '\\TheliaEmailManager\\Model\\EmailManagerHistoryEmail', RelationMap::ONE_TO_MANY, array('id' => 'email_id', ), 'CASCADE', 'RESTRICT', 'EmailManagerHistoryEmails');
         $this->addRelation('EmailManagerTraceI18n', '\\TheliaEmailManager\\Model\\EmailManagerTraceI18n', RelationMap::ONE_TO_MANY, array('id' => 'id', ), 'CASCADE', null, 'EmailManagerTraceI18ns');
     } // buildRelations()
 
@@ -229,7 +228,6 @@ class EmailManagerTraceTableMap extends TableMap
         // Invalidate objects in ".$this->getClassNameFromBuilder($joinedTableTableMapBuilder)." instance pool,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
                 EmailManagerHistoryTableMap::clearInstancePool();
-                EmailManagerHistoryEmailTableMap::clearInstancePool();
                 EmailManagerTraceI18nTableMap::clearInstancePool();
             }
 
