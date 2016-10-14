@@ -84,7 +84,7 @@
             <reference foreign="id" local="history_id" />
         </foreign-key>
 
-        <foreign-key foreignTable="email_manager_trace" name="fk_email_manager_history_email__email_manager_email" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="email_manager_email" name="fk_email_manager_history_email__email_manager_email" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference foreign="id" local="email_id" />
         </foreign-key>
 
