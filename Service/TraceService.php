@@ -17,18 +17,19 @@ class TraceService
 
     /**
      * @param array $trace
+     * @param bool $force pass to true for ignore cache
      * @return EmailManagerTrace|null
      * @throws \Exception
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function getEmailManagerTrace(array $trace)
+    public function getEmailManagerTrace(array $trace, $force = false)
     {
         $minTrace = $this->getMineTrace($trace);
 
         if (count($minTrace)) {
             $hash = $this->getHash($minTrace);
 
-            if (!isset($this->emailManagerTraceCache[$hash])) {
+            if (!isset($this->emailManagerTraceCache[$hash]) || !$force) {
                 if (null === $emailManagerTrace = EmailManagerTraceQuery::create()->findOneByHash($hash)) {
                     $emailManagerTrace = (new EmailManagerTrace())
                         ->setHash($hash)
@@ -65,12 +66,12 @@ class TraceService
 
         foreach ($trace as $key => $entry) {
             if ($key >= 11 && isset($entry['class']) && isset($entry['function'])
+                && strpos($entry['class'], 'TheliaEmailManager\\') !== 0
+                && strpos($entry['class'], 'Symfony\Component\\') !== 0
+                && strpos($entry['class'], 'Swift_') !== 0
                 && strpos($entry['class'], 'Thelia\Mailer\\') !== 0
                 && strpos($entry['class'], 'Thelia\Core\\') !== 0
-                && strpos($entry['class'], 'Symfony\Component\\') !== 0
-                && strpos($entry['class'], 'TheliaEmailManager\\') !== 0
                 && strpos($entry['class'], 'Stack\\') !== 0
-                && strpos($entry['class'], 'Swift_') !== 0
             ) {
                 $return[] = $entry['class'] . '::' . $entry['function'];
             }

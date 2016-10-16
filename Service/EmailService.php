@@ -63,16 +63,17 @@ class EmailService
     /**
      * @param string $email
      * @param string|null $name
+     * @param bool $force pass to true for ignore cache
      * @return EmailManagerEmail
      * @throws InvalidEmailException
      */
-    public function getEmailManagerEmail($email, $name = null)
+    public function getEmailManagerEmail($email, $name = null, $force = false)
     {
         if (!EmailUtil::checkMailStructure($email)) {
             throw new InvalidEmailException("Invalid email : " . $email);
         }
 
-        if (isset($this->emailManagerEmailCache[$email])) {
+        if (isset($this->emailManagerEmailCache[$email]) && !$force) {
             return $this->emailManagerEmailCache[$email];
         }
 

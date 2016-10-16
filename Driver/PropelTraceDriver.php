@@ -10,11 +10,18 @@ use TheliaEmailManager\Model\EmailManagerHistoryEmail;
 use TheliaEmailManager\Model\EmailManagerTraceQuery;
 use TheliaEmailManager\Service\EmailService;
 
+/**
+ * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
+ */
 class PropelTraceDriver implements TraceDriverInterface
 {
     /** @var EmailService */
     protected $emailService;
 
+    /**
+     * PropelTraceDriver constructor.
+     * @param EmailService $emailService
+     */
     public function __construct(EmailService $emailService)
     {
         $this->emailService = $emailService;
@@ -56,54 +63,44 @@ class PropelTraceDriver implements TraceDriverInterface
 
         $history->save();
 
-        if (null !== $from = $emailEntity->getFrom()) {
-            foreach ($from as $email => $name) {
-                (new EmailManagerHistoryEmail())
-                    ->setEmailId($this->emailService->getEmailManagerEmail($email, $name)->getId())
-                    ->setType('from')
-                    ->setHistoryId($history->getId())
-                    ->save();
-            }
+        foreach ($emailEntity->getFrom() as $email => $name) {
+            (new EmailManagerHistoryEmail())
+                ->setEmailId($this->emailService->getEmailManagerEmail($email, $name)->getId())
+                ->setType('from')
+                ->setHistoryId($history->getId())
+                ->save();
         }
 
-        if (null !== $to = $emailEntity->getTo()) {
-            foreach ($to as $email => $name) {
-                (new EmailManagerHistoryEmail())
-                    ->setEmailId($this->emailService->getEmailManagerEmail($email, $name)->getId())
-                    ->setType('to')
-                    ->setHistoryId($history->getId())
-                    ->save();
-            }
+        foreach ($emailEntity->getTo() as $email => $name) {
+            (new EmailManagerHistoryEmail())
+                ->setEmailId($this->emailService->getEmailManagerEmail($email, $name)->getId())
+                ->setType('to')
+                ->setHistoryId($history->getId())
+                ->save();
         }
 
-        if (null !== $cc = $emailEntity->getCc()) {
-            foreach ($cc as $email => $name) {
-                (new EmailManagerHistoryEmail())
-                    ->setEmailId($this->emailService->getEmailManagerEmail($email, $name)->getId())
-                    ->setType('cc')
-                    ->setHistoryId($history->getId())
-                    ->save();
-            }
+        foreach ($emailEntity->getCc() as $email => $name) {
+            (new EmailManagerHistoryEmail())
+                ->setEmailId($this->emailService->getEmailManagerEmail($email, $name)->getId())
+                ->setType('cc')
+                ->setHistoryId($history->getId())
+                ->save();
         }
 
-        if (null !== $bcc = $emailEntity->getBcc()) {
-            foreach ($bcc as $email => $name) {
-                (new EmailManagerHistoryEmail())
-                    ->setEmailId($this->emailService->getEmailManagerEmail($email, $name)->getId())
-                    ->setType('bcc')
-                    ->setHistoryId($history->getId())
-                    ->save();
-            }
+        foreach ($emailEntity->getBcc() as $email => $name) {
+            (new EmailManagerHistoryEmail())
+                ->setEmailId($this->emailService->getEmailManagerEmail($email, $name)->getId())
+                ->setType('bcc')
+                ->setHistoryId($history->getId())
+                ->save();
         }
 
-        if (null !== $replyTo = $emailEntity->getReplyTo()) {
-            foreach ($replyTo as $email => $name) {
-                (new EmailManagerHistoryEmail())
-                    ->setEmailId($this->emailService->getEmailManagerEmail($email, $name)->getId())
-                    ->setType('rt')
-                    ->setHistoryId($history->getId())
-                    ->save();
-            }
+        foreach ($emailEntity->getReplyTo() as $email => $name) {
+            (new EmailManagerHistoryEmail())
+                ->setEmailId($this->emailService->getEmailManagerEmail($email, $name)->getId())
+                ->setType('rt')
+                ->setHistoryId($history->getId())
+                ->save();
         }
     }
 }

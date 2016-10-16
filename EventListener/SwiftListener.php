@@ -8,6 +8,7 @@ use TheliaEmailManager\Event\Events;
 use TheliaEmailManager\Event\SwiftEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use TheliaEmailManager\Model\EmailManagerEmail;
+use TheliaEmailManager\Model\EmailManagerTrace;
 use TheliaEmailManager\Service\EmailService;
 use TheliaEmailManager\Service\TraceService;
 
@@ -24,6 +25,9 @@ class SwiftListener implements EventSubscriberInterface
 
     /** @var TraceDriverInterface */
     protected $traceDriver;
+
+    /** @var EmailManagerTrace */
+    protected $lastEmailManagerTrace;
 
     /**
      * SwiftListener constructor.
@@ -43,18 +47,14 @@ class SwiftListener implements EventSubscriberInterface
 
     public function send(SwiftEvent $event)
     {
-        if (null === $emailManagerTrace = $this->traceService->getEmailManagerTrace($this->getFullTrace())) {
-            return;
-        }
-
-        if (!$emailManagerTrace->getDisableHistory()) {
+        if (!$this->lastEmailManagerTrace->getDisableHistory()) {
             /** @var \Swift_Mime_Message $message */
             $message = $event->getSwiftEvent()->getMessage();
 
             $this->traceDriver->push(
                 (new EmailEntity())
                     ->hydrateBySwiftMimeMessage($message)
-                    ->setTraceId($emailManagerTrace->getId())
+                    ->setTraceId($this->lastEmailManagerTrace->getId())
             );
         }
     }
@@ -64,6 +64,8 @@ class SwiftListener implements EventSubscriberInterface
         if (null === $emailManagerTrace = $this->traceService->getEmailManagerTrace($this->getFullTrace())) {
             return;
         }
+
+        $this->lastEmailManagerTrace = $emailManagerTrace;
 
         $emailManagerTrace->setNumberOfCatch($emailManagerTrace->getNumberOfCatch() + 1)->save();
 

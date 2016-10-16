@@ -6,6 +6,9 @@ use SublimeMessageHistory\Criteria\EmailCriteria;
 use TheliaEmailManager\Entity\EmailEntity;
 use TheliaEmailManager\Entity\EmailEntityCollection;
 
+/**
+ * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
+ */
 interface TraceDriverInterface
 {
     /**
