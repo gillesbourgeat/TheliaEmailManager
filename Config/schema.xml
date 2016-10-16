@@ -59,6 +59,7 @@
     <table name="email_manager_email" namespace="TheliaEmailManager\Model">
         <column autoIncrement="true" name="id" primaryKey="true" required="true" type="INTEGER" />
         <column name="email" required="true" type="VARCHAR" />
+        <column name="name" required="true" type="VARCHAR" />
         <column defaultValue="0" name="disable_send" type="BOOLEAN" />
         <column name="disable_send_date" type="TIMESTAMP" />
         <column name="disable_hash" required="true" size="64" type="CHAR" />

@@ -53,6 +53,7 @@ CREATE TABLE `email_manager_email`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `email` VARCHAR(255) NOT NULL,
+    `name` VARCHAR(255) NOT NULL,
     `disable_send` TINYINT(1) DEFAULT 0,
     `disable_send_date` DATETIME,
     `disable_hash` CHAR(64) NOT NULL,

@@ -70,6 +70,12 @@ abstract class EmailManagerEmail implements ActiveRecordInterface
     protected $email;
 
     /**
+     * The value for the name field.
+     * @var        string
+     */
+    protected $name;
+
+    /**
      * The value for the disable_send field.
      * Note: this column has a database default value of: false
      * @var        boolean
@@ -414,6 +420,17 @@ abstract class EmailManagerEmail implements ActiveRecordInterface
     }
 
     /**
+     * Get the [name] column value.
+     *
+     * @return   string
+     */
+    public function getName()
+    {
+
+        return $this->name;
+    }
+
+    /**
      * Get the [disable_send] column value.
      *
      * @return   boolean
@@ -536,6 +553,27 @@ abstract class EmailManagerEmail implements ActiveRecordInterface
 
         return $this;
     } // setEmail()
+
+    /**
+     * Set the value of [name] column.
+     *
+     * @param      string $v new value
+     * @return   \TheliaEmailManager\Model\EmailManagerEmail The current object (for fluent API support)
+     */
+    public function setName($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->name !== $v) {
+            $this->name = $v;
+            $this->modifiedColumns[EmailManagerEmailTableMap::NAME] = true;
+        }
+
+
+        return $this;
+    } // setName()
 
     /**
      * Sets the value of the [disable_send] column.
@@ -697,25 +735,28 @@ abstract class EmailManagerEmail implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : EmailManagerEmailTableMap::translateFieldName('Email', TableMap::TYPE_PHPNAME, $indexType)];
             $this->email = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : EmailManagerEmailTableMap::translateFieldName('DisableSend', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : EmailManagerEmailTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->name = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : EmailManagerEmailTableMap::translateFieldName('DisableSend', TableMap::TYPE_PHPNAME, $indexType)];
             $this->disable_send = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : EmailManagerEmailTableMap::translateFieldName('DisableSendDate', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : EmailManagerEmailTableMap::translateFieldName('DisableSendDate', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->disable_send_date = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : EmailManagerEmailTableMap::translateFieldName('DisableHash', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : EmailManagerEmailTableMap::translateFieldName('DisableHash', TableMap::TYPE_PHPNAME, $indexType)];
             $this->disable_hash = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : EmailManagerEmailTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : EmailManagerEmailTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : EmailManagerEmailTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : EmailManagerEmailTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -728,7 +769,7 @@ abstract class EmailManagerEmail implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 7; // 7 = EmailManagerEmailTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 8; // 8 = EmailManagerEmailTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \TheliaEmailManager\Model\EmailManagerEmail object", 0, $e);
@@ -973,6 +1014,9 @@ abstract class EmailManagerEmail implements ActiveRecordInterface
         if ($this->isColumnModified(EmailManagerEmailTableMap::EMAIL)) {
             $modifiedColumns[':p' . $index++]  = 'EMAIL';
         }
+        if ($this->isColumnModified(EmailManagerEmailTableMap::NAME)) {
+            $modifiedColumns[':p' . $index++]  = 'NAME';
+        }
         if ($this->isColumnModified(EmailManagerEmailTableMap::DISABLE_SEND)) {
             $modifiedColumns[':p' . $index++]  = 'DISABLE_SEND';
         }
@@ -1004,6 +1048,9 @@ abstract class EmailManagerEmail implements ActiveRecordInterface
                         break;
                     case 'EMAIL':
                         $stmt->bindValue($identifier, $this->email, PDO::PARAM_STR);
+                        break;
+                    case 'NAME':
+                        $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
                     case 'DISABLE_SEND':
                         $stmt->bindValue($identifier, (int) $this->disable_send, PDO::PARAM_INT);
@@ -1089,18 +1136,21 @@ abstract class EmailManagerEmail implements ActiveRecordInterface
                 return $this->getEmail();
                 break;
             case 2:
-                return $this->getDisableSend();
+                return $this->getName();
                 break;
             case 3:
-                return $this->getDisableSendDate();
+                return $this->getDisableSend();
                 break;
             case 4:
-                return $this->getDisableHash();
+                return $this->getDisableSendDate();
                 break;
             case 5:
-                return $this->getCreatedAt();
+                return $this->getDisableHash();
                 break;
             case 6:
+                return $this->getCreatedAt();
+                break;
+            case 7:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1134,11 +1184,12 @@ abstract class EmailManagerEmail implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getEmail(),
-            $keys[2] => $this->getDisableSend(),
-            $keys[3] => $this->getDisableSendDate(),
-            $keys[4] => $this->getDisableHash(),
-            $keys[5] => $this->getCreatedAt(),
-            $keys[6] => $this->getUpdatedAt(),
+            $keys[2] => $this->getName(),
+            $keys[3] => $this->getDisableSend(),
+            $keys[4] => $this->getDisableSendDate(),
+            $keys[5] => $this->getDisableHash(),
+            $keys[6] => $this->getCreatedAt(),
+            $keys[7] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1190,18 +1241,21 @@ abstract class EmailManagerEmail implements ActiveRecordInterface
                 $this->setEmail($value);
                 break;
             case 2:
-                $this->setDisableSend($value);
+                $this->setName($value);
                 break;
             case 3:
-                $this->setDisableSendDate($value);
+                $this->setDisableSend($value);
                 break;
             case 4:
-                $this->setDisableHash($value);
+                $this->setDisableSendDate($value);
                 break;
             case 5:
-                $this->setCreatedAt($value);
+                $this->setDisableHash($value);
                 break;
             case 6:
+                $this->setCreatedAt($value);
+                break;
+            case 7:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1230,11 +1284,12 @@ abstract class EmailManagerEmail implements ActiveRecordInterface
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setEmail($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setDisableSend($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setDisableSendDate($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setDisableHash($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setCreatedAt($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setUpdatedAt($arr[$keys[6]]);
+        if (array_key_exists($keys[2], $arr)) $this->setName($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setDisableSend($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setDisableSendDate($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setDisableHash($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setCreatedAt($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setUpdatedAt($arr[$keys[7]]);
     }
 
     /**
@@ -1248,6 +1303,7 @@ abstract class EmailManagerEmail implements ActiveRecordInterface
 
         if ($this->isColumnModified(EmailManagerEmailTableMap::ID)) $criteria->add(EmailManagerEmailTableMap::ID, $this->id);
         if ($this->isColumnModified(EmailManagerEmailTableMap::EMAIL)) $criteria->add(EmailManagerEmailTableMap::EMAIL, $this->email);
+        if ($this->isColumnModified(EmailManagerEmailTableMap::NAME)) $criteria->add(EmailManagerEmailTableMap::NAME, $this->name);
         if ($this->isColumnModified(EmailManagerEmailTableMap::DISABLE_SEND)) $criteria->add(EmailManagerEmailTableMap::DISABLE_SEND, $this->disable_send);
         if ($this->isColumnModified(EmailManagerEmailTableMap::DISABLE_SEND_DATE)) $criteria->add(EmailManagerEmailTableMap::DISABLE_SEND_DATE, $this->disable_send_date);
         if ($this->isColumnModified(EmailManagerEmailTableMap::DISABLE_HASH)) $criteria->add(EmailManagerEmailTableMap::DISABLE_HASH, $this->disable_hash);
@@ -1317,6 +1373,7 @@ abstract class EmailManagerEmail implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setEmail($this->getEmail());
+        $copyObj->setName($this->getName());
         $copyObj->setDisableSend($this->getDisableSend());
         $copyObj->setDisableSendDate($this->getDisableSendDate());
         $copyObj->setDisableHash($this->getDisableHash());
@@ -1630,6 +1687,7 @@ abstract class EmailManagerEmail implements ActiveRecordInterface
     {
         $this->id = null;
         $this->email = null;
+        $this->name = null;
         $this->disable_send = null;
         $this->disable_send_date = null;
         $this->disable_hash = null;

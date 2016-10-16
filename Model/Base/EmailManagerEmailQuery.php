@@ -23,6 +23,7 @@ use TheliaEmailManager\Model\Map\EmailManagerEmailTableMap;
  *
  * @method     ChildEmailManagerEmailQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildEmailManagerEmailQuery orderByEmail($order = Criteria::ASC) Order by the email column
+ * @method     ChildEmailManagerEmailQuery orderByName($order = Criteria::ASC) Order by the name column
  * @method     ChildEmailManagerEmailQuery orderByDisableSend($order = Criteria::ASC) Order by the disable_send column
  * @method     ChildEmailManagerEmailQuery orderByDisableSendDate($order = Criteria::ASC) Order by the disable_send_date column
  * @method     ChildEmailManagerEmailQuery orderByDisableHash($order = Criteria::ASC) Order by the disable_hash column
@@ -31,6 +32,7 @@ use TheliaEmailManager\Model\Map\EmailManagerEmailTableMap;
  *
  * @method     ChildEmailManagerEmailQuery groupById() Group by the id column
  * @method     ChildEmailManagerEmailQuery groupByEmail() Group by the email column
+ * @method     ChildEmailManagerEmailQuery groupByName() Group by the name column
  * @method     ChildEmailManagerEmailQuery groupByDisableSend() Group by the disable_send column
  * @method     ChildEmailManagerEmailQuery groupByDisableSendDate() Group by the disable_send_date column
  * @method     ChildEmailManagerEmailQuery groupByDisableHash() Group by the disable_hash column
@@ -50,6 +52,7 @@ use TheliaEmailManager\Model\Map\EmailManagerEmailTableMap;
  *
  * @method     ChildEmailManagerEmail findOneById(int $id) Return the first ChildEmailManagerEmail filtered by the id column
  * @method     ChildEmailManagerEmail findOneByEmail(string $email) Return the first ChildEmailManagerEmail filtered by the email column
+ * @method     ChildEmailManagerEmail findOneByName(string $name) Return the first ChildEmailManagerEmail filtered by the name column
  * @method     ChildEmailManagerEmail findOneByDisableSend(boolean $disable_send) Return the first ChildEmailManagerEmail filtered by the disable_send column
  * @method     ChildEmailManagerEmail findOneByDisableSendDate(string $disable_send_date) Return the first ChildEmailManagerEmail filtered by the disable_send_date column
  * @method     ChildEmailManagerEmail findOneByDisableHash(string $disable_hash) Return the first ChildEmailManagerEmail filtered by the disable_hash column
@@ -58,6 +61,7 @@ use TheliaEmailManager\Model\Map\EmailManagerEmailTableMap;
  *
  * @method     array findById(int $id) Return ChildEmailManagerEmail objects filtered by the id column
  * @method     array findByEmail(string $email) Return ChildEmailManagerEmail objects filtered by the email column
+ * @method     array findByName(string $name) Return ChildEmailManagerEmail objects filtered by the name column
  * @method     array findByDisableSend(boolean $disable_send) Return ChildEmailManagerEmail objects filtered by the disable_send column
  * @method     array findByDisableSendDate(string $disable_send_date) Return ChildEmailManagerEmail objects filtered by the disable_send_date column
  * @method     array findByDisableHash(string $disable_hash) Return ChildEmailManagerEmail objects filtered by the disable_hash column
@@ -151,7 +155,7 @@ abstract class EmailManagerEmailQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, EMAIL, DISABLE_SEND, DISABLE_SEND_DATE, DISABLE_HASH, CREATED_AT, UPDATED_AT FROM email_manager_email WHERE ID = :p0';
+        $sql = 'SELECT ID, EMAIL, NAME, DISABLE_SEND, DISABLE_SEND_DATE, DISABLE_HASH, CREATED_AT, UPDATED_AT FROM email_manager_email WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -308,6 +312,35 @@ abstract class EmailManagerEmailQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(EmailManagerEmailTableMap::EMAIL, $email, $comparison);
+    }
+
+    /**
+     * Filter the query on the name column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByName('fooValue');   // WHERE name = 'fooValue'
+     * $query->filterByName('%fooValue%'); // WHERE name LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $name The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildEmailManagerEmailQuery The current query, for fluid interface
+     */
+    public function filterByName($name = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($name)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $name)) {
+                $name = str_replace('*', '%', $name);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(EmailManagerEmailTableMap::NAME, $name, $comparison);
     }
 
     /**

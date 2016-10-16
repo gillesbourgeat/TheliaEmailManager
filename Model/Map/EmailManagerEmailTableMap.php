@@ -58,7 +58,7 @@ class EmailManagerEmailTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 7;
+    const NUM_COLUMNS = 8;
 
     /**
      * The number of lazy-loaded columns
@@ -68,7 +68,7 @@ class EmailManagerEmailTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 7;
+    const NUM_HYDRATE_COLUMNS = 8;
 
     /**
      * the column name for the ID field
@@ -79,6 +79,11 @@ class EmailManagerEmailTableMap extends TableMap
      * the column name for the EMAIL field
      */
     const EMAIL = 'email_manager_email.EMAIL';
+
+    /**
+     * the column name for the NAME field
+     */
+    const NAME = 'email_manager_email.NAME';
 
     /**
      * the column name for the DISABLE_SEND field
@@ -117,12 +122,12 @@ class EmailManagerEmailTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Email', 'DisableSend', 'DisableSendDate', 'DisableHash', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'email', 'disableSend', 'disableSendDate', 'disableHash', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(EmailManagerEmailTableMap::ID, EmailManagerEmailTableMap::EMAIL, EmailManagerEmailTableMap::DISABLE_SEND, EmailManagerEmailTableMap::DISABLE_SEND_DATE, EmailManagerEmailTableMap::DISABLE_HASH, EmailManagerEmailTableMap::CREATED_AT, EmailManagerEmailTableMap::UPDATED_AT, ),
-        self::TYPE_RAW_COLNAME   => array('ID', 'EMAIL', 'DISABLE_SEND', 'DISABLE_SEND_DATE', 'DISABLE_HASH', 'CREATED_AT', 'UPDATED_AT', ),
-        self::TYPE_FIELDNAME     => array('id', 'email', 'disable_send', 'disable_send_date', 'disable_hash', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id', 'Email', 'Name', 'DisableSend', 'DisableSendDate', 'DisableHash', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'email', 'name', 'disableSend', 'disableSendDate', 'disableHash', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(EmailManagerEmailTableMap::ID, EmailManagerEmailTableMap::EMAIL, EmailManagerEmailTableMap::NAME, EmailManagerEmailTableMap::DISABLE_SEND, EmailManagerEmailTableMap::DISABLE_SEND_DATE, EmailManagerEmailTableMap::DISABLE_HASH, EmailManagerEmailTableMap::CREATED_AT, EmailManagerEmailTableMap::UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('ID', 'EMAIL', 'NAME', 'DISABLE_SEND', 'DISABLE_SEND_DATE', 'DISABLE_HASH', 'CREATED_AT', 'UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'email', 'name', 'disable_send', 'disable_send_date', 'disable_hash', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -132,12 +137,12 @@ class EmailManagerEmailTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Email' => 1, 'DisableSend' => 2, 'DisableSendDate' => 3, 'DisableHash' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'email' => 1, 'disableSend' => 2, 'disableSendDate' => 3, 'disableHash' => 4, 'createdAt' => 5, 'updatedAt' => 6, ),
-        self::TYPE_COLNAME       => array(EmailManagerEmailTableMap::ID => 0, EmailManagerEmailTableMap::EMAIL => 1, EmailManagerEmailTableMap::DISABLE_SEND => 2, EmailManagerEmailTableMap::DISABLE_SEND_DATE => 3, EmailManagerEmailTableMap::DISABLE_HASH => 4, EmailManagerEmailTableMap::CREATED_AT => 5, EmailManagerEmailTableMap::UPDATED_AT => 6, ),
-        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'EMAIL' => 1, 'DISABLE_SEND' => 2, 'DISABLE_SEND_DATE' => 3, 'DISABLE_HASH' => 4, 'CREATED_AT' => 5, 'UPDATED_AT' => 6, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'email' => 1, 'disable_send' => 2, 'disable_send_date' => 3, 'disable_hash' => 4, 'created_at' => 5, 'updated_at' => 6, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Email' => 1, 'Name' => 2, 'DisableSend' => 3, 'DisableSendDate' => 4, 'DisableHash' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'email' => 1, 'name' => 2, 'disableSend' => 3, 'disableSendDate' => 4, 'disableHash' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
+        self::TYPE_COLNAME       => array(EmailManagerEmailTableMap::ID => 0, EmailManagerEmailTableMap::EMAIL => 1, EmailManagerEmailTableMap::NAME => 2, EmailManagerEmailTableMap::DISABLE_SEND => 3, EmailManagerEmailTableMap::DISABLE_SEND_DATE => 4, EmailManagerEmailTableMap::DISABLE_HASH => 5, EmailManagerEmailTableMap::CREATED_AT => 6, EmailManagerEmailTableMap::UPDATED_AT => 7, ),
+        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'EMAIL' => 1, 'NAME' => 2, 'DISABLE_SEND' => 3, 'DISABLE_SEND_DATE' => 4, 'DISABLE_HASH' => 5, 'CREATED_AT' => 6, 'UPDATED_AT' => 7, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'email' => 1, 'name' => 2, 'disable_send' => 3, 'disable_send_date' => 4, 'disable_hash' => 5, 'created_at' => 6, 'updated_at' => 7, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -158,6 +163,7 @@ class EmailManagerEmailTableMap extends TableMap
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('EMAIL', 'Email', 'VARCHAR', true, 255, null);
+        $this->addColumn('NAME', 'Name', 'VARCHAR', true, 255, null);
         $this->addColumn('DISABLE_SEND', 'DisableSend', 'BOOLEAN', false, 1, false);
         $this->addColumn('DISABLE_SEND_DATE', 'DisableSendDate', 'TIMESTAMP', false, null, null);
         $this->addColumn('DISABLE_HASH', 'DisableHash', 'CHAR', true, 64, null);
@@ -335,6 +341,7 @@ class EmailManagerEmailTableMap extends TableMap
         if (null === $alias) {
             $criteria->addSelectColumn(EmailManagerEmailTableMap::ID);
             $criteria->addSelectColumn(EmailManagerEmailTableMap::EMAIL);
+            $criteria->addSelectColumn(EmailManagerEmailTableMap::NAME);
             $criteria->addSelectColumn(EmailManagerEmailTableMap::DISABLE_SEND);
             $criteria->addSelectColumn(EmailManagerEmailTableMap::DISABLE_SEND_DATE);
             $criteria->addSelectColumn(EmailManagerEmailTableMap::DISABLE_HASH);
@@ -343,6 +350,7 @@ class EmailManagerEmailTableMap extends TableMap
         } else {
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.EMAIL');
+            $criteria->addSelectColumn($alias . '.NAME');
             $criteria->addSelectColumn($alias . '.DISABLE_SEND');
             $criteria->addSelectColumn($alias . '.DISABLE_SEND_DATE');
             $criteria->addSelectColumn($alias . '.DISABLE_HASH');
