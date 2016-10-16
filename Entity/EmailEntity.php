@@ -20,7 +20,7 @@ class EmailEntity
     protected $to = [];
 
     /** @var string */
-    protected $trace = "";
+    protected $traceId = "";
 
     /** @var string */
     protected $body = "";
@@ -52,7 +52,7 @@ class EmailEntity
 
     /**
      * @param \DateTime $date
-     * @return MessageEntity
+     * @return $this
      */
     public function setDate($date)
     {
@@ -70,7 +70,7 @@ class EmailEntity
 
     /**
      * @param string $id
-     * @return MessageEntity
+     * @return $this
      */
     public function setId($id)
     {
@@ -88,7 +88,7 @@ class EmailEntity
 
     /**
      * @param string $body
-     * @return MessageEntity
+     * @return $this
      */
     public function setBody($body)
     {
@@ -106,7 +106,7 @@ class EmailEntity
 
     /**
      * @param string $subject
-     * @return MessageEntity
+     * @return $this
      */
     public function setSubject($subject)
     {
@@ -124,7 +124,7 @@ class EmailEntity
 
     /**
      * @param \string[] $from
-     * @return MessageEntity
+     * @return $this
      */
     public function setFrom(array $from)
     {
@@ -142,7 +142,7 @@ class EmailEntity
 
     /**
      * @param \string[] $to
-     * @return MessageEntity
+     * @return $this
      */
     public function setTo(array $to)
     {
@@ -153,18 +153,18 @@ class EmailEntity
     /**
      * @return string
      */
-    public function getTrace()
+    public function getTraceId()
     {
-        return $this->trace;
+        return $this->traceId;
     }
 
     /**
-     * @param string $trace
-     * @return MessageEntity
+     * @param string $traceId
+     * @return $this
      */
-    public function setTrace($trace)
+    public function setTraceId($traceId)
     {
-        $this->trace = $trace;
+        $this->traceId = $trace;
         return $this;
     }
 
@@ -178,7 +178,7 @@ class EmailEntity
 
     /**
      * @param \string[] $replyTo
-     * @return MessageEntity
+     * @return $this
      */
     public function setReplyTo(array $replyTo)
     {
@@ -196,7 +196,7 @@ class EmailEntity
 
     /**
      * @param \string[] $Cc
-     * @return MessageEntity
+     * @return $this
      */
     public function setCc(array $Cc)
     {
@@ -214,11 +214,28 @@ class EmailEntity
 
     /**
      * @param \string[] $Bcc
-     * @return MessageEntity
+     * @return $this
      */
     public function setBcc(array $Bcc)
     {
         $this->Bcc = $Bcc;
+        return $this;
+    }
+
+    /**
+     * @param \Swift_Mime_Message $message
+     * @return $this
+     */
+    public function hydrateBySwiftMimeMessage(\Swift_Mime_Message $message)
+    {
+        $this
+            ->setBody($message->getBody())
+            ->setSubject($message->getSubject())
+            ->setTo($message->getTo())
+            ->setCc($message->getCc())
+            ->setBcc($message->getBcc())
+            ->setReplyTo($message->getReplyTo());
+
         return $this;
     }
 }
