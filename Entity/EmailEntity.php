@@ -275,27 +275,29 @@ class EmailEntity
         $emails = EmailManagerHistoryEmailQuery::create()
             ->innerJoinEmailManagerEmail()
             ->withColumn(EmailManagerEmailTableMap::EMAIL, 'email')
+            ->withColumn(EmailManagerEmailTableMap::NAME, 'name')
             ->findByHistoryId($model->getId());
 
         /** @var EmailManagerHistoryEmail $email */
         foreach ($emails as $email) {
             $emailText = $email->getVirtualColumn('email');
+            $nameText = $email->getVirtualColumn('name');
 
             switch ($email->getType()) {
                 case 'to':
-                    $this->to[$emailText] = null;
+                    $this->to[$emailText] = $nameText;
                     break;
                 case 'from':
-                    $this->from[$emailText] = null;
+                    $this->from[$emailText] = $nameText;
                     break;
                 case 'cc':
-                    $this->cc[$emailText] = null;
+                    $this->cc[$emailText] = $nameText;
                     break;
                 case 'bcc':
-                    $this->bcc[$emailText] = null;
+                    $this->bcc[$emailText] = $nameText;
                     break;
                 case 'rt':
-                    $this->replyTo[$emailText] = null;
+                    $this->replyTo[$emailText] = $nameText;
                     break;
             }
         }

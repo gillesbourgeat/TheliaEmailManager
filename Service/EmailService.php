@@ -3,6 +3,8 @@
 namespace TheliaEmailManager\Service;
 
 use Symfony\Component\Routing\Router;
+use Thelia\Model\AdminQuery;
+use Thelia\Model\CustomerQuery;
 use Thelia\Tools\URL;
 use TheliaEmailManager\Exception\InvalidEmailException;
 use TheliaEmailManager\Exception\InvalidHashException;
@@ -60,10 +62,11 @@ class EmailService
 
     /**
      * @param string $email
+     * @param string|null $name
      * @return EmailManagerEmail
      * @throws InvalidEmailException
      */
-    public function getEmailManagerEmail($email)
+    public function getEmailManagerEmail($email, $name = null)
     {
         if (!EmailUtil::checkMailStructure($email)) {
             throw new InvalidEmailException("Invalid email : " . $email);
@@ -74,8 +77,15 @@ class EmailService
         }
 
         if (null === $model = EmailManagerEmailQuery::create()->findOneByEmail($email)) {
-            $model = new EmailManagerEmail();
-            $model->setEmail($email);
+            if (null !== $customer = CustomerQuery::create()->findOneByEmail($email)) {
+                $name = ucfirst($customer->getFirstname()) . ' ' . ucfirst($customer->getLastname());
+            } elseif (null !== $admin = AdminQuery::create()->findOneByEmail($email)) {
+                $name = ucfirst($admin->getFirstname()) . ' ' . ucfirst($admin->getLastname());
+            }
+
+            $model = (new EmailManagerEmail())
+                ->setEmail($email)
+                ->setName($name);
             $this->generateDisableUrl($model);
             $model->save();
         }

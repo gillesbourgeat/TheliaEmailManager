@@ -78,7 +78,7 @@ class SwiftListener implements EventSubscriberInterface
             if (null !== $to = $message->getTo()) {
                 foreach ($to as $email => $name) {
                     /** @var EmailManagerEmail $find */
-                    if (null !== $find = $this->emailService->getEmailManagerEmail($email)) {
+                    if (null !== $find = $this->emailService->getEmailManagerEmail($email, $name)) {
                         if ($find->getDisableSend()) {
                             unset($to[$email]);
                         }
@@ -96,7 +96,7 @@ class SwiftListener implements EventSubscriberInterface
             if (null !== $bcc = $message->getBcc()) {
                 foreach ($bcc as $email => $name) {
                     /** @var EmailManagerEmail $find */
-                    if (null !== $find = $this->emailService->getEmailManagerEmail($email)) {
+                    if (null !== $find = $this->emailService->getEmailManagerEmail($email, $name)) {
                         if ($find->getDisableSend()) {
                             unset($bcc[$email]);
                         }
@@ -108,7 +108,7 @@ class SwiftListener implements EventSubscriberInterface
             if (null !== $cc = $message->getCc()) {
                 foreach ($cc as $email => $name) {
                     /** @var EmailManagerEmail $find */
-                    if (null !== $find = $this->emailService->getEmailManagerEmail($email)) {
+                    if (null !== $find = $this->emailService->getEmailManagerEmail($email, $name)) {
                         if ($find->getDisableSend()) {
                             unset($cc[$email]);
                         }

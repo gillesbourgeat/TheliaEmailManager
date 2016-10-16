@@ -59,7 +59,7 @@ class PropelTraceDriver implements TraceDriverInterface
         if (null !== $from = $emailEntity->getFrom()) {
             foreach ($from as $email => $name) {
                 (new EmailManagerHistoryEmail())
-                    ->setEmailId($this->emailService->getEmailManagerEmail($email)->getId())
+                    ->setEmailId($this->emailService->getEmailManagerEmail($email, $name)->getId())
                     ->setType('from')
                     ->setHistoryId($history->getId())
                     ->save();
@@ -69,7 +69,7 @@ class PropelTraceDriver implements TraceDriverInterface
         if (null !== $to = $emailEntity->getTo()) {
             foreach ($to as $email => $name) {
                 (new EmailManagerHistoryEmail())
-                    ->setEmailId($this->emailService->getEmailManagerEmail($email)->getId())
+                    ->setEmailId($this->emailService->getEmailManagerEmail($email, $name)->getId())
                     ->setType('to')
                     ->setHistoryId($history->getId())
                     ->save();
@@ -79,7 +79,7 @@ class PropelTraceDriver implements TraceDriverInterface
         if (null !== $cc = $emailEntity->getCc()) {
             foreach ($cc as $email => $name) {
                 (new EmailManagerHistoryEmail())
-                    ->setEmailId($this->emailService->getEmailManagerEmail($email)->getId())
+                    ->setEmailId($this->emailService->getEmailManagerEmail($email, $name)->getId())
                     ->setType('cc')
                     ->setHistoryId($history->getId())
                     ->save();
@@ -89,7 +89,7 @@ class PropelTraceDriver implements TraceDriverInterface
         if (null !== $bcc = $emailEntity->getBcc()) {
             foreach ($bcc as $email => $name) {
                 (new EmailManagerHistoryEmail())
-                    ->setEmailId($this->emailService->getEmailManagerEmail($email)->getId())
+                    ->setEmailId($this->emailService->getEmailManagerEmail($email, $name)->getId())
                     ->setType('bcc')
                     ->setHistoryId($history->getId())
                     ->save();
@@ -99,7 +99,7 @@ class PropelTraceDriver implements TraceDriverInterface
         if (null !== $replyTo = $emailEntity->getReplyTo()) {
             foreach ($replyTo as $email => $name) {
                 (new EmailManagerHistoryEmail())
-                    ->setEmailId($this->emailService->getEmailManagerEmail($email)->getId())
+                    ->setEmailId($this->emailService->getEmailManagerEmail($email, $name)->getId())
                     ->setType('rt')
                     ->setHistoryId($history->getId())
                     ->save();
