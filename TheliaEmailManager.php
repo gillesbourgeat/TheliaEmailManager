@@ -27,6 +27,8 @@ class TheliaEmailManager extends BaseModule
 
     const CONFIG_REDIRECT_ALL_TO = 'redirect_all_to';
 
+    protected static $config = [];
+
     /**
      * @inheritdoc
      */
@@ -81,6 +83,29 @@ class TheliaEmailManager extends BaseModule
     }
 
     /**
+     * @inheritdoc
+     */
+    public static function getConfigValue($variableName, $defaultValue = null, $valueLocale = null)
+    {
+        if (isset(self::$config[$variableName])) {
+            return self::$config[$variableName];
+        }
+
+        self::$config[$variableName] = parent::getConfigValue($variableName, $defaultValue, $valueLocale);
+
+        return self::$config[$variableName];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function setConfigValue($variableName, $variableValue, $valueLocale = null, $createIfNotExists = true)
+    {
+        unset(self::$config[$variableName]);
+        parent::setConfigValue($variableName, $variableValue, $valueLocale, $createIfNotExists);
+    }
+
+    /**
      * @return bool
      */
     public static function getEnableHistory()
@@ -117,13 +142,17 @@ class TheliaEmailManager extends BaseModule
      */
     public static function getRedirectAllTo()
     {
-        $mails = explode(',', static::getConfigValue(self::CONFIG_REDIRECT_ALL_TO, ""));
+        $emails = explode(',', static::getConfigValue(self::CONFIG_REDIRECT_ALL_TO, ""));
 
-        if (!EmailUtil::checkMailStructure($mails[0])) {
-            return [];
+        $return = [];
+
+        foreach ($emails as $email) {
+            if (!EmailUtil::checkMailStructure($email)) {
+                $return[$email] = null;
+            }
         }
 
-        return $mails;
+        return $return;
     }
 
     /**

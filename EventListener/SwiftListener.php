@@ -11,6 +11,7 @@ use TheliaEmailManager\Model\EmailManagerEmail;
 use TheliaEmailManager\Model\EmailManagerTrace;
 use TheliaEmailManager\Service\EmailService;
 use TheliaEmailManager\Service\TraceService;
+use TheliaEmailManager\TheliaEmailManager;
 
 /**
  * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
@@ -47,7 +48,7 @@ class SwiftListener implements EventSubscriberInterface
 
     public function send(SwiftEvent $event)
     {
-        if (!$this->lastEmailManagerTrace->getDisableHistory()) {
+        if (TheliaEmailManager::getEnableHistory() && !$this->lastEmailManagerTrace->getDisableHistory()) {
             /** @var \Swift_Mime_Message $message */
             $message = $event->getSwiftEvent()->getMessage();
 
@@ -69,7 +70,7 @@ class SwiftListener implements EventSubscriberInterface
 
         $emailManagerTrace->setNumberOfCatch($emailManagerTrace->getNumberOfCatch() + 1)->save();
 
-        if ($emailManagerTrace->getDisableSending()) {
+        if (TheliaEmailManager::getDisableSend() || $emailManagerTrace->getDisableSending()) {
             $event->getSwiftEvent()->cancelBubble(true);
             return;
         }
@@ -118,6 +119,14 @@ class SwiftListener implements EventSubscriberInterface
                 }
                 $message->setCc($cc);
             }
+        }
+
+        // force redirect
+        if (count(TheliaEmailManager::getRedirectAllTo())) {
+            $message->setTo(TheliaEmailManager::getRedirectAllTo());
+            $message->setCc(null);
+            $message->setBcc(null);
+            return;
         }
 
         // add Bcc
