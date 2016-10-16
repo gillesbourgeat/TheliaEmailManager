@@ -24,5 +24,5 @@ interface TraceDriverInterface
      * @param EmailCriteria $emailCriteria
      * @return int
      */
-    public function clear(EmailCriteria $emailCriteria);
+    public function delete(EmailCriteria $emailCriteria);
 }

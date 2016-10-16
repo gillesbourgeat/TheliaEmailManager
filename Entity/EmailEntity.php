@@ -2,6 +2,11 @@
 
 namespace TheliaEmailManager\Entity;
 
+use TheliaEmailManager\Model\EmailManagerHistory;
+use TheliaEmailManager\Model\EmailManagerHistoryEmail;
+use TheliaEmailManager\Model\EmailManagerHistoryEmailQuery;
+use TheliaEmailManager\Model\Map\EmailManagerEmailTableMap;
+
 /**
  * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
@@ -29,10 +34,10 @@ class EmailEntity
     protected $replyTo = [];
 
     /** @var string[] */
-    protected $Cc = [];
+    protected $cc = [];
 
     /** @var string[] */
-    protected $Bcc = [];
+    protected $bcc = [];
 
     /** @var \DateTime */
     protected $date;
@@ -164,7 +169,7 @@ class EmailEntity
      */
     public function setTraceId($traceId)
     {
-        $this->traceId = $trace;
+        $this->traceId = $traceId;
         return $this;
     }
 
@@ -191,16 +196,16 @@ class EmailEntity
      */
     public function getCc()
     {
-        return $this->Cc;
+        return $this->cc;
     }
 
     /**
-     * @param \string[] $Cc
+     * @param \string[] $cc
      * @return $this
      */
-    public function setCc(array $Cc)
+    public function setCc(array $cc)
     {
-        $this->Cc = $Cc;
+        $this->cc = $cc;
         return $this;
     }
 
@@ -209,16 +214,16 @@ class EmailEntity
      */
     public function getBcc()
     {
-        return $this->Bcc;
+        return $this->bcc;
     }
 
     /**
-     * @param \string[] $Bcc
+     * @param \string[] $bcc
      * @return $this
      */
-    public function setBcc(array $Bcc)
+    public function setBcc(array $bcc)
     {
-        $this->Bcc = $Bcc;
+        $this->bcc = $bcc;
         return $this;
     }
 
@@ -231,10 +236,69 @@ class EmailEntity
         $this
             ->setBody($message->getBody())
             ->setSubject($message->getSubject())
-            ->setTo($message->getTo())
-            ->setCc($message->getCc())
-            ->setBcc($message->getBcc())
-            ->setReplyTo($message->getReplyTo());
+            ->setDate((new \DateTime())->setTimestamp($message->getDate()));
+
+        if (null !== $message->getTo()) {
+            $this->setTo($message->getTo());
+        }
+
+        if (null !== $message->getFrom()) {
+            $this->setFrom($message->getFrom());
+        }
+
+        if (null !== $message->getCc()) {
+            $this->setCc($message->getCc());
+        }
+
+        if (null !== $message->getBcc()) {
+            $this->setBcc($message->getBcc());
+        }
+
+        if (null !== $message->getReplyTo()) {
+            $this->setReplyTo($message->getReplyTo());
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param EmailManagerHistory $model
+     * @return $this
+     */
+    public function hydrateByPropelModel(EmailManagerHistory $model)
+    {
+        $this
+            ->setBody($model->getBody())
+            ->setSubject($model->getSubject())
+            ->setDate($model->getCreatedAt());
+
+        $emails = EmailManagerHistoryEmailQuery::create()
+            ->innerJoinEmailManagerEmail()
+            ->withColumn(EmailManagerEmailTableMap::EMAIL, 'email')
+            ->findByHistoryId($model->getId());
+
+        /** @var EmailManagerHistoryEmail $email */
+        foreach ($emails as $email) {
+            $emailText = $email->getVirtualColumn('email');
+
+            switch ($email->getType()) {
+                case 'to':
+                    $this->to[$emailText] = null;
+                    break;
+                case 'from':
+                    $this->from[$emailText] = null;
+                    break;
+                case 'cc':
+                    $this->cc[$emailText] = null;
+                    break;
+                case 'bcc':
+                    $this->bcc[$emailText] = null;
+                    break;
+                case 'rt':
+                    $this->replyTo[$emailText] = null;
+                    break;
+            }
+        }
 
         return $this;
     }

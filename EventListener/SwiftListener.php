@@ -139,6 +139,14 @@ class SwiftListener implements EventSubscriberInterface
     }
 
     /**
+     * @return array
+     */
+    protected function getFullTrace()
+    {
+        return debug_backtrace(2);
+    }
+
+    /**
      * @inheritdoc
      */
     public static function getSubscribedEvents()
@@ -147,26 +155,5 @@ class SwiftListener implements EventSubscriberInterface
             Events::SWIFT_SEND_PERFORMED => ['send', 128],
             Events::SWIFT_BEFORE_SEND_PERFORMED => ['beforeSend', 128]
         ];
-    }
-
-    /**
-     * @return array
-     */
-    protected function getFullTrace()
-    {
-        $traces = debug_backtrace();
-
-        $return = [];
-
-        foreach ($traces as $key => $trace) {
-            $return[] = [
-                'function' => isset($trace['function']) ? $trace['function'] : '',
-                'class' => isset($trace['class']) ? $trace['class'] : '',
-                'file' => isset($trace['file']) ? $trace['file'] : '',
-                'line' => isset($trace['line']) ? $trace['line'] : '',
-            ];
-        }
-
-        return $return;
     }
 }

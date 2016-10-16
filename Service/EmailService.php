@@ -78,9 +78,9 @@ class EmailService
             $model->setEmail($email);
             $this->generateDisableUrl($model);
             $model->save();
-
-            $this->emailManagerEmailCache[$email] = $model;
         }
+
+        $this->emailManagerEmailCache[$email] = $model;
 
         return $this->emailManagerEmailCache[$email];
     }

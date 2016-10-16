@@ -34,7 +34,7 @@ class TraceService
                         ->setHash($hash)
                         ->setDetail(serialize($trace));
 
-                    $title = $this->getTitleFromTrace($trace);
+                    $title = $this->getTitleFromTrace($minTrace);
 
                     $languages = LangQuery::create()->filterByActive(true)->find();
 
@@ -61,25 +61,18 @@ class TraceService
      */
     protected function getMineTrace(array $trace)
     {
-        $traces = debug_backtrace();
-
         $return = [];
 
-        foreach ($traces as $key => $trace) {
-            if ($key >= 11) {
-                if (isset($trace['class'])
-                    && strpos($trace['class'], 'Thelia\Mailer\\') !== 0
-                    && strpos($trace['class'], 'Thelia\Core\\') !== 0
-                    && strpos($trace['class'], 'Symfony\Component\\') !== 0
-                    && strpos($trace['class'], 'TheliaEmailManager\\') !== 0
-                    && strpos($trace['class'], 'Stack\\') !== 0
-                    && strpos($trace['class'], 'Swift_') !== 0
-                ) {
-                    $return[] = [
-                        'function' => isset($trace['function']) ? $trace['function'] : '',
-                        'class' => isset($trace['class']) ? $trace['class'] : ''
-                    ];
-                }
+        foreach ($trace as $key => $entry) {
+            if ($key >= 11 && isset($entry['class']) && isset($entry['function'])
+                && strpos($entry['class'], 'Thelia\Mailer\\') !== 0
+                && strpos($entry['class'], 'Thelia\Core\\') !== 0
+                && strpos($entry['class'], 'Symfony\Component\\') !== 0
+                && strpos($entry['class'], 'TheliaEmailManager\\') !== 0
+                && strpos($entry['class'], 'Stack\\') !== 0
+                && strpos($entry['class'], 'Swift_') !== 0
+            ) {
+                $return[] = $entry['class'] . '::' . $entry['function'];
             }
         }
 
@@ -92,13 +85,7 @@ class TraceService
      */
     protected function getTitleFromTrace($trace)
     {
-        $title = [];
-
-        foreach ($trace as $t) {
-            $title[] = $t['class'] . '::' . $t['function'];
-        }
-
-        return implode(' | ', $title);
+        return implode(' | ', $trace);
     }
 
     /**

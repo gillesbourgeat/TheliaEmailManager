@@ -2,9 +2,12 @@
 
 namespace TheliaEmailManager\Driver;
 
+use SublimeMessageHistory\Criteria\EmailCriteria;
 use TheliaEmailManager\Entity\EmailEntity;
+use TheliaEmailManager\Entity\EmailEntityCollection;
 use TheliaEmailManager\Model\EmailManagerHistory;
 use TheliaEmailManager\Model\EmailManagerHistoryEmail;
+use TheliaEmailManager\Model\EmailManagerTraceQuery;
 use TheliaEmailManager\Service\EmailService;
 
 class PropelTraceDriver implements TraceDriverInterface
@@ -17,6 +20,33 @@ class PropelTraceDriver implements TraceDriverInterface
         $this->emailService = $emailService;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function find(EmailCriteria $emailCriteria)
+    {
+        $collection = new EmailEntityCollection();
+
+        // @todo
+
+        return $collection;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function delete(EmailCriteria $emailCriteria)
+    {
+        $query = EmailManagerTraceQuery::create();
+
+        // @todo
+
+        return $query->delete();
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function push(EmailEntity $emailEntity)
     {
         $history = (new EmailManagerHistory())
