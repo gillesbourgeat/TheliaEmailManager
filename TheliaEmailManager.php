@@ -147,7 +147,7 @@ class TheliaEmailManager extends BaseModule
         $return = [];
 
         foreach ($emails as $email) {
-            if (!EmailUtil::checkMailStructure($email)) {
+            if (EmailUtil::checkMailStructure($email)) {
                 $return[$email] = null;
             }
         }
