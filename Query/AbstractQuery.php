@@ -1,12 +1,15 @@
 <?php
 
-namespace SublimeMessageHistory\Criteria;
+namespace TheliaEmailManager\Query;
 
 /**
  * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
-class EmailCriteria
+abstract class AbstractQuery
 {
+    /** @var string[] */
+    protected $columns = [];
+
     protected $query = (object) [
         'page' => 1,
         'perPage' => 30,
@@ -43,7 +46,7 @@ class EmailCriteria
      */
     public function orderBy($column)
     {
-        if (in_array(['id', 'date'], $column)) {
+        if (in_array($this->columns, $column)) {
             $this->query->order = $column;
             return $this;
         }
@@ -52,14 +55,17 @@ class EmailCriteria
     }
 
     /**
-     * @param MessageCriteria[] $groups
+     * @param ConditionQuery[] $groups
      * @param string $groupsName
      * @return $this
      */
     public function filterBy(array $groups, $groupsName)
     {
         foreach ($groups as $group) {
-            if (!$group instanceof MessageCriteria) {
+            if (!$group instanceof ConditionQuery) {
+                throw new \InvalidArgumentException();
+            }
+            if (!in_array($this->columns, $group->getColumn())) {
                 throw new \InvalidArgumentException();
             }
         }
