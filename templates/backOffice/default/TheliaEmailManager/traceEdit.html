@@ -1,0 +1,198 @@
+{default_translation_domain d="theliaemailmanager.bo.default"}
+
+{extends file="admin-layout.tpl"}
+
+{block name="no-return-functions"}
+  {$admin_current_location = 'configuration'}
+{/block}
+
+{block name="page-title"}{intl l='Email Manager Trace : %title' title={$trace->getTitle()|truncate:50:'...'}}{/block}
+
+{block name="check-resource"}admin.email-manager.trace.view{/block}
+{block name="check-access"}view{/block}
+
+{block name="main-content"}
+
+  <div class="brand edit-brand">
+    <div id="wrapper" class="container">
+      <nav>
+        <ul class="breadcrumb">
+          <li><a href="{url path='/admin/home'}">{intl l="Home"}</a></li>
+          <li><a href="{url path='/admin/configuration'}">{intl l="Configuration"}</a></li>
+          <li><a href="{url router='theliaemailmanager' route_id='admin_email_manager_trace'}">{intl l='Email Manager Traces'}</a></li>
+          <li>{intl l='View trace "%title"' title={$trace->getTitle()|truncate:50:'...'}}</li>
+        </ul>
+      </nav>
+
+      {hook name="email-manager.trace.view.top" trace=$trace}
+
+      <div class="row">
+        <div class="col-md-12 general-block-decorator">
+          <div class="row">
+            <div class="col-md-7 title">
+              {intl l='View trace "%title"' title={$trace->getTitle()|truncate:50:'...'}}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+
+              {hookblock name="email-manager.trace.view.tab" trace=$trace fields="id,title,href,content"}
+
+              {capture name="trace_tab_tab"}
+                {forhook rel="email-manager.trace.view.tab"}
+                  <li>
+                    <a href="#{$id}"
+                       {if $href}data-href="{$href}"{/if}
+                       data-toggle="tab">{$title}
+                    </a>
+                  </li>
+                {/forhook}
+              {/capture}
+
+              {capture name="trace_tab_content"}
+                {forhook rel="email-manager.trace.view.tab"}
+                  <div class="tab-pane fade" id="{$id}">
+                    {if $href}
+                      {* ajax *}
+                      <div class="text-center"><span class="loading">{intl l="Please wait, loading"}</span></div>
+                    {else}
+                      {$content nofilter}
+                    {/if}
+                  </div>
+                {/forhook}
+              {/capture}
+
+              {/hookblock}
+              <ul class="nav nav-tabs" id="tabbed-menu">
+                <li class="active">
+                  <a href="#general" data-toggle="tab">{intl l="General information"}</a>
+                </li>
+                {if !$trace->getDisableHistory()}
+                <li>
+                  <a href="#history" data-toggle="tab">{intl l="History"}</a>
+                </li>
+                {/if}
+                {$smarty.capture.trace_tab_tab nofilter}
+                <li>
+                  <a href="#modules" data-toggle="tab">{intl l="Modules"}</a>
+                </li>
+              </ul>
+
+              <div class="tab-content">
+
+                <div class="tab-pane fade active in" id="general">
+
+                  <div class="form-container">
+
+                    {form name="thelia.admin.brand.modification"}
+
+                      <form method="POST" action="{url path="/admin/brand/save/%id" id=$ID}" {form_enctype} class="clearfix">
+
+                        {include file="includes/inner-form-toolbar.html" close_url={url path='/admin/brand'}}
+
+                        <input type="hidden" name="current_tab" value="general"/>
+
+                        {* Be sure to get the currency ID, even if the form could not be validated *}
+                        <input type="hidden" name="brand_id" value="{$ID}" />
+
+                        {form_hidden_fields}
+
+                        {render_form_field field="success_url" value={url path="/admin/brand"}}
+                        {render_form_field field="locale" value={$edit_language_locale}}
+
+                        {if $form_error}
+                          <div class="alert alert-danger">{$form_error_message}</div>
+                        {/if}
+
+                        <div class="row">
+                          <div class="col-md-8">
+                            {include file="includes/standard-description-form-fields.html"}
+                          </div>
+
+                          <div class="col-md-4">
+                            {hook name="brand.modification.form-right.top" brand_id=$brand_id}
+
+                            {render_form_field field="visible"}
+
+
+
+                            {hook name="brand.modification.form-right.bottom" brand_id=$brand_id}
+                          </div>
+                        </div>
+
+                        {hook name="brand.update-form" location='brand_update_form'}
+
+                        {include
+                        file="includes/inner-form-toolbar.html"
+                        hide_submit_buttons = false
+                        hide_flags = true
+
+                        close_url={url path="/admin/brand"}
+                        }
+
+                        <small>{intl l='Trace detected on %date_create.' date_create={format_date date=$trace->getCreatedAt()}}</small>
+                      </form>
+                    {/form}
+                  </div>
+                </div>
+
+                {if !$trace->getDisableHistory()}
+                <div class="tab-pane fade" id="history">
+
+                </div>
+                {/if}
+
+                {$smarty.capture.trace_tab_content nofilter}
+
+                <div class="tab-pane fade" id="modules">
+                  <div class="form-container">
+                    {include
+                    file = "includes/inner-form-toolbar.html"
+                    hide_submit_buttons = true
+                    page_url = {url router="theliaemailmanager" route_id="admin_email_manager_trace_view" traceId=$trace->getId()}
+                    close_url = {url router="theliaemailmanager" route_id="admin_email_manager_trace"}
+                    current_tab = "modules"
+                    }
+                  </div>
+
+                  {include file="includes/module-tab-content.html" hook="email-manager.trace.view.tab-content" id=$trace->getId() view="trace"}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {hook name="email-manager.trace.view.bottom" trace=$trace}
+
+    </div>
+  </div>
+{/block}
+
+
+
+{block name="javascript-initialization"}
+  <script>
+    $(function() {
+      // Show proper tab, if defined
+      {if ! empty($smarty.get.current_tab)}
+      $('.nav-tabs a[href="#{$smarty.get.current_tab}"]').trigger("click");
+      {/if}
+
+      // Atomatic ajax tab load, if data-href is defined.
+      $('.nav-tabs a[data-href]').on('shown.bs.tab', function(ev) {
+        var $this = $(this);
+        $($this.attr('href')).load($this.data('href'), function(ev) {
+          if($this.data('callback')) {
+            eval($this.data('callback') + '();');
+          }
+        });
+      });
+    });
+  </script>
+{/block}
+
+{block name="javascript-last-call"}
+  {hook name='email-manager.trace.view.js' location='brand-edit-js' trace=$trace}}
+{/block}

@@ -4,6 +4,7 @@ namespace TheliaEmailManager\Controller;
 
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\HttpFoundation\Request;
+use TheliaEmailManager\Model\EmailManagerTraceQuery;
 use TheliaEmailManager\TheliaEmailManager;
 
 /**
@@ -16,18 +17,22 @@ class TraceController extends BaseAdminController
 
     public function listAction(Request $request)
     {
-        return $this->render('TheliaEmailManager/traces');
+        return $this->render('TheliaEmailManager/traces', [
+            'traces' => EmailManagerTraceQuery::create()->find()
+        ]);
     }
 
-    public function viwAction(Request $request, $traceId)
+    public function viewAction(Request $request, $traceId)
     {
-        return $this->render('TheliaEmailManager/traceEdit', ['traceId' => $traceId]);
+        return $this->render('TheliaEmailManager/traceEdit', [
+            'trace' => EmailManagerTraceQuery::create()->findOneById($traceId)
+        ]);
     }
 
     public function updateAction(Request $request, $traceId)
     {
         try {
-
+            $trace = EmailManagerTraceQuery::create()->findOneById($traceId);
 
             return $this->generateRedirectFromRoute(
                 'admin_email_manager_trace_view',

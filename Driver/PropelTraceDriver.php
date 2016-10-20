@@ -33,7 +33,7 @@ class PropelTraceDriver implements TraceDriverInterface
     public function find(EmailHistoryQuery $query)
     {
         $query = $query->getQuery();
-        
+
         $collection = new EmailEntityCollection();
 
         // @todo

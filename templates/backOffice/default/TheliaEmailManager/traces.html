@@ -1,0 +1,120 @@
+{default_translation_domain d="theliaemailmanager.bo.default"}
+
+{extends file="admin-layout.tpl"}
+
+{block name="no-return-functions"}
+  {$admin_current_location = 'configuration'}
+{/block}
+
+{block name="page-title"}{intl l='Email Manager Traces'}{/block}
+
+{block name="check-resource"}admin.email-manager.trace.list{/block}
+{block name="check-access"}view{/block}
+
+{block name="main-content"}
+  <div class="email-manager.trace">
+
+    <div id="wrapper" class="container">
+
+      <ul class="breadcrumb">
+        <li><a href="{url path='/admin/home'}">{intl l="Home"}</a></li>
+        <li><a href="{url path='/admin/configuration'}">{intl l="Configuration"}</a></li>
+        <li>{intl l="Email Manager Traces"}</li>
+      </ul>
+
+      {hook name='email-manager.trace'}
+
+      <div class="row">
+        <div class="col-md-12">
+
+          <div class="general-block-decorator">
+            <div class="table-responsive">
+              <table class="table table-striped table-condensed">
+                <caption class="clearfix">
+                  {intl l='Email Manager Traces'}
+                </caption>
+
+                <thead>
+                <tr>
+                  <th>{intl l='ID'}</th>
+                  <th>{intl l='Title'}</th>
+                  <th>{intl l='Number of catch'}</th>
+                  <th>{intl l='History disabled'}</th>
+                  <th>{intl l='Sending disabled'}</th>
+                  <th>{intl l='Detection date'}</th>
+
+                  {hook name='email-manager.trace.table-header'}
+
+                  <th class="actions">{intl l='Actions'}</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {foreach from=$traces item=trace}
+                  <tr>
+                    <td>{$trace->getId()}</td>
+                    <td>
+                      <span data-toggle="tooltip" title="{$trace->getTitle()}">
+                      {$trace->getTitle()|truncate:50:'...'}
+                      </span>
+                    </td>
+                    <td class="text-center">{$trace->getNumberOfCatch()}</td>
+                    <td>
+                      {if $trace->getDisableHistory()}
+                        <span class="label label-warning">{intl l='Histoy disabled'}</span>
+                      {else}
+                        <span class="label label-info">{intl l='Histoy enabled'}</span>
+                      {/if}
+                    </td>
+                    <td>
+                      {if $trace->getDisableHistory()}
+                        <span class="label label-danger">{intl l='Sending disabled'}</span>
+                      {else}
+                        <span class="label label-success">{intl l='Sending enabled'}</span>
+                      {/if}
+                    </td>
+
+                    <td>{format_date date=$trace->getCreatedAt()}</td>
+
+                    {hook name='email-manager.trace.table-row' trace=$trace}
+
+                    <td class="actions">
+                      {if !$trace->getDisableHistory()}
+                      <a class="btn btn-info" href="{url router="theliaemailmanager" route_id="admin_email_manager_trace_view" traceId=$trace->getId() current_tab='history'}">
+                        {intl l='View history'}
+                      </a>
+                      {/if}
+                      <a class="btn btn-primary" href="{url router="theliaemailmanager" route_id="admin_email_manager_trace_view" traceId=$trace->getId()}">
+                        {intl l='Configure'}
+                      </a>
+                    </td>
+                  </tr>
+                {/foreach}
+
+                {if !count($traces)}
+                  <tr>
+                    <td colspan="100">
+                      <div class="alert alert-info">
+                        {intl l="No trace has been detected."}
+                      </div>
+                    </td>
+                  </tr>
+                {/if}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {hook name='email-manager.trace.bottom'}
+
+    </div>
+  </div>
+{/block}
+
+{block name="javascript-last-call"}
+  {hook name='email-manager.trace.js'}
+{/block}
+
+{default_translation_domain d="bo.default"}
