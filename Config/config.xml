@@ -4,6 +4,10 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://thelia.net/schema/dic/config http://thelia.net/schema/dic/config/thelia-1.0.xsd">
 
+    <forms>
+        <form name="email_manager_trace_update" class="TheliaEmailManager\Form\TraceForm" />
+    </forms>
+
     <services>
         <service id="thelia.email.manager.email.service" class="TheliaEmailManager\Service\EmailService">
             <argument type="service" id="router.theliaemailmanager" />
