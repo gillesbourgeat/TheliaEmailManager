@@ -69,7 +69,7 @@ class EmailService
      */
     public function getEmailManagerEmail($email, $name = null, $force = false)
     {
-        if (!EmailUtil::checkMailStructure($email)) {
+        if (!EmailUtil::checkEmailStructure($email)) {
             throw new InvalidEmailException("Invalid email : " . $email);
         }
 

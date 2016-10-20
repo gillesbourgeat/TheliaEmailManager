@@ -8,6 +8,9 @@ use Thelia\Core\Translation\Translator;
 use TheliaEmailManager\TheliaEmailManager;
 use TheliaEmailManager\Util\EmailUtil;
 
+/**
+ * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
+ */
 class EmailListTransformer implements DataTransformerInterface
 {
     /** @var Translator */

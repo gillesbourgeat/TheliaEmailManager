@@ -173,24 +173,24 @@
 
 
 {block name="javascript-initialization"}
-  <script>
-    $(function() {
-      // Show proper tab, if defined
-      {if ! empty($smarty.get.current_tab)}
-      $('.nav-tabs a[href="#{$smarty.get.current_tab}"]').trigger("click");
-      {/if}
+<script>
+  $(function() {
+    // Show proper tab, if defined
+    {if ! empty($smarty.get.current_tab)}
+    $('.nav-tabs a[href="#{$smarty.get.current_tab}"]').trigger("click");
+    {/if}
 
-      // Atomatic ajax tab load, if data-href is defined.
-      $('.nav-tabs a[data-href]').on('shown.bs.tab', function(ev) {
-        var $this = $(this);
-        $($this.attr('href')).load($this.data('href'), function(ev) {
-          if($this.data('callback')) {
-            eval($this.data('callback') + '();');
-          }
-        });
+    // Automatic ajax tab load, if data-href is defined.
+    $('.nav-tabs a[data-href]').on('shown.bs.tab', function(ev) {
+      var $this = $(this);
+      $($this.attr('href')).load($this.data('href'), function(ev) {
+        if($this.data('callback')) {
+          eval($this.data('callback') + '();');
+        }
       });
     });
-  </script>
+  });
+</script>
 {/block}
 
 {block name="javascript-last-call"}

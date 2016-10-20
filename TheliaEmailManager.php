@@ -147,7 +147,7 @@ class TheliaEmailManager extends BaseModule
         $return = [];
 
         foreach ($emails as $email) {
-            if (EmailUtil::checkMailStructure($email)) {
+            if (EmailUtil::checkEmailStructure($email)) {
                 $return[$email] = null;
             }
         }
@@ -161,7 +161,7 @@ class TheliaEmailManager extends BaseModule
     public static function setRedirectAllTo(array $mails)
     {
         foreach ($mails as $mail) {
-            if (!EmailUtil::checkMailStructure($mail)) {
+            if (!EmailUtil::checkEmailStructure($mail)) {
                 throw new \InvalidArgumentException('Invalid email : ' . $mail);
             }
         }

@@ -59,7 +59,7 @@ class CompanyCreateForm extends BaseForm
             $mails = explode(',', $value);
 
             foreach ($mails as $mail) {
-                if (!MailUtil::checkMailStructure($mail)) {
+                if (!EmailUtil::checkEmailStructure($mail)) {
                     $context->addViolation(
                         $this->trans(
                             "Invalid email : %mail.",

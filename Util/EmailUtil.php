@@ -12,7 +12,7 @@ class EmailUtil
      * @param string $mail
      * @return bool
      */
-    public static function checkMailStructure($mail)
+    public static function checkEmailStructure($mail)
     {
         return filter_var($mail, FILTER_VALIDATE_EMAIL);
     }
@@ -24,7 +24,7 @@ class EmailUtil
      */
     public static function checkMailDNS($mail)
     {
-        if (static::checkMailStructure($mail)) {
+        if (static::checkEmailStructure($mail)) {
             $domain = explode('@', $mail);
 
             return dns_check_record($domain, 'MX');
