@@ -7,7 +7,6 @@ use Symfony\Component\Finder\Finder;
 use Thelia\Install\Database;
 use Thelia\Module\BaseModule;
 use TheliaEmailManager\DataTransformer\EmailListTransformer;
-use TheliaEmailManager\Util\EmailUtil;
 
 /**
  * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
@@ -43,7 +42,7 @@ class TheliaEmailManager extends BaseModule
         );
 
         static::setEnableHistory(true);
-        static::setDisableSend(false);
+        static::setDisableSending(false);
         static::setRedirectAllTo([]);
     }
 
