@@ -1,12 +1,10 @@
 {extends file="admin-layout.tpl"}
 
-{default_translation_domain domain="theliaemailmanager.bo.default"}
-
 {block name="no-return-functions"}
   {$admin_current_location = 'configuration'}
 {/block}
 
-{block name="page-title"}{intl l='Email Manager Trace : %title' title={$trace->getTitle()|truncate:50:'...'}}{/block}
+{block name="page-title"}{intl l='Email Manager Trace : %title' title={$trace->getTitle()|truncate:50:'...'} d="theliaemailmanager.bo.default"}{/block}
 
 {block name="check-resource"}admin.email-manager.trace.view{/block}
 {block name="check-access"}view{/block}
@@ -16,10 +14,10 @@
     <div id="wrapper" class="container">
       <nav>
         <ul class="breadcrumb">
-          <li><a href="{url route_id="admin.home.view"}">{intl l="Home"}</a></li>
-          <li><a href="{url route_id="admin.configuration.index"}">{intl l="Configuration"}</a></li>
-          <li><a href="{url router='theliaemailmanager' route_id='admin_email_manager_trace'}">{intl l='Email Manager Traces'}</a></li>
-          <li>{intl l='View trace "%title"' title={$trace->getTitle()|truncate:50:'...'}}</li>
+          <li><a href="{url route_id="admin.home.view"}">{intl l="Home" d="theliaemailmanager.bo.default"}</a></li>
+          <li><a href="{url route_id="admin.configuration.index"}">{intl l="Configuration" d="theliaemailmanager.bo.default"}</a></li>
+          <li><a href="{url router='theliaemailmanager' route_id='admin_email_manager_trace'}">{intl l='Email Manager Traces' d="theliaemailmanager.bo.default"}</a></li>
+          <li>{intl l='View trace "%title"' title={$trace->getTitle()|truncate:50:'...'} d="theliaemailmanager.bo.default"}</li>
         </ul>
       </nav>
 
@@ -29,7 +27,7 @@
         <div class="col-md-12 general-block-decorator">
           <div class="row">
             <div class="col-md-7 title">
-              {intl l='View trace "%title"' title={$trace->getTitle()|truncate:50:'...'}}
+              {intl l='View trace "%title"' title={$trace->getTitle()|truncate:50:'...'} d="theliaemailmanager.bo.default"}
             </div>
           </div>
 
@@ -54,7 +52,7 @@
                   <div class="tab-pane fade" id="{$id}">
                     {if $href}
                       {* ajax *}
-                      <div class="text-center"><span class="loading">{intl l="Please wait, loading"}</span></div>
+                      <div class="text-center"><span class="loading">{intl l="Please wait, loading" d="theliaemailmanager.bo.default"}</span></div>
                     {else}
                       {$content nofilter}
                     {/if}
@@ -65,16 +63,16 @@
               {/hookblock}
               <ul class="nav nav-tabs" id="tabbed-menu">
                 <li class="active">
-                  <a href="#general" data-toggle="tab">{intl l="General information"}</a>
+                  <a href="#general" data-toggle="tab">{intl l="General information" d="theliaemailmanager.bo.default"}</a>
                 </li>
                 {if !$trace->getDisableHistory()}
                   <li>
-                    <a href="#history" data-toggle="tab">{intl l="History"}</a>
+                    <a href="#history" data-toggle="tab">{intl l="History" d="theliaemailmanager.bo.default"}</a>
                   </li>
                 {/if}
                 {$smarty.capture.trace_tab_tab nofilter}
                 <li>
-                  <a href="#modules" data-toggle="tab">{intl l="Modules"}</a>
+                  <a href="#modules" data-toggle="tab">{intl l="Modules" d="theliaemailmanager.bo.default"}</a>
                 </li>
               </ul>
 
@@ -124,7 +122,7 @@
                         {hook name="email-manager.trace.view.update-form"}
 
                         <div class="panel panel-info">
-                          <div class="panel-heading">{intl l="PHP trace"}</div>
+                          <div class="panel-heading">{intl l="PHP trace" d="theliaemailmanager.bo.default"}</div>
                           <div class="panel-body">
                             <pre style="height: 300px;">{print_r(unserialize($trace->getDetail()))}</pre>
                           </div>
@@ -138,7 +136,7 @@
                         close_url={url router='theliaemailmanager' route_id='admin_email_manager_trace'}
                         }
 
-                        <small>{intl l='Trace detected on %date_create.' date_create={format_date date=$trace->getCreatedAt()}}</small>
+                        <small>{intl l='Trace detected on %date_create.' date_create={format_date date=$trace->getCreatedAt()} d="theliaemailmanager.bo.default"}</small>
                       </form>
                     {/form}
                   </div>

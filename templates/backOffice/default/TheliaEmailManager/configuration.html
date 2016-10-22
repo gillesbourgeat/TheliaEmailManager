@@ -1,12 +1,10 @@
 {extends file="admin-layout.tpl"}
 
-{default_translation_domain domain="theliaemailmanager.bo.default"}
-
 {block name="no-return-functions"}
   {$admin_current_location = 'configuration'}
 {/block}
 
-{block name="page-title"}{intl l='Email Manager Configuration'}{/block}
+{block name="page-title"}{intl l='Email Manager Configuration' d="theliaemailmanager.bo.default"}{/block}
 
 {block name="check-resource"}admin.email-manager.configuration{/block}
 {block name="check-access"}view{/block}
@@ -17,8 +15,8 @@
     <div id="wrapper" class="container">
 
       <ul class="breadcrumb">
-        <li><a href="{url route_id="admin.home.view"}">{intl l="Home"}</a></li>
-        <li><a href="{url route_id="admin.configuration.index"}">{intl l="Configuration"}</a></li>
+        <li><a href="{url route_id="admin.home.view"}">{intl l="Home" d="theliaemailmanager.bo.default"}</a></li>
+        <li><a href="{url route_id="admin.configuration.index"}">{intl l="Configuration" d="theliaemailmanager.bo.default"}</a></li>
         <li>{intl l="Email Manager Configuration"}</li>
       </ul>
 
@@ -33,7 +31,7 @@
                 <form method="POST" action="{url router='theliaemailmanager' route_id='admin_email_manager_configuration_update'}" class="clearfix">
 
                   <div class="col-md-12 title title-without-tabs">
-                    {intl l='Email Manager Configuration'}
+                    {intl l='Email Manager Configuration' d="theliaemailmanager.bo.default"}
                   </div>
 
                   {include file="includes/inner-form-toolbar.html" hide_save_and_close_button=true hide_flags=true close_url={url route_id='admin.configuration.index'}}
@@ -53,8 +51,8 @@
 
                     <thead>
                     <tr>
-                      <th>{intl l='Value'}</th>
-                      <th>{intl l='Help'}</th>
+                      <th>{intl l='Value' d="theliaemailmanager.bo.default"}</th>
+                      <th>{intl l='Help' d="theliaemailmanager.bo.default"}</th>
                     </tr>
                     </thead>
 
@@ -65,7 +63,7 @@
                       </td>
                       <td>
                         <div class="alert alert-info">
-                          {intl l=""}
+                          {intl l="" d="theliaemailmanager.bo.default"}
                         </div>
                       </td>
                     </tr>
@@ -76,7 +74,7 @@
                       </td>
                       <td>
                         <div class="alert alert-info">
-                          {intl l=""}
+                          {intl l="" d="theliaemailmanager.bo.default"}
                         </div>
                       </td>
                     </tr>
@@ -87,7 +85,7 @@
                       </td>
                       <td>
                         <div class="alert alert-info">
-                          {intl l=""}
+                          {intl l="" d="theliaemailmanager.bo.default"}
                         </div>
                       </td>
                     </tr>
@@ -111,5 +109,3 @@
 {block name="javascript-last-call"}
   {hook name='email-manager.configuration.js'}
 {/block}
-
-{default_translation_domain domain="bo.default"}
