@@ -27,6 +27,10 @@ class TheliaEmailManager extends BaseModule
 
     const CONFIG_REDIRECT_ALL_TO = 'redirect_all_to';
 
+    const RESOURCE_CONFIGURATION = 'admin.email-manager.configuration';
+
+    const RESOURCE_TRACE = 'admin.email-manager.trace';
+
     protected static $config = [];
 
     /**

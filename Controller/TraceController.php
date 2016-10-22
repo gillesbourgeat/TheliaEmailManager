@@ -5,6 +5,7 @@ namespace TheliaEmailManager\Controller;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\HttpFoundation\Request;
+use Thelia\Core\Security\AccessManager;
 use TheliaEmailManager\Event\TraceEvent;
 use TheliaEmailManager\Event\Events;
 use TheliaEmailManager\Form\Forms;
@@ -24,6 +25,11 @@ class TraceController extends BaseAdminController
 
     public function listAction(Request $request)
     {
+        // Check current user authorization
+        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_TRACE, null, AccessManager::VIEW)) {
+            return $response;
+        }
+
         return $this->render('TheliaEmailManager/traces', [
             'traces' => EmailManagerTraceQuery::create()->find()
         ]);
@@ -31,6 +37,11 @@ class TraceController extends BaseAdminController
 
     public function viewAction(Request $request, $traceId)
     {
+        // Check current user authorization
+        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_TRACE, null, AccessManager::VIEW)) {
+            return $response;
+        }
+
         $query = EmailManagerTraceQuery::create();
 
         I18nTrait::buildCriteriaI18n(
@@ -63,6 +74,11 @@ class TraceController extends BaseAdminController
 
     public function updateAction(Request $request, $traceId)
     {
+        // Check current user authorization
+        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_TRACE, null, AccessManager::UPDATE)) {
+            return $response;
+        }
+
         /** @var EmailManagerTrace $trace */
         if (null === $trace = EmailManagerTraceQuery::create()->findOneById($traceId)) {
             throw new NotFoundHttpException();

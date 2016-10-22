@@ -4,6 +4,7 @@ namespace TheliaEmailManager\Controller;
 
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\HttpFoundation\Request;
+use Thelia\Core\Security\AccessManager;
 use TheliaEmailManager\Form\Forms;
 use TheliaEmailManager\TheliaEmailManager;
 
@@ -17,6 +18,11 @@ class ConfigurationController extends BaseAdminController
 
     public function viewAction(Request $request)
     {
+        // Check current user authorization
+        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_CONFIGURATION, null, AccessManager::VIEW)) {
+            return $response;
+        }
+
         $form = $this->createForm(Forms::CONFIGURATION, 'form', [
             TheliaEmailManager::CONFIG_DISABLE_SENDING => TheliaEmailManager::getDisableSending(),
             TheliaEmailManager::CONFIG_ENABLE_HISTORY => TheliaEmailManager::getEnableHistory(),
@@ -30,6 +36,11 @@ class ConfigurationController extends BaseAdminController
 
     public function updateAction(Request $request)
     {
+        // Check current user authorization
+        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_CONFIGURATION, null, AccessManager::UPDATE)) {
+            return $response;
+        }
+
         $form = $this->createForm(Forms::CONFIGURATION);
 
         try {

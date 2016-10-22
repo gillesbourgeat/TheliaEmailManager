@@ -6,7 +6,7 @@
 
 {block name="page-title"}{intl l='Email Manager Traces' d="theliaemailmanager.bo.default"}{/block}
 
-{block name="check-resource"}admin.email-manager.trace.list{/block}
+{block name="check-resource"}admin.email-manager.trace{/block}
 {block name="check-access"}view{/block}
 
 {block name="main-content"}
@@ -65,7 +65,7 @@
                       {/if}
                     </td>
                     <td>
-                      {if $trace->getDisableHistory()}
+                      {if $trace->getDisableSending()}
                         <span class="label label-danger">{intl l='Sending disabled' d="theliaemailmanager.bo.default"}</span>
                       {else}
                         <span class="label label-success">{intl l='Sending enabled' d="theliaemailmanager.bo.default"}</span>
