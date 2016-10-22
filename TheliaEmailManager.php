@@ -13,7 +13,7 @@ use TheliaEmailManager\DataTransformer\EmailListTransformer;
  */
 class TheliaEmailManager extends BaseModule
 {
-    const DOMAIN_NAME = 'TheliaEmailManager';
+    const DOMAIN_NAME = 'theliaemailmanager';
 
     const ROUTER = 'router.TheliaEmailManager';
 

@@ -1,0 +1,20 @@
+{$disable_sending = {module_config module="theliaemailmanager" key="disable_sending" locale="en_US"}}
+{$redirect_all_to = {module_config module="theliaemailmanager" key="redirect_all_to" locale="en_US"}}
+
+{if $disable_sending || $redirect_all_to}
+{default_translation_domain domain="theliaemailmanager.bo.default"}
+<div class="alert alert-danger">
+  <strong>{intl l="Warning !!!"}</strong>
+  {if $disable_sending}
+    <br/>
+    {intl l="Sending email is disabled %link" link=""}
+  {/if}
+  {if $redirect_all_to}
+  <br/>
+    {intl l="All emails sent by this site are redirected to : %redirect_all_to" redirect_all_to=$redirect_all_to|replace:',':', '}
+  {/if}
+  <br/>
+  <a href="{url router="theliaemailmanager" route_id="admin_email_manager_configuration"}">{intl l="View Email Manager Configuratiom"}</a>
+</div>
+{default_translation_domain domain="bo.default"}
+{/if}
