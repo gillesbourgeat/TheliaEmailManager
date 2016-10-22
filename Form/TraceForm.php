@@ -5,11 +5,8 @@ namespace TheliaEmailManager\Form;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\GreaterThan;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Thelia\Form\StandardDescriptionFieldsTrait;
 use TheliaEmailManager\DataTransformer\EmailListTransformer;
 
 /**
@@ -17,7 +14,10 @@ use TheliaEmailManager\DataTransformer\EmailListTransformer;
  */
 class TraceForm extends BaseForm
 {
+    use StandardDescriptionFieldsTrait;
+
     const FIELD_ID = 'id';
+    const FIELD_LOCALE = 'locale';
     const FIELD_TITLE = 'title';
     const FIELD_DESCRIPTION = 'description';
     const FIELD_DISABLE_HISTORY = 'disable_history';
@@ -36,28 +36,14 @@ class TraceForm extends BaseForm
 
     public function buildForm()
     {
+        $this->addStandardDescFields(['postscriptum', 'chapo']);
+
         $this->formBuilder
             ->add(self::FIELD_ID, HiddenType::class, [
                 'constraints' => [
                     new GreaterThan(['value' => 0])
                 ],
                 'required'    => true
-            ])
-            ->add(self::FIELD_TITLE, TextType::class, [
-                'constraints' => [
-                    new NotBlank()
-                ],
-                'required' => true,
-                'label' => $this->trans('The title of this trace'),
-                'label_attr'  => [
-                    'for' => self::FIELD_TITLE,
-                    'help' => $this->trans('The code of this trace'),
-                ]
-            ])
-            ->add(self::FIELD_DESCRIPTION, TextareaType::class, [
-                'required' => false,
-                'label' => $this->trans('The description of this trace'),
-                'label_attr'  => ['for' => self::FIELD_DESCRIPTION]
             ])
             ->add(self::FIELD_DISABLE_HISTORY, ChoiceType::class, [
                 'choices' => [
@@ -90,40 +76,34 @@ class TraceForm extends BaseForm
                     ]
             ])
             ->add(self::FIELD_EMAIL_BCC, TextareaType::class, [
-                'required' => true,
-                'constraints' => [
-                    new Callback([
-                        'methods' => [[$this, 'checkEmailList']]
-                    ])
-                ],
+                'required' => false,
                 'label' => $this->trans('List of email Bcc'),
                 'label_attr'  => [
                     'for' => self::FIELD_EMAIL_BCC,
                     'help' => $this->trans('List of emails separated by comma')
+                ],
+                'attr' => [
+                    'rows' => 4,
+                    'placeholder' => $this->trans('email1@my-domain.tld, email2@my-domain.tld')
                 ]
             ])
             ->add(self::FIELD_EMAIL_REDIRECT, TextareaType::class, [
-                'required' => true,
-                'constraints' => [
-                    new Callback([
-                        'methods' => [[$this, 'checkEmailList']]
-                    ])
-                ],
+                'required' => false,
                 'label' => $this->trans('List of email for redirection'),
                 'label_attr'  => [
                     'for' => self::FIELD_EMAIL_REDIRECT,
                     'help' => $this->trans('List of emails separated by comma')
+                ],
+                'attr' => [
+                    'rows' => 4,
+                    'placeholder' => $this->trans('email1@my-domain.tld, email2@my-domain.tld')
                 ]
-            ])
-        ;
-    }
+            ]);
 
-    public function checkEmailList($value, ExecutionContextInterface $context)
-    {
-        try {
-            (new EmailListTransformer($this->translator))->reverseTransform($value);
-        } catch (\Exception $e) {
-            $context->addViolation($e);
-        }
+            $this->formBuilder->get(self::FIELD_EMAIL_BCC)
+                ->addModelTransformer(new EmailListTransformer($this->translator));
+
+            $this->formBuilder->get(self::FIELD_EMAIL_REDIRECT)
+                ->addModelTransformer(new EmailListTransformer($this->translator));
     }
 }

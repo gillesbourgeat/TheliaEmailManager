@@ -2,8 +2,11 @@
 
 namespace TheliaEmailManager\Service;
 
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Thelia\Model\Lang;
 use Thelia\Model\LangQuery;
+use TheliaEmailManager\Event\Events;
+use TheliaEmailManager\Event\TraceEvent;
 use TheliaEmailManager\Model\EmailManagerTrace;
 use TheliaEmailManager\Model\EmailManagerTraceQuery;
 
@@ -12,8 +15,20 @@ use TheliaEmailManager\Model\EmailManagerTraceQuery;
  */
 class TraceService
 {
+    /** @var EventDispatcherInterface */
+    protected $eventDispatcher;
+
     /** @var EmailManagerTrace[] */
     protected $emailManagerTraceCache = [];
+
+    /**
+     * TraceService constructor.
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function __construct(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
 
     /**
      * @param array $trace
@@ -44,7 +59,7 @@ class TraceService
                         $emailManagerTrace->setLocale($language->getLocale())->setTitle($title);
                     }
 
-                    $emailManagerTrace->save();
+                    $this->eventDispatcher->dispatch(Events::TRACE_CREATE, new TraceEvent($emailManagerTrace));
                 }
 
                 $this->emailManagerTraceCache[$hash] = $emailManagerTrace;

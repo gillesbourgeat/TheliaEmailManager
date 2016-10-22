@@ -12,8 +12,7 @@
 {block name="check-access"}view{/block}
 
 {block name="main-content"}
-
-  <div class="brand edit-brand">
+  <div class="email-manager-trace-view">
     <div id="wrapper" class="container">
       <nav>
         <ul class="breadcrumb">
@@ -85,50 +84,58 @@
 
                   <div class="form-container">
 
-                    {form name="thelia.admin.brand.modification"}
+                    {form name="email_manager_trace_update"}
 
-                      <form method="POST" action="{url path="/admin/brand/save/%id" id=$ID}" {form_enctype} class="clearfix">
+                      <form method="POST" action="{url router='theliaemailmanager' route_id='admin_email_manager_trace_update' traceId=$trace->getId()}" class="clearfix">
 
-                        {include file="includes/inner-form-toolbar.html" close_url={url path='/admin/brand'}}
+                        {include file="includes/inner-form-toolbar.html" close_url={url router='theliaemailmanager' route_id='admin_email_manager_trace'}}
 
                         <input type="hidden" name="current_tab" value="general"/>
 
-                        {* Be sure to get the currency ID, even if the form could not be validated *}
-                        <input type="hidden" name="brand_id" value="{$ID}" />
+                        {form_hidden_fields exclude="id,locale"}
 
-                        {form_hidden_fields}
+                        {render_form_field field='id'}
 
-                        {render_form_field field="success_url" value={url path="/admin/brand"}}
-                        {render_form_field field="locale" value={$edit_language_locale}}
+                        {render_form_field field="locale" value=$edit_language_locale}
 
                         {if $form_error}
                           <div class="alert alert-danger">{$form_error_message}</div>
                         {/if}
 
                         <div class="row">
-                          <div class="col-md-8">
-                            {include file="includes/standard-description-form-fields.html"}
+                          <div class="col-md-7">
+                            {render_form_field field='title'}
+                            {render_form_field field="description" extra_class="wysiwyg"}
                           </div>
 
-                          <div class="col-md-4">
-                            {hook name="brand.modification.form-right.top" brand_id=$brand_id}
-
-                            {render_form_field field="visible"}
-
-
-
-                            {hook name="brand.modification.form-right.bottom" brand_id=$brand_id}
+                          <div class="col-md-5">
+                            {render_form_field field='disable_history'}
+                            {render_form_field field='disable_sending'}
+                            {render_form_field field='force_same_customer_disable'}
+                          </div>
+                          <div class="col-md-6">
+                            {render_form_field field='email_bcc'}
+                          </div>
+                          <div class="col-md-6">
+                            {render_form_field field='email_redirect'}
                           </div>
                         </div>
 
-                        {hook name="brand.update-form" location='brand_update_form'}
+                        {hook name="email-manager.trace.view.update-form"}
+
+                        <div class="panel panel-info">
+                          <div class="panel-heading">{intl l="PHP trace"}</div>
+                          <div class="panel-body">
+                              <pre style="height: 300px;">{print_r(unserialize($trace->getDetail()))}</pre>
+                          </div>
+                        </div>
 
                         {include
                         file="includes/inner-form-toolbar.html"
                         hide_submit_buttons = false
                         hide_flags = true
 
-                        close_url={url path="/admin/brand"}
+                        close_url={url router='theliaemailmanager' route_id='admin_email_manager_trace'}
                         }
 
                         <small>{intl l='Trace detected on %date_create.' date_create={format_date date=$trace->getCreatedAt()}}</small>
@@ -194,5 +201,5 @@
 {/block}
 
 {block name="javascript-last-call"}
-  {hook name='email-manager.trace.view.js' location='brand-edit-js' trace=$trace}}
+  {hook name='email-manager.trace.view.js' trace=$trace}}
 {/block}

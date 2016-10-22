@@ -24,7 +24,7 @@
     </route>
 
     <route id="admin_email_manager_trace_update" path="/admin/email-manager/trace/{traceId}" methods="POST">
-        <default key="_controller">TheliaEmailManager:Trace:view</default>
+        <default key="_controller">TheliaEmailManager:Trace:update</default>
         <requirement key="traceId">\d+</requirement>
     </route>
 

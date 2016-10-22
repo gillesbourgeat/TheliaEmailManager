@@ -2,11 +2,13 @@
 
 namespace TheliaEmailManager\EventListener;
 
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use TheliaEmailManager\Driver\TraceDriverInterface;
 use TheliaEmailManager\Entity\EmailEntity;
 use TheliaEmailManager\Event\Events;
 use TheliaEmailManager\Event\SwiftEvent;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use TheliaEmailManager\Event\TraceEvent;
 use TheliaEmailManager\Model\EmailManagerEmail;
 use TheliaEmailManager\Model\EmailManagerTrace;
 use TheliaEmailManager\Service\EmailService;
@@ -30,20 +32,26 @@ class SwiftListener implements EventSubscriberInterface
     /** @var EmailManagerTrace */
     protected $lastEmailManagerTrace;
 
+    /** @var EventDispatcherInterface */
+    protected $eventDispatcher;
+
     /**
      * SwiftListener constructor.
      * @param EmailService $emailService
      * @param TraceService $traceService
      * @param TraceDriverInterface $traceDriver
+     * @param EventDispatcherInterface $eventDispatcher
      */
     public function __construct(
         EmailService $emailService,
         TraceService $traceService,
-        TraceDriverInterface $traceDriver
+        TraceDriverInterface $traceDriver,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->emailService = $emailService;
         $this->traceService = $traceService;
         $this->traceDriver = $traceDriver;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function send(SwiftEvent $event)
@@ -68,7 +76,8 @@ class SwiftListener implements EventSubscriberInterface
 
         $this->lastEmailManagerTrace = $emailManagerTrace;
 
-        $emailManagerTrace->setNumberOfCatch($emailManagerTrace->getNumberOfCatch() + 1)->save();
+        $emailManagerTrace->setNumberOfCatch($emailManagerTrace->getNumberOfCatch() + 1);
+        $this->eventDispatcher->dispatch(Events::TRACE_UPDATE, new TraceEvent($emailManagerTrace));
 
         if (TheliaEmailManager::getDisableSend() || $emailManagerTrace->getDisableSending()) {
             $event->getSwiftEvent()->cancelBubble(true);

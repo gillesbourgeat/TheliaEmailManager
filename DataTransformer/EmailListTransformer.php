@@ -31,7 +31,11 @@ class EmailListTransformer implements DataTransformerInterface
      */
     public function transform($emails)
     {
-        if (is_array($emails)) {
+        if ($emails === null) {
+            return '';
+        }
+
+        if (!is_array($emails)) {
             throw new \InvalidArgumentException('The arguments emails is not an array');
         }
 

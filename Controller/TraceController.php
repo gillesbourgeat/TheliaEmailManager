@@ -2,10 +2,17 @@
 
 namespace TheliaEmailManager\Controller;
 
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\HttpFoundation\Request;
+use TheliaEmailManager\Event\TraceEvent;
+use TheliaEmailManager\Event\Events;
+use TheliaEmailManager\Form\Forms;
+use TheliaEmailManager\Form\TraceForm;
+use TheliaEmailManager\Model\EmailManagerTrace;
 use TheliaEmailManager\Model\EmailManagerTraceQuery;
 use TheliaEmailManager\TheliaEmailManager;
+use TheliaEmailManager\Util\I18nTrait;
 
 /**
  * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
@@ -24,15 +31,62 @@ class TraceController extends BaseAdminController
 
     public function viewAction(Request $request, $traceId)
     {
+        $query = EmailManagerTraceQuery::create();
+
+        I18nTrait::buildCriteriaI18n(
+            $query,
+            $request->getSession()->getAdminEditionLang()->getLocale(),
+            ['TITLE', 'DESCRIPTION']
+        );
+
+        if (null === $trace = $trace = $query->findOneById($traceId)) {
+            throw new NotFoundHttpException();
+        }
+
+        $form = $this->createForm(Forms::TRACE_UPDATE, 'form', [
+            TraceForm::FIELD_ID => $trace->getId(),
+            TraceForm::FIELD_TITLE => $trace->getVirtualColumn('i18n_TITLE'),
+            TraceForm::FIELD_DESCRIPTION => $trace->getVirtualColumn('i18n_DESCRIPTION'),
+            TraceForm::FIELD_DISABLE_HISTORY => $trace->getDisableHistory(),
+            TraceForm::FIELD_DISABLE_SENDING => $trace->getDisableSending(),
+            TraceForm::FIELD_FORCE_SAME_CUSTOMER_DISABLE => $trace->getForceSameCustomerDisable(),
+            TraceForm::FIELD_EMAIL_BCC => $trace->getEmailBcc(),
+            TraceForm::FIELD_EMAIL_REDIRECT => $trace->getEmailRedirect()
+        ]);
+
+        $this->getParserContext()->addForm($form);
+
         return $this->render('TheliaEmailManager/traceEdit', [
-            'trace' => EmailManagerTraceQuery::create()->findOneById($traceId)
+            'trace' => $trace
         ]);
     }
 
     public function updateAction(Request $request, $traceId)
     {
+        /** @var EmailManagerTrace $trace */
+        if (null === $trace = EmailManagerTraceQuery::create()->findOneById($traceId)) {
+            throw new NotFoundHttpException();
+        }
+
+        $form = $this->createForm(Forms::TRACE_UPDATE);
+
         try {
-            $trace = EmailManagerTraceQuery::create()->findOneById($traceId);
+            $formUpdate = $this->validateForm($form);
+
+            $trace
+                ->setDisableHistory($formUpdate->get(TraceForm::FIELD_DISABLE_HISTORY)->getData())
+                ->setDisableSending($formUpdate->get(TraceForm::FIELD_DISABLE_SENDING)->getData())
+                ->setForceSameCustomerDisable($formUpdate->get(TraceForm::FIELD_FORCE_SAME_CUSTOMER_DISABLE)->getData())
+                ->setEmailBcc($formUpdate->get(TraceForm::FIELD_EMAIL_BCC)->getData())
+                ->setEmailRedirect($formUpdate->get(TraceForm::FIELD_EMAIL_REDIRECT)->getData())
+                ->setLocale($formUpdate->get(TraceForm::FIELD_LOCALE)->getData())
+                ->setTitle($formUpdate->get(TraceForm::FIELD_TITLE)->getData())
+                ->setDescription($formUpdate->get(TraceForm::FIELD_DESCRIPTION)->getData())
+            ;
+
+            $this->getDispatcher()->dispatch(Events::TRACE_UPDATE, new TraceEvent($trace));
+
+            $this->getParserContext()->clearForm($form);
 
             return $this->generateRedirectFromRoute(
                 'admin_email_manager_trace_view',
@@ -40,6 +94,9 @@ class TraceController extends BaseAdminController
                 ['traceId' => $traceId]
             );
         } catch (\Exception $e) {
+            $form->setErrorMessage($e->getMessage());
+            $this->getParserContext()->addForm($form);
+
             return $this->render('TheliaEmailManager/traceEdit', ['traceId' => $traceId]);
         }
     }
