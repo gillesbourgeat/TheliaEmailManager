@@ -4,12 +4,12 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <!-- - Config - -->
-    <route id="admin_email_manager_config" path="/admin/email-manager/configuration" methods="GET">
+    <!-- - Configuration - -->
+    <route id="admin_email_manager_configuration" path="/admin/email-manager/configuration" methods="GET">
         <default key="_controller">TheliaEmailManager:Configuration:view</default>
     </route>
 
-    <route id="admin_email_manager_config_update" path="/admin/email-manager/configuration" methods="POST">
+    <route id="admin_email_manager_configuration_update" path="/admin/email-manager/configuration" methods="POST">
         <default key="_controller">TheliaEmailManager:Configuration:update</default>
     </route>
 

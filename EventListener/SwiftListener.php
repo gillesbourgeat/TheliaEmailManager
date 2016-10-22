@@ -79,7 +79,7 @@ class SwiftListener implements EventSubscriberInterface
         $emailManagerTrace->setNumberOfCatch($emailManagerTrace->getNumberOfCatch() + 1);
         $this->eventDispatcher->dispatch(Events::TRACE_UPDATE, new TraceEvent($emailManagerTrace));
 
-        if (TheliaEmailManager::getDisableSend() || $emailManagerTrace->getDisableSending()) {
+        if (TheliaEmailManager::getDisableSending() || $emailManagerTrace->getDisableSending()) {
             $event->getSwiftEvent()->cancelBubble(true);
             return;
         }

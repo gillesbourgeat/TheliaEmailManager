@@ -48,7 +48,7 @@ class TraceService
                 if (null === $emailManagerTrace = EmailManagerTraceQuery::create()->findOneByHash($hash)) {
                     $emailManagerTrace = (new EmailManagerTrace())
                         ->setHash($hash)
-                        ->setDetail(serialize($trace));
+                        ->setDetail(serialize($this->getMineTraceDetail($trace)));
 
                     $title = $this->getTitleFromTrace($minTrace);
 
@@ -69,6 +69,23 @@ class TraceService
         }
 
         return null;
+    }
+
+    /**
+     * @param array $trace
+     * @return array
+     */
+    protected function getMineTraceDetail(array $trace)
+    {
+        $return = [];
+
+        foreach ($trace as $key => $entry) {
+            if ($key >= 11) {
+                $return[] = $entry['class'] . '::' . $entry['function'];
+            }
+        }
+
+        return $return;
     }
 
     /**

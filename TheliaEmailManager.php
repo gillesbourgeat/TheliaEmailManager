@@ -6,6 +6,7 @@ use Propel\Runtime\Connection\ConnectionInterface;
 use Symfony\Component\Finder\Finder;
 use Thelia\Install\Database;
 use Thelia\Module\BaseModule;
+use TheliaEmailManager\DataTransformer\EmailListTransformer;
 use TheliaEmailManager\Util\EmailUtil;
 
 /**
@@ -23,7 +24,7 @@ class TheliaEmailManager extends BaseModule
 
     const CONFIG_ENABLE_HISTORY = 'enable_history';
 
-    const CONFIG_DISABLE_SEND = 'disable_send';
+    const CONFIG_DISABLE_SENDING = 'disable_sending';
 
     const CONFIG_REDIRECT_ALL_TO = 'redirect_all_to';
 
@@ -124,17 +125,17 @@ class TheliaEmailManager extends BaseModule
     /**
      * @return bool
      */
-    public static function getDisableSend()
+    public static function getDisableSending()
     {
-        return static::getConfigValue(self::CONFIG_DISABLE_SEND, false) ? true : false;
+        return static::getConfigValue(self::CONFIG_DISABLE_SENDING, false) ? true : false;
     }
 
     /**
      * @param $bool true for disable sending all mails, false for enable sending all emails
      */
-    public static function setDisableSend($bool)
+    public static function setDisableSending($bool)
     {
-        static::setConfigValue(self::CONFIG_DISABLE_SEND, (bool) $bool);
+        static::setConfigValue(self::CONFIG_DISABLE_SENDING, (bool) $bool);
     }
 
     /**
@@ -142,17 +143,8 @@ class TheliaEmailManager extends BaseModule
      */
     public static function getRedirectAllTo()
     {
-        $emails = explode(',', static::getConfigValue(self::CONFIG_REDIRECT_ALL_TO, ""));
-
-        $return = [];
-
-        foreach ($emails as $email) {
-            if (EmailUtil::checkEmailStructure($email)) {
-                $return[$email] = null;
-            }
-        }
-
-        return $return;
+        return (new EmailListTransformer())
+            ->reverseTransform(static::getConfigValue(self::CONFIG_REDIRECT_ALL_TO, ""));
     }
 
     /**
@@ -160,12 +152,8 @@ class TheliaEmailManager extends BaseModule
      */
     public static function setRedirectAllTo(array $mails)
     {
-        foreach ($mails as $mail) {
-            if (!EmailUtil::checkEmailStructure($mail)) {
-                throw new \InvalidArgumentException('Invalid email : ' . $mail);
-            }
-        }
+        $mails = (new EmailListTransformer())->transform($mails);
 
-        static::setConfigValue(self::CONFIG_REDIRECT_ALL_TO, implode(',', $mails));
+        static::setConfigValue(self::CONFIG_REDIRECT_ALL_TO, $mails);
     }
 }

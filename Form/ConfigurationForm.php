@@ -1,31 +1,28 @@
 <?php
 
-namespace TheliaEmailManager\Form\Company;
+namespace TheliaEmailManager\Form;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Validator\Constraints\Callback;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use TheliaEmailManager\Form\BaseForm;
+use TheliaEmailManager\DataTransformer\EmailListTransformer;
 use TheliaEmailManager\TheliaEmailManager;
-use TheliaEmailManager\Util\EmailUtil;
 
 /**
  * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
-class CompanyCreateForm extends BaseForm
+class ConfigurationForm extends BaseForm
 {
     public function buildForm()
     {
         $this->formBuilder
-            ->add(TheliaEmailManager::CONFIG_DISABLE_SEND, ChoiceType::class, [
+            ->add(TheliaEmailManager::CONFIG_DISABLE_SENDING, ChoiceType::class, [
                 'choices' => [
                     1 => $this->trans('Yes'),
                     0 => $this->trans('No')
                 ],
                 'required'    => true,
                 'label' => $this->trans('Disable sending of all emails'),
-                'label_attr'  => ['for' => TheliaEmailManager::CONFIG_DISABLE_SEND]
+                'label_attr'  => ['for' => TheliaEmailManager::CONFIG_DISABLE_SENDING]
             ])
             ->add(TheliaEmailManager::CONFIG_ENABLE_HISTORY, ChoiceType::class, [
                 'choices' => [
@@ -37,39 +34,19 @@ class CompanyCreateForm extends BaseForm
                 'label_attr'  => ['for' => TheliaEmailManager::CONFIG_ENABLE_HISTORY]
             ])
             ->add(TheliaEmailManager::CONFIG_REDIRECT_ALL_TO, TextareaType::class, [
-                'constraints' => [
-                    new Callback([
-                        'methods' => [[$this, 'checkListOfEmail']]
-                    ]),
-                ],
-                'required'    => true,
+                'required'    => false,
                 'label' => $this->trans('Disable sending of all emails'),
                 'label_attr'  => [
                     'for' => TheliaEmailManager::CONFIG_REDIRECT_ALL_TO,
                     'help' => $this->trans('List of emails separated by commas')
+                ],
+                'attr' => [
+                    'rows' => 4,
+                    'placeholder' => $this->trans('email1@my-domain.tld, email2@my-domain.tld')
                 ]
             ]);
-    }
 
-    public function checkListOfEmail($value, ExecutionContextInterface $context)
-    {
-        $value = trim($value);
-
-        if (!empty($value)) {
-            $mails = explode(',', $value);
-
-            foreach ($mails as $mail) {
-                if (!EmailUtil::checkEmailStructure($mail)) {
-                    $context->addViolation(
-                        $this->trans(
-                            "Invalid email : %mail.",
-                            ['%mail' => $mail]
-                        )
-                    );
-
-                    break;
-                }
-            }
-        }
+        $this->formBuilder->get(TheliaEmailManager::CONFIG_REDIRECT_ALL_TO)
+            ->addModelTransformer(new EmailListTransformer());
     }
 }

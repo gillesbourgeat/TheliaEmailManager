@@ -6,6 +6,7 @@
 
     <forms>
         <form name="email_manager_trace_update" class="TheliaEmailManager\Form\TraceForm" />
+        <form name="email_manager_configuration" class="TheliaEmailManager\Form\ConfigurationForm" />
     </forms>
 
     <services>

@@ -101,9 +101,9 @@ class TraceForm extends BaseForm
             ]);
 
             $this->formBuilder->get(self::FIELD_EMAIL_BCC)
-                ->addModelTransformer(new EmailListTransformer($this->translator));
+                ->addModelTransformer(new EmailListTransformer());
 
             $this->formBuilder->get(self::FIELD_EMAIL_REDIRECT)
-                ->addModelTransformer(new EmailListTransformer($this->translator));
+                ->addModelTransformer(new EmailListTransformer());
     }
 }
