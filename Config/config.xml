@@ -12,7 +12,9 @@
         <service id="thelia.email.manager.email.service" class="TheliaEmailManager\Service\EmailService">
             <argument type="service" id="router.theliaemailmanager" />
         </service>
-        <service id="thelia.email.manager.trace.service" class="TheliaEmailManager\Service\TraceService" />
+        <service id="thelia.email.manager.trace.service" class="TheliaEmailManager\Service\TraceService">
+            <argument type="service" id="event_dispatcher" />
+        </service>
         <service id="thelia.email.manager.smarty" class="TheliaEmailManager\Plugin\SmartyPlugin">
             <tag name="thelia.parser.register_plugin"/>
             <argument type="service" id="thelia.email.manager.email.service" />
@@ -28,6 +30,9 @@
             <argument type="service" id="thelia.email.manager.email.service" />
             <argument type="service" id="thelia.email.manager.trace.service" />
             <argument type="service" id="thelia.email.manager.trace.driver" />
+        </service>
+        <service id="thelia.email.manager.trace.listener" class="TheliaEmailManager\EventListener\TraceListener">
+            <tag name="kernel.event_subscriber"/>
         </service>
     </services>
 </config>
