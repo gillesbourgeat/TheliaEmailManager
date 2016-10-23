@@ -6,51 +6,51 @@
 
     <!-- - Configuration - -->
     <route id="admin_email_manager_configuration" path="/admin/email-manager/configuration" methods="GET">
-        <default key="_controller">TheliaEmailManager:Configuration:view</default>
+        <default key="_controller">TheliaEmailManager:Back\Configuration:view</default>
     </route>
 
     <route id="admin_email_manager_configuration_update" path="/admin/email-manager/configuration" methods="POST">
-        <default key="_controller">TheliaEmailManager:Configuration:update</default>
+        <default key="_controller">TheliaEmailManager:Back\Configuration:update</default>
     </route>
 
     <!-- - Trace - -->
     <route id="admin_email_manager_trace" path="/admin/email-manager/trace" methods="GET">
-        <default key="_controller">TheliaEmailManager:Trace:list</default>
+        <default key="_controller">TheliaEmailManager:Back\Trace:list</default>
     </route>
 
     <route id="admin_email_manager_trace_view" path="/admin/email-manager/trace/{traceId}" methods="GET">
-        <default key="_controller">TheliaEmailManager:Trace:view</default>
+        <default key="_controller">TheliaEmailManager:Back\Trace:view</default>
         <requirement key="traceId">\d+</requirement>
     </route>
 
     <route id="admin_email_manager_trace_update" path="/admin/email-manager/trace/{traceId}" methods="POST">
-        <default key="_controller">TheliaEmailManager:Trace:update</default>
+        <default key="_controller">TheliaEmailManager:Back\Trace:update</default>
         <requirement key="traceId">\d+</requirement>
     </route>
 
     <!-- - History - -->
     <route id="admin_email_manager_history" path="/admin/email-manager/history" methods="GET">
-        <default key="_controller">TheliaEmailManager:History:list</default>
+        <default key="_controller">TheliaEmailManager:Back\History:list</default>
     </route>
 
     <route id="admin_email_manager_history_view" path="/admin/email-manager/history/{historyId}" methods="GET">
-        <default key="_controller">TheliaEmailManager:History:view</default>
+        <default key="_controller">TheliaEmailManager:Back\History:view</default>
         <requirement key="historyId">\d+</requirement>
     </route>
 
     <route id="admin_email_manager_history_resend" path="/admin/email-manager/history/{historyId}/resend" methods="POST">
-        <default key="_controller">TheliaEmailManager:History:resend</default>
+        <default key="_controller">TheliaEmailManager:Back\History:resend</default>
         <requirement key="historyId">\d+</requirement>
     </route>
 
     <!-- - Front - -->
     <route id="email_manager_disable_sending" path="/email-manager/disable/{hash}" methods="GET">
-        <default key="_controller">TheliaEmailManager:Email:disableEmail</default>
+        <default key="_controller">TheliaEmailManager:Front\Email:disableEmail</default>
         <requirement key="hash">[a-zA-Z0-9]+</requirement>
     </route>
 
     <route id="email_manager_disable_sending_confirm" path="/email-manager/disable/{hash}" methods="post">
-        <default key="_controller">TheliaEmailManager:Email:disableEmailConfirmation</default>
+        <default key="_controller">TheliaEmailManager:Front\Email:disableEmailConfirm</default>
         <requirement key="hash">[a-zA-Z0-9]+</requirement>
     </route>
 

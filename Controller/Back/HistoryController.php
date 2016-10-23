@@ -1,6 +1,6 @@
 <?php
 
-namespace TheliaEmailManager\Controller;
+namespace TheliaEmailManager\Controller\Back;
 
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\HttpFoundation\Request;

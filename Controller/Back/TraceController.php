@@ -1,6 +1,6 @@
 <?php
 
-namespace TheliaEmailManager\Controller;
+namespace TheliaEmailManager\Controller\Back;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Thelia\Controller\Admin\BaseAdminController;
