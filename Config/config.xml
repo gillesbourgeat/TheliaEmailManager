@@ -13,11 +13,13 @@
     <forms>
         <form name="email_manager_trace_update" class="TheliaEmailManager\Form\TraceForm" />
         <form name="email_manager_configuration" class="TheliaEmailManager\Form\ConfigurationForm" />
+        <form name="email_manager_disable_email_confirmation" class="TheliaEmailManager\Form\DisableEmailConfirmationForm" />
     </forms>
 
     <services>
         <service id="thelia.email.manager.email.service" class="TheliaEmailManager\Service\EmailService">
             <argument type="service" id="router.theliaemailmanager" />
+            <argument type="service" id="event_dispatcher" />
         </service>
         <service id="thelia.email.manager.trace.service" class="TheliaEmailManager\Service\TraceService">
             <argument type="service" id="event_dispatcher" />
@@ -39,6 +41,9 @@
             <argument type="service" id="thelia.email.manager.trace.driver" />
         </service>
         <service id="thelia.email.manager.trace.listener" class="TheliaEmailManager\EventListener\TraceListener">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+        <service id="thelia.email.manager.email.listener" class="TheliaEmailManager\EventListener\EmailListener">
             <tag name="kernel.event_subscriber"/>
         </service>
     </services>

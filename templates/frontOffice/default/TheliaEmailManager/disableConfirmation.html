@@ -16,7 +16,29 @@
 {block name="main-content"}
 <div class="main">
     <article class="col-main" role="main" aria-labelledby="main-label">
-        {if $success}
+        {if $error}
+            <div class="alert alert-danger">
+                {$error}
+            </div>
+        {elseif $displayForm}
+            <div class="alert alert-info">
+                <div class="row">
+                    <div class="col-md-9">
+                        {intl l="Do you really want to stop receiving email from this site on the address : %email" d="theliaemailmanager.fo.default" email=$email}
+                    </div>
+                    <div class="col-md-3">
+                        {form name="email_manager_disable_email_confirmation"}
+                            <form action="{url current=true}" method="POST">
+                                {form_hidden_fields}
+                                <button type="submit" class="btn btn-primary">
+                                    {intl l="Confirm Disable !" d="theliaemailmanager.fo.default"}
+                                </button>
+                            </form>
+                        {/form}
+                    </div>
+                </div>
+            </div>
+        {elseif $success}
             <div class="alert alert-success">
                 {intl l="The sending email has been deactivated for the email : %email" email=$email d="theliaemailmanager.fo.default"}
                 <br/>

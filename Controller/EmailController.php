@@ -5,6 +5,8 @@ namespace TheliaEmailManager\Controller;
 use Thelia\Controller\Front\BaseFrontController;
 use Thelia\Core\HttpFoundation\Request;
 use TheliaEmailManager\Exception\InvalidHashException;
+use TheliaEmailManager\Form\Forms;
+use TheliaEmailManager\Model\EmailManagerEmailQuery;
 use TheliaEmailManager\Service\EmailService;
 use TheliaEmailManager\TheliaEmailManager;
 
@@ -18,13 +20,42 @@ class EmailController extends BaseFrontController
 
     public function disableEmailAction(Request $request, $hash)
     {
+        $templateData = [];
+        $status = 200;
+
+        try {
+            if (null === $model = EmailManagerEmailQuery::create()->findOneByDisableHash($hash)) {
+                throw new InvalidHashException();
+            }
+
+            $templateData['email'] = $model->getEmail();
+
+            if ($model->getDisableSend()) {
+                $templateData['success'] = true;
+            } else {
+                $templateData['displayForm'] = true;
+            }
+        } catch (InvalidHashException $e) {
+            $status = 400;
+            $templateData['success'] = false;
+        }
+
+        return $this->render('TheliaEmailManager/disableConfirmation', $templateData, $status);
+    }
+
+    public function disableEmailConfirmationAction(Request $request, $hash)
+    {
         /** @var EmailService $emailService */
         $emailService = $this->getContainer()->get('thelia.email.manager.email.service');
 
         $templateData = [];
         $status = 200;
 
+        $form = $this->createForm(Forms::DISABLE_EMAIL_CONFIRMATION);
+
         try {
+            $this->validateForm($form);
+
             $model = $emailService->disableSendingEmailByHash($hash);
 
             $templateData['success'] = true;
@@ -32,6 +63,9 @@ class EmailController extends BaseFrontController
         } catch (InvalidHashException $e) {
             $status = 400;
             $templateData['success'] = false;
+        } catch (\Exception $e) {
+            $status = 400;
+            $templateData['error'] = $e->getMessage();
         }
 
         return $this->render('TheliaEmailManager/disableConfirmation', $templateData, $status);

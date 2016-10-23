@@ -12,4 +12,7 @@ class Events
 
     const TRACE_CREATE = 'thelia.email.manager.trace.create';
     const TRACE_UPDATE = 'thelia.email.manager.trace.update';
+
+    const EMAIL_CREATE = 'thelia.email.manager.email.create';
+    const EMAIL_UPDATE = 'thelia.email.manager.email.update';
 }

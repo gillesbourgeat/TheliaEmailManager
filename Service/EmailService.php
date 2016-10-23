@@ -2,10 +2,13 @@
 
 namespace TheliaEmailManager\Service;
 
-use Symfony\Component\Routing\Router;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Thelia\Model\AdminQuery;
 use Thelia\Model\CustomerQuery;
 use Thelia\Tools\URL;
+use TheliaEmailManager\Event\EmailEvent;
+use TheliaEmailManager\Event\Events;
 use TheliaEmailManager\Exception\InvalidEmailException;
 use TheliaEmailManager\Exception\InvalidHashException;
 use TheliaEmailManager\Model\EmailManagerEmail;
@@ -17,11 +20,24 @@ use TheliaEmailManager\Util\EmailUtil;
  */
 class EmailService
 {
-    /** @var Router */
+    /** @var RouterInterface */
     protected $router;
+
+    /** @var EventDispatcherInterface */
+    protected $eventDispatcher;
 
     /** @var EmailManagerEmail[] */
     protected $emailManagerEmailCache = [];
+
+    /**
+     * @param RouterInterface $router
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function __construct(RouterInterface $router, EventDispatcherInterface $eventDispatcher)
+    {
+        $this->router = $router;
+        $this->eventDispatcher = $eventDispatcher;
+    }
 
     /**
      * For disable sending email to customer thanks to the hash
@@ -37,8 +53,12 @@ class EmailService
 
         $model
             ->setDisableSendDate(new \DateTime())
-            ->setDisableSend(true)
-            ->save();
+            ->setDisableSend(true);
+
+        $this->eventDispatcher->dispatch(
+            Events::EMAIL_UPDATE,
+            new EmailEvent($model)
+        );
 
         return $model;
     }
@@ -88,7 +108,11 @@ class EmailService
                 ->setEmail($email)
                 ->setName($name);
             $this->generateDisableUrl($model);
-            $model->save();
+
+            $this->eventDispatcher->dispatch(
+                Events::EMAIL_CREATE,
+                new EmailEvent($model)
+            );
         }
 
         $this->emailManagerEmailCache[$email] = $model;

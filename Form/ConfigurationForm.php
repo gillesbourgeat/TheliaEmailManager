@@ -12,6 +12,14 @@ use TheliaEmailManager\TheliaEmailManager;
  */
 class ConfigurationForm extends BaseForm
 {
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return Forms::CONFIGURATION;
+    }
+
     public function buildForm()
     {
         $this->formBuilder

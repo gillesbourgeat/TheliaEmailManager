@@ -49,4 +49,9 @@
         <requirement key="hash">[a-zA-Z0-9]+</requirement>
     </route>
 
+    <route id="email_manager_disable_sending_confirm" path="/email-manager/disable/{hash}" methods="post">
+        <default key="_controller">TheliaEmailManager:Email:disableEmailConfirmation</default>
+        <requirement key="hash">[a-zA-Z0-9]+</requirement>
+    </route>
+
 </routes>
