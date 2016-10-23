@@ -31,6 +31,8 @@ class TheliaEmailManager extends BaseModule
 
     const RESOURCE_TRACE = 'admin.email-manager.trace';
 
+    const RESOURCE_EMAIL = 'admin.email-manager.email';
+
     protected static $config = [];
 
     /**

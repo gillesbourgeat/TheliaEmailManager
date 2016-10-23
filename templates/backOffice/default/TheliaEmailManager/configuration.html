@@ -23,79 +23,76 @@
       {hook name='email-manager.configuration.top'}
 
       <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12 general-block-decorator">
+          <div class="table-responsive">
+            {form name="email_manager_configuration"}
+              <form method="POST" action="{url router='theliaemailmanager' route_id='admin_email_manager_configuration_update'}" class="clearfix">
 
-          <div class="general-block-decorator">
-            <div class="table-responsive">
-              {form name="email_manager_configuration"}
-                <form method="POST" action="{url router='theliaemailmanager' route_id='admin_email_manager_configuration_update'}" class="clearfix">
+                <div class="col-md-12 title title-without-tabs">
+                  {intl l='Email Manager Configuration' d="theliaemailmanager.bo.default"}
+                </div>
 
-                  <div class="col-md-12 title title-without-tabs">
-                    {intl l='Email Manager Configuration' d="theliaemailmanager.bo.default"}
-                  </div>
+                {include file="includes/inner-form-toolbar.html" hide_save_and_close_button=true hide_flags=true close_url={url route_id='admin.configuration.index'}}
 
-                  {include file="includes/inner-form-toolbar.html" hide_save_and_close_button=true hide_flags=true close_url={url route_id='admin.configuration.index'}}
+                {form_hidden_fields}
 
-                  {form_hidden_fields}
+                {if $form_error}
+                  <div class="alert alert-danger">{$form_error_message}</div>
+                {/if}
 
-                  {if $form_error}
-                    <div class="alert alert-danger">{$form_error_message}</div>
-                  {/if}
+                <table class="table table-striped table-condensed">
 
-                  <table class="table table-striped table-condensed">
+                  <colgroup>
+                    <col width="40%" />
+                    <col width="60%" />
+                  </colgroup>
 
-                    <colgroup>
-                      <col width="40%" />
-                      <col width="60%" />
-                    </colgroup>
+                  <thead>
+                  <tr>
+                    <th>{intl l='Value' d="theliaemailmanager.bo.default"}</th>
+                    <th>{intl l='Help' d="theliaemailmanager.bo.default"}</th>
+                  </tr>
+                  </thead>
 
-                    <thead>
-                    <tr>
-                      <th>{intl l='Value' d="theliaemailmanager.bo.default"}</th>
-                      <th>{intl l='Help' d="theliaemailmanager.bo.default"}</th>
-                    </tr>
-                    </thead>
+                  <tbody>
+                  <tr>
+                    <td>
+                      {render_form_field field='enable_history'}
+                    </td>
+                    <td>
+                      <div class="alert alert-info">
+                        {intl l="" d="theliaemailmanager.bo.default"}
+                      </div>
+                    </td>
+                  </tr>
 
-                    <tbody>
-                    <tr>
-                      <td>
-                        {render_form_field field='enable_history'}
-                      </td>
-                      <td>
-                        <div class="alert alert-info">
-                          {intl l="" d="theliaemailmanager.bo.default"}
-                        </div>
-                      </td>
-                    </tr>
+                  <tr>
+                    <td>
+                      {render_form_field field='disable_sending'}
+                    </td>
+                    <td>
+                      <div class="alert alert-info">
+                        {intl l="" d="theliaemailmanager.bo.default"}
+                      </div>
+                    </td>
+                  </tr>
 
-                    <tr>
-                      <td>
-                        {render_form_field field='disable_sending'}
-                      </td>
-                      <td>
-                        <div class="alert alert-info">
-                          {intl l="" d="theliaemailmanager.bo.default"}
-                        </div>
-                      </td>
-                    </tr>
+                  <tr>
+                    <td>
+                      {render_form_field field='redirect_all_to'}
+                    </td>
+                    <td>
+                      <div class="alert alert-info">
+                        {intl l="" d="theliaemailmanager.bo.default"}
+                      </div>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
 
-                    <tr>
-                      <td>
-                        {render_form_field field='redirect_all_to'}
-                      </td>
-                      <td>
-                        <div class="alert alert-info">
-                          {intl l="" d="theliaemailmanager.bo.default"}
-                        </div>
-                      </td>
-                    </tr>
-                    </tbody>
-                  </table>
-
-                  {include file="includes/inner-form-toolbar.html" hide_save_and_close_button=true hide_flags=true close_url={url route_id='admin.configuration.index'}}
-                </form>
-              {/form}
-            </div>
+                {include file="includes/inner-form-toolbar.html" hide_save_and_close_button=true hide_flags=true close_url={url route_id='admin.configuration.index'}}
+              </form>
+            {/form}
           </div>
         </div>
       </div>

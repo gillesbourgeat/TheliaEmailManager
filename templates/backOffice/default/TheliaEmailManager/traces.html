@@ -20,87 +20,84 @@
         <li>{intl l="Email Manager Traces" d="theliaemailmanager.bo.default"}</li>
       </ul>
 
-      {hook name='email-manager.trace'}
+      {hook name='email-manager.trace.top'}
 
       <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12 general-block-decorator">
+          <div class="table-responsive">
+            <table class="table table-striped table-condensed">
+              <caption class="clearfix">
+                {intl l='Email Manager Traces' d="theliaemailmanager.bo.default"}
+              </caption>
 
-          <div class="general-block-decorator">
-            <div class="table-responsive">
-              <table class="table table-striped table-condensed">
-                <caption class="clearfix">
-                  {intl l='Email Manager Traces' d="theliaemailmanager.bo.default"}
-                </caption>
+              <thead>
+              <tr>
+                <th>{intl l='ID' d="theliaemailmanager.bo.default"}</th>
+                <th>{intl l='Title' d="theliaemailmanager.bo.default"}</th>
+                <th>{intl l='Number of catch' d="theliaemailmanager.bo.default"}</th>
+                <th>{intl l='History disabled' d="theliaemailmanager.bo.default"}</th>
+                <th>{intl l='Sending disabled' d="theliaemailmanager.bo.default"}</th>
+                <th>{intl l='Detection date' d="theliaemailmanager.bo.default"}</th>
 
-                <thead>
+                {hook name='email-manager.trace.table-header'}
+
+                <th class="actions">{intl l='Actions' d="theliaemailmanager.bo.default"}</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              {foreach from=$traces item=trace}
                 <tr>
-                  <th>{intl l='ID' d="theliaemailmanager.bo.default"}</th>
-                  <th>{intl l='Title' d="theliaemailmanager.bo.default"}</th>
-                  <th>{intl l='Number of catch' d="theliaemailmanager.bo.default"}</th>
-                  <th>{intl l='History disabled' d="theliaemailmanager.bo.default"}</th>
-                  <th>{intl l='Sending disabled' d="theliaemailmanager.bo.default"}</th>
-                  <th>{intl l='Detection date' d="theliaemailmanager.bo.default"}</th>
-
-                  {hook name='email-manager.trace.table-header'}
-
-                  <th class="actions">{intl l='Actions' d="theliaemailmanager.bo.default"}</th>
-                </tr>
-                </thead>
-
-                <tbody>
-                {foreach from=$traces item=trace}
-                  <tr>
-                    <td>{$trace->getId()}</td>
-                    <td>
+                  <td>{$trace->getId()}</td>
+                  <td>
                       <span data-toggle="tooltip" title="{$trace->getTitle()}">
                       {$trace->getTitle()|truncate:50:'...'}
                       </span>
-                    </td>
-                    <td class="text-center">{$trace->getNumberOfCatch()}</td>
-                    <td>
-                      {if $trace->getDisableHistory()}
-                        <span class="label label-warning">{intl l='History disabled' d="theliaemailmanager.bo.default"}</span>
-                      {else}
-                        <span class="label label-info">{intl l='History enabled' d="theliaemailmanager.bo.default"}</span>
-                      {/if}
-                    </td>
-                    <td>
-                      {if $trace->getDisableSending()}
-                        <span class="label label-danger">{intl l='Sending disabled' d="theliaemailmanager.bo.default"}</span>
-                      {else}
-                        <span class="label label-success">{intl l='Sending enabled' d="theliaemailmanager.bo.default"}</span>
-                      {/if}
-                    </td>
+                  </td>
+                  <td class="text-center">{$trace->getNumberOfCatch()}</td>
+                  <td>
+                    {if $trace->getDisableHistory()}
+                      <span class="label label-warning">{intl l='History disabled' d="theliaemailmanager.bo.default"}</span>
+                    {else}
+                      <span class="label label-info">{intl l='History enabled' d="theliaemailmanager.bo.default"}</span>
+                    {/if}
+                  </td>
+                  <td>
+                    {if $trace->getDisableSending()}
+                      <span class="label label-danger">{intl l='Sending disabled' d="theliaemailmanager.bo.default"}</span>
+                    {else}
+                      <span class="label label-success">{intl l='Sending enabled' d="theliaemailmanager.bo.default"}</span>
+                    {/if}
+                  </td>
 
-                    <td>{format_date date=$trace->getCreatedAt()}</td>
+                  <td>{format_date date=$trace->getCreatedAt()}</td>
 
-                    {hook name='email-manager.trace.table-row' trace=$trace}
+                  {hook name='email-manager.trace.table-row' trace=$trace}
 
-                    <td class="actions">
-                      {if !$trace->getDisableHistory()}
-                        <a class="btn btn-info" href="{url router="theliaemailmanager" route_id="admin_email_manager_trace_view" traceId=$trace->getId() current_tab='history'}">
-                          {intl l='View history' d="theliaemailmanager.bo.default"}
-                        </a>
-                      {/if}
-                      <a class="btn btn-primary" href="{url router="theliaemailmanager" route_id="admin_email_manager_trace_view" traceId=$trace->getId()}">
-                        {intl l='Configure' d="theliaemailmanager.bo.default"}
+                  <td class="actions">
+                    {if !$trace->getDisableHistory()}
+                      <a class="btn btn-info" href="{url router="theliaemailmanager" route_id="admin_email_manager_trace_view" traceId=$trace->getId() current_tab='history'}">
+                        {intl l='View history' d="theliaemailmanager.bo.default"}
                       </a>
-                    </td>
-                  </tr>
-                {/foreach}
+                    {/if}
+                    <a class="btn btn-primary" href="{url router="theliaemailmanager" route_id="admin_email_manager_trace_view" traceId=$trace->getId()}">
+                      {intl l='Configure' d="theliaemailmanager.bo.default"}
+                    </a>
+                  </td>
+                </tr>
+              {/foreach}
 
-                {if !count($traces)}
-                  <tr>
-                    <td colspan="100">
-                      <div class="alert alert-info">
-                        {intl l="No trace has been detected." d="theliaemailmanager.bo.default"}
-                      </div>
-                    </td>
-                  </tr>
-                {/if}
-                </tbody>
-              </table>
-            </div>
+              {if !count($traces)}
+                <tr>
+                  <td colspan="100">
+                    <div class="alert alert-info">
+                      {intl l="No trace has been detected." d="theliaemailmanager.bo.default"}
+                    </div>
+                  </td>
+                </tr>
+              {/if}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -114,5 +111,3 @@
 {block name="javascript-last-call"}
   {hook name='email-manager.trace.js'}
 {/block}
-
-{default_translation_domain domain="bo.default"}
