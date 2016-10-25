@@ -1,6 +1,6 @@
 <?php
 
-namespace TheliaEmailManager\Request;
+namespace TheliaEmailManager\Util;
 
 use Symfony\Component\HttpFoundation\Request;
 

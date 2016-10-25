@@ -61,6 +61,7 @@
 
 {block name="javascript-initialization"}
   <script type="text/javascript" language="javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" language="javascript" src="//cdn.datatables.net/1.10.11/js/dataTables.bootstrap.min.js"></script>
   <script>
     "use strict";
     (function($, $tableAjax){
@@ -87,26 +88,30 @@
         );
       }
 
-      var tableAjax = $tableAjax.DataTable({
+      var tableAjax = $tableAjax.dataTable({
         language: {
           url: getI18nUrl("{lang attr='locale'}")
         },
         processing: true,
         serverSide: true,
         ajax : ROUTE.LIST_AJAX,
-        columns: [
-          {
-            name: "name"
-          },
-          {
-            name: "email"
-          },
-          {
-            name: "action"
-          }
-        ]
+        initComplete: function(settings, json) {
+          var timer = null, lastValue = null, datatable = this;
+          $(this[0])
+            .parents('.dataTables_wrapper')
+            .find('.dataTables_filter input')
+            .off()
+            .on('keypress keyup', function (e) {
+              clearTimeout(timer);
+              timer = setTimeout(function (item) {
+                if (item.value.length === 0 || (item.value.length > 3 && item.value !== lastValue)) {
+                  lastValue = item.value;
+                  datatable.fnFilter(lastValue);
+                }
+              }, 400, this);
+            });
+        }
       });
-
 
     }(jQuery, jQuery('.email-manager-email .js-table-list')));
   </script>
@@ -114,7 +119,6 @@
 
 {block name="after-admin-css"}
   <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css" />
-  <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.11/css/dataTables.bootstrap.min.css" />
 {/block}
 
 {block name="javascript-last-call"}

@@ -3,15 +3,15 @@
 namespace TheliaEmailManager\Controller\Back;
 
 use Propel\Runtime\ActiveQuery\Criteria;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Thelia\Controller\Admin\BaseAdminController;
-use Thelia\Core\HttpFoundation\JsonResponse;
 use Thelia\Core\HttpFoundation\Request;
 use Thelia\Core\Security\AccessManager;
 use TheliaEmailManager\Model\EmailManagerEmail;
 use TheliaEmailManager\Model\EmailManagerEmailQuery;
 use TheliaEmailManager\Model\Map\EmailManagerEmailTableMap;
-use TheliaEmailManager\Request\DataTableRequest;
-use TheliaEmailManager\Response\DataTableResponse;
+use TheliaEmailManager\Util\DataTableRequest;
+use TheliaEmailManager\Util\DataTableResponse;
 use TheliaEmailManager\TheliaEmailManager;
 
 /**
@@ -52,7 +52,7 @@ class EmailController extends BaseAdminController
             ]
         );
 
-        $response = DataTableResponse::create()
+        $dataTableResponse = (new DataTableResponse)
             ->setDraw($dataTableRequest->getDraw())
             ->setRecordsFiltered(EmailManagerEmailQuery::create()->count());
 
@@ -65,7 +65,7 @@ class EmailController extends BaseAdminController
                 ->filterByName('%' . $search . '%', Criteria::LIKE);
         }
 
-        $response->setRecordsTotal($query->count());
+        $dataTableResponse->setRecordsTotal($query->count());
 
         $query->orderBy(
             $dataTableRequest->getOrderBy(),
@@ -79,13 +79,13 @@ class EmailController extends BaseAdminController
 
         /** @var EmailManagerEmail $email */
         foreach ($emails as $email) {
-            $response->addData([
+            $dataTableResponse->addData([
                 $email->getId(),
                 $email->getName(),
                 $email->getEmail()
             ]);
         }
 
-        return $response;
+        return new JsonResponse($dataTableResponse->getData());
     }
 }
