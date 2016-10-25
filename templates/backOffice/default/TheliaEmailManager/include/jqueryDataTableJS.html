@@ -1,5 +1,10 @@
-<script type="text/javascript" language="javascript" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" language="javascript" src="//cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
+{$version = "1.10.12"}
+<script type="text/javascript" language="javascript" src="//cdn.datatables.net/{$version}/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" language="javascript" src="//cdn.datatables.net/{$version}/js/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" language="javascript" src="//cdn.datatables.net/responsive/2.1.0/js/dataTables.responsive.min.js"></script>
+<script type="text/javascript" language="javascript" src="//datatables.net/release-datatables/extensions/ColVis/js/dataTables.colVis.js"></script>
+<script type="text/javascript" language="javascript" src="//cdn.datatables.net/fixedheader/3.1.2/js/dataTables.fixedHeader.min.js"></script>
+<script type="text/javascript" language="javascript" src="//cdn.datatables.net/colreorder/1.3.2/js/dataTables.colReorder.min.js"></script>
 <script>
   "use strict";
   // function lang for jQuery DataTable
@@ -17,7 +22,7 @@
       locale = "{lang attr='locale'}";
     }
 
-    return ("//cdn.datatables.net/plug-ins/1.10.12/i18n/%lang%.json").replace(
+    return ("//cdn.datatables.net/plug-ins/{$version}/i18n/%lang%.json").replace(
             '%lang%',
             (typeof LIST_LANG[locale] !== "undefined") ? LIST_LANG[locale] : 'English'
     );

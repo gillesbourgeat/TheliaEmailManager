@@ -93,18 +93,32 @@
         language: {
           url: jQueryDataTableGetI18nUrl()
         },
+        responsive: {
+          details: false
+        },
         processing: true,
         serverSide: true,
         ajax : ROUTE.LIST_AJAX,
+        dom: 'C<"clear">lfrtip',
+        fixedHeader: true,
         columnDefs: [
           {
-            visible: false,
+            responsivePriority: 4,
             targets: TABLE_DIRECTORY.ID
+          },
+          {
+            responsivePriority: 1,
+            targets: TABLE_DIRECTORY.EMAIL
+          },
+          {
+            responsivePriority: 2,
+            targets: TABLE_DIRECTORY.NAME
           },
           {
             "render": function(data, type, row) {
               return row[AJAX_DIRECTORY.DATE];
             },
+            responsivePriority: 3,
             targets: TABLE_DIRECTORY.DATE
           },
           {
@@ -113,6 +127,7 @@
                   + '<button data-id="' + row[AJAX_DIRECTORY.ID] + '" class="btn btn-info js-action-view" href="#sublime_message_history_view_dialog" data-toggle="modal">{intl l="Edit" d="theliaemailmanager.bo.default"}</button>';
             },
             sortable: false,
+            responsivePriority: 1,
             targets: TABLE_DIRECTORY.ACTION
           }
         ],
