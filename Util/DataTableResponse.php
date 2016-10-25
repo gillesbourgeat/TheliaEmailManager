@@ -28,7 +28,7 @@ class DataTableResponse
 
     public function setDraw($draw)
     {
-        $this->data['draw'] = $draw;
+        $this->data['draw'] = (int) $draw;
         return $this;
     }
 

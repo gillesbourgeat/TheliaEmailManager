@@ -51,7 +51,7 @@ class DataTableRequest
      */
     public function getDraw()
     {
-        $draw = $this->request->query->get('start', null);
+        $draw = $this->request->query->get('draw', null);
 
         if ($draw !== null) {
             return (int) $draw;
