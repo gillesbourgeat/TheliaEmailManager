@@ -1,0 +1,25 @@
+<script type="text/javascript" language="javascript" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" language="javascript" src="//cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
+<script>
+  "use strict";
+  // function lang for jQuery DataTable
+  window.jQueryDataTableGetI18nUrl = function(locale) {
+    var LIST_LANG = {
+      fr_FR: 'French',
+      en_US: 'English',
+      es_ES: 'Catalan',
+      it_IT: 'Italian',
+      ru_RU: 'Russian',
+      de_DE: 'German'
+    };
+
+    if (locale === undefined) {
+      locale = "{lang attr='locale'}";
+    }
+
+    return ("//cdn.datatables.net/plug-ins/1.10.12/i18n/%lang%.json").replace(
+            '%lang%',
+            (typeof LIST_LANG[locale] !== "undefined") ? LIST_LANG[locale] : 'English'
+    );
+  }
+</script>

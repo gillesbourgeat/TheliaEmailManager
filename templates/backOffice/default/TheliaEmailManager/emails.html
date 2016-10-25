@@ -64,24 +64,12 @@
 {/block}
 
 {block name="javascript-initialization"}
-  <script type="text/javascript" language="javascript" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-  <script type="text/javascript" language="javascript" src="//cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
+  {include file="TheliaEmailManager/include/jqueryDataTableJS.html"}
   <script>
     "use strict";
     (function($, $tableAjax){
-
       var ROUTE = {
-        LIST_AJAX: "{url router="theliaemailmanager" route_id="admin_email_manager_email"}",
-        JQUERY_DATATABLE_LANG: "//cdn.datatables.net/plug-ins/1.10.11/i18n/%lang%.json"
-      };
-
-      var LIST_LANG = {
-        fr_FR: 'French',
-        en_US: 'English',
-        es_ES: 'Catalan',
-        it_IT: 'Italian',
-        ru_RU: 'Russian',
-        de_DE: 'German'
+        LIST_AJAX: "{url router="theliaemailmanager" route_id="admin_email_manager_email"}"
       };
 
       // AJAX directory
@@ -101,17 +89,9 @@
         ACTION: 4
       };
 
-      // function lang for jQuery DataTable
-      function getI18nUrl(locale) {
-        return ROUTE.JQUERY_DATATABLE_LANG.replace(
-                '%lang%',
-                (typeof LIST_LANG[locale] !== "undefined") ? LIST_LANG[locale] : 'English'
-        );
-      }
-
       var tableAjax = $tableAjax.dataTable({
         language: {
-          url: getI18nUrl("{lang attr='locale'}")
+          url: jQueryDataTableGetI18nUrl()
         },
         processing: true,
         serverSide: true,
@@ -159,17 +139,7 @@
 {/block}
 
 {block name="after-admin-css"}
-  <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
-  <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" />
-  <style>
-    .dataTables_wrapper .dataTables_paginate .paginate_button {
-      padding: 0;
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-      border: none;
-    }
-  </style>
+  {include file="TheliaEmailManager/include/jqueryDataTableCSS.html"}
 {/block}
 
 {block name="javascript-last-call"}
