@@ -39,6 +39,7 @@
             <argument type="service" id="thelia.email.manager.email.service" />
             <argument type="service" id="thelia.email.manager.trace.service" />
             <argument type="service" id="thelia.email.manager.trace.driver" />
+            <argument type="service" id="event_dispatcher" />
         </service>
         <service id="thelia.email.manager.trace.listener" class="TheliaEmailManager\EventListener\TraceListener">
             <tag name="kernel.event_subscriber"/>
