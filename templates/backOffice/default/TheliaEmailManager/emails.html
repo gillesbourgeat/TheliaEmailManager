@@ -34,15 +34,19 @@
             <table class="display js-table-list" cellspacing="0" width="100%">
               <thead>
               <tr>
+                <th>{intl l="ID" d="theliaemailmanager.bo.default"}</th>
                 <th>{intl l="Name" d="theliaemailmanager.bo.default"}</th>
                 <th>{intl l="Email" d="theliaemailmanager.bo.default"}</th>
+                <th>{intl l="Disabling date" d="theliaemailmanager.bo.default"}</th>
                 <th>{intl l="Action" d="theliaemailmanager.bo.default"}</th>
               </tr>
               </thead>
               <tfoot>
               <tr>
+                <th>{intl l="ID" d="theliaemailmanager.bo.default"}</th>
                 <th>{intl l="Name" d="theliaemailmanager.bo.default"}</th>
                 <th>{intl l="Email" d="theliaemailmanager.bo.default"}</th>
+                <th>{intl l="Disabling date" d="theliaemailmanager.bo.default"}</th>
                 <th>{intl l="Action" d="theliaemailmanager.bo.default"}</th>
               </tr>
               </tfoot>
@@ -60,8 +64,8 @@
 {/block}
 
 {block name="javascript-initialization"}
-  <script type="text/javascript" language="javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
-  <script type="text/javascript" language="javascript" src="//cdn.datatables.net/1.10.11/js/dataTables.bootstrap.min.js"></script>
+  <script type="text/javascript" language="javascript" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" language="javascript" src="//cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
   <script>
     "use strict";
     (function($, $tableAjax){
@@ -80,6 +84,23 @@
         de_DE: 'German'
       };
 
+      // AJAX directory
+      var AJAX_DIRECTORY = {
+        ID: 0,
+        NAME: 1,
+        EMAIL: 2,
+        DATE: 3
+      };
+
+      // Table directory
+      var TABLE_DIRECTORY = {
+        ID: 0,
+        NAME: 1,
+        EMAIL: 2,
+        DATE: 3,
+        ACTION: 4
+      };
+
       // function lang for jQuery DataTable
       function getI18nUrl(locale) {
         return ROUTE.JQUERY_DATATABLE_LANG.replace(
@@ -95,6 +116,26 @@
         processing: true,
         serverSide: true,
         ajax : ROUTE.LIST_AJAX,
+        columnDefs: [
+          {
+            visible: false,
+            targets: TABLE_DIRECTORY.ID
+          },
+          {
+            "render": function(data, type, row) {
+              return row[AJAX_DIRECTORY.DATE];
+            },
+            targets: TABLE_DIRECTORY.DATE
+          },
+          {
+            "render": function(data, type, row) {
+              return '<button ' + ((!row[AJAX_DIRECTORY.DATE]) ? 'disabled' : '') + ' data-id="' + row[AJAX_DIRECTORY.ID] + '" class="btn btn-primary js-action-delete" href="#sublime_message_history_delete_dialog" data-toggle="modal">{intl l="Reactivate" d="theliaemailmanager.bo.default"}</button>'
+                  + '<button data-id="' + row[AJAX_DIRECTORY.ID] + '" class="btn btn-info js-action-view" href="#sublime_message_history_view_dialog" data-toggle="modal">{intl l="Edit" d="theliaemailmanager.bo.default"}</button>';
+            },
+            sortable: false,
+            targets: TABLE_DIRECTORY.ACTION
+          }
+        ],
         initComplete: function(settings, json) {
           var timer = null, lastValue = null, datatable = this;
           $(this[0])
@@ -118,7 +159,17 @@
 {/block}
 
 {block name="after-admin-css"}
-  <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css" />
+  <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+  <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" />
+  <style>
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+      padding: 0;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+      border: none;
+    }
+  </style>
 {/block}
 
 {block name="javascript-last-call"}

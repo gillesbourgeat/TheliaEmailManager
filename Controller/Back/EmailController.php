@@ -48,13 +48,14 @@ class EmailController extends BaseAdminController
             [
                 EmailManagerEmailTableMap::ID,
                 EmailManagerEmailTableMap::NAME,
-                EmailManagerEmailTableMap::EMAIL
+                EmailManagerEmailTableMap::EMAIL,
+                EmailManagerEmailTableMap::DISABLE_SEND_DATE,
             ]
         );
 
         $dataTableResponse = (new DataTableResponse)
             ->setDraw($dataTableRequest->getDraw())
-            ->setRecordsFiltered(EmailManagerEmailQuery::create()->count());
+            ->setRecordsTotal(EmailManagerEmailQuery::create()->count());
 
         $query = EmailManagerEmailQuery::create();
 
@@ -65,7 +66,7 @@ class EmailController extends BaseAdminController
                 ->filterByName('%' . $search . '%', Criteria::LIKE);
         }
 
-        $dataTableResponse->setRecordsTotal($query->count());
+        $dataTableResponse->setRecordsFiltered($query->count());
 
         $query->orderBy(
             $dataTableRequest->getOrderBy(),
@@ -82,7 +83,8 @@ class EmailController extends BaseAdminController
             $dataTableResponse->addData([
                 $email->getId(),
                 $email->getName(),
-                $email->getEmail()
+                $email->getEmail(),
+                $email->getDisableSendDate($request->getSession()->getLang()->getDateFormat() . ' ' . $request->getSession()->getLang()->getTimeFormat())
             ]);
         }
 
