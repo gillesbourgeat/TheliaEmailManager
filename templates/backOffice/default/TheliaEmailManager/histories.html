@@ -36,8 +36,11 @@
                             <tr>
                                 <th data-column="id">{intl l="ID" d="theliaemailmanager.bo.default"}</th>
                                 <th data-column="trace">
-                                    <select class="form-control" style="width: 100%;">
+                                    <select data-column="trace" class="form-control" style="width: 100%;">
                                         <option value="">{intl l="Trace" d="theliaemailmanager.bo.default"}</option>
+                                        {foreach from=$traces item=trace}
+                                            <option value="{$trace.id}">{$trace.title}</option>
+                                        {/foreach}
                                     </select>
                                 </th>
                                 <th data-column="date">
@@ -170,19 +173,22 @@
 
             // search
             tableAjax.api().columns().every( function () {
-                $( 'input', this.header()).on('click', function(e) {
+                $( 'input, select', this.header()).on('click', function(e) {
                     e.stopPropagation();
                 });
                 var th = this;
                 var timer = [], lastValue = [];
-                $( 'input', this.header()).on('keyup', function() {
+                $( 'input, select', this.header()).on('keyup change', function() {
                     var column = this.parentNode.dataset.column;
-
                     clearTimeout(timer[column]);
                     timer[column] = setTimeout(function (item) {
-                        if (item.value.length === 0 || (item.value.length > 3 && item.value !== lastValue[column])) {
+                        if (item.tagName.toLowerCase() === 'select'
+                            || (item.value.length === 0 || (item.value.length > 3 && item.value !== lastValue[column]))
+                        ) {
                             lastValue[column] = item.value;
                             th.search(item.value).draw();
+
+                            //tableAjax.fnFilter(item.value, 4);
                         }
                     }, 400, this);
                 });

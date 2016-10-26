@@ -42,7 +42,28 @@ class HistoryController extends BaseAdminController
             return $response;
         }
 
-        return $this->render('TheliaEmailManager/histories');
+        $emailManagerTraces = EmailManagerTraceQuery::create();
+
+        I18nTrait::buildCriteriaI18n(
+            $emailManagerTraces,
+            $request->getSession()->getAdminEditionLang()->getLocale(),
+            ['TITLE']
+        );
+
+        $traces = [];
+        /** @var EmailManagerTrace $emailManagerTrace */
+        foreach ($emailManagerTraces->filterByParentId(null)->find() as $emailManagerTrace) {
+            $traces[$emailManagerTrace->getId()] = [
+                'id' => $emailManagerTrace->getId(),
+                'title' => $emailManagerTrace->getVirtualColumn('i18n_TITLE')
+            ];
+        }
+        return $this->render(
+            'TheliaEmailManager/histories',
+            [
+                'traces' => $traces
+            ]
+        );
     }
 
     public function ajaxListAction(Request $request)
