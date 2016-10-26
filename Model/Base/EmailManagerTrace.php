@@ -66,6 +66,12 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
     protected $id;
 
     /**
+     * The value for the parent_id field.
+     * @var        int
+     */
+    protected $parent_id;
+
+    /**
      * The value for the hash field.
      * @var        string
      */
@@ -144,6 +150,17 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
     protected $updated_at;
 
     /**
+     * @var        EmailManagerTrace
+     */
+    protected $aEmailManagerTraceRelatedByParentId;
+
+    /**
+     * @var        ObjectCollection|ChildEmailManagerTrace[] Collection to store aggregation of ChildEmailManagerTrace objects.
+     */
+    protected $collEmailManagerTracesRelatedById;
+    protected $collEmailManagerTracesRelatedByIdPartial;
+
+    /**
      * @var        ObjectCollection|ChildEmailManagerHistory[] Collection to store aggregation of ChildEmailManagerHistory objects.
      */
     protected $collEmailManagerHistories;
@@ -176,6 +193,12 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
      * @var        array[ChildEmailManagerTraceI18n]
      */
     protected $currentTranslations;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection
+     */
+    protected $emailManagerTracesRelatedByIdScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -475,6 +498,17 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
     }
 
     /**
+     * Get the [parent_id] column value.
+     *
+     * @return   int
+     */
+    public function getParentId()
+    {
+
+        return $this->parent_id;
+    }
+
+    /**
      * Get the [hash] column value.
      *
      * @return   string
@@ -636,6 +670,31 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
 
         return $this;
     } // setId()
+
+    /**
+     * Set the value of [parent_id] column.
+     *
+     * @param      int $v new value
+     * @return   \TheliaEmailManager\Model\EmailManagerTrace The current object (for fluent API support)
+     */
+    public function setParentId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->parent_id !== $v) {
+            $this->parent_id = $v;
+            $this->modifiedColumns[EmailManagerTraceTableMap::PARENT_ID] = true;
+        }
+
+        if ($this->aEmailManagerTraceRelatedByParentId !== null && $this->aEmailManagerTraceRelatedByParentId->getId() !== $v) {
+            $this->aEmailManagerTraceRelatedByParentId = null;
+        }
+
+
+        return $this;
+    } // setParentId()
 
     /**
      * Set the value of [hash] column.
@@ -921,39 +980,42 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : EmailManagerTraceTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : EmailManagerTraceTableMap::translateFieldName('Hash', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : EmailManagerTraceTableMap::translateFieldName('ParentId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->parent_id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : EmailManagerTraceTableMap::translateFieldName('Hash', TableMap::TYPE_PHPNAME, $indexType)];
             $this->hash = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : EmailManagerTraceTableMap::translateFieldName('DisableHistory', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : EmailManagerTraceTableMap::translateFieldName('DisableHistory', TableMap::TYPE_PHPNAME, $indexType)];
             $this->disable_history = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : EmailManagerTraceTableMap::translateFieldName('DisableSending', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : EmailManagerTraceTableMap::translateFieldName('DisableSending', TableMap::TYPE_PHPNAME, $indexType)];
             $this->disable_sending = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : EmailManagerTraceTableMap::translateFieldName('ForceSameCustomerDisable', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : EmailManagerTraceTableMap::translateFieldName('ForceSameCustomerDisable', TableMap::TYPE_PHPNAME, $indexType)];
             $this->force_same_customer_disable = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : EmailManagerTraceTableMap::translateFieldName('NumberOfCatch', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : EmailManagerTraceTableMap::translateFieldName('NumberOfCatch', TableMap::TYPE_PHPNAME, $indexType)];
             $this->number_of_catch = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : EmailManagerTraceTableMap::translateFieldName('EmailBcc', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : EmailManagerTraceTableMap::translateFieldName('EmailBcc', TableMap::TYPE_PHPNAME, $indexType)];
             $this->email_bcc = $col;
             $this->email_bcc_unserialized = null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : EmailManagerTraceTableMap::translateFieldName('EmailRedirect', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : EmailManagerTraceTableMap::translateFieldName('EmailRedirect', TableMap::TYPE_PHPNAME, $indexType)];
             $this->email_redirect = $col;
             $this->email_redirect_unserialized = null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : EmailManagerTraceTableMap::translateFieldName('Detail', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : EmailManagerTraceTableMap::translateFieldName('Detail', TableMap::TYPE_PHPNAME, $indexType)];
             $this->detail = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : EmailManagerTraceTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : EmailManagerTraceTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : EmailManagerTraceTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : EmailManagerTraceTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -966,7 +1028,7 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 11; // 11 = EmailManagerTraceTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 12; // 12 = EmailManagerTraceTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \TheliaEmailManager\Model\EmailManagerTrace object", 0, $e);
@@ -988,6 +1050,9 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aEmailManagerTraceRelatedByParentId !== null && $this->parent_id !== $this->aEmailManagerTraceRelatedByParentId->getId()) {
+            $this->aEmailManagerTraceRelatedByParentId = null;
+        }
     } // ensureConsistency
 
     /**
@@ -1026,6 +1091,9 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
         if ($deep) {  // also de-associate any related objects?
+
+            $this->aEmailManagerTraceRelatedByParentId = null;
+            $this->collEmailManagerTracesRelatedById = null;
 
             $this->collEmailManagerHistories = null;
 
@@ -1153,6 +1221,18 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aEmailManagerTraceRelatedByParentId !== null) {
+                if ($this->aEmailManagerTraceRelatedByParentId->isModified() || $this->aEmailManagerTraceRelatedByParentId->isNew()) {
+                    $affectedRows += $this->aEmailManagerTraceRelatedByParentId->save($con);
+                }
+                $this->setEmailManagerTraceRelatedByParentId($this->aEmailManagerTraceRelatedByParentId);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -1162,6 +1242,23 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
                 }
                 $affectedRows += 1;
                 $this->resetModified();
+            }
+
+            if ($this->emailManagerTracesRelatedByIdScheduledForDeletion !== null) {
+                if (!$this->emailManagerTracesRelatedByIdScheduledForDeletion->isEmpty()) {
+                    \TheliaEmailManager\Model\EmailManagerTraceQuery::create()
+                        ->filterByPrimaryKeys($this->emailManagerTracesRelatedByIdScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->emailManagerTracesRelatedByIdScheduledForDeletion = null;
+                }
+            }
+
+                if ($this->collEmailManagerTracesRelatedById !== null) {
+            foreach ($this->collEmailManagerTracesRelatedById as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
             }
 
             if ($this->emailManagerHistoriesScheduledForDeletion !== null) {
@@ -1227,6 +1324,9 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
         if ($this->isColumnModified(EmailManagerTraceTableMap::ID)) {
             $modifiedColumns[':p' . $index++]  = 'ID';
         }
+        if ($this->isColumnModified(EmailManagerTraceTableMap::PARENT_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'PARENT_ID';
+        }
         if ($this->isColumnModified(EmailManagerTraceTableMap::HASH)) {
             $modifiedColumns[':p' . $index++]  = 'HASH';
         }
@@ -1270,6 +1370,9 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
                 switch ($columnName) {
                     case 'ID':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+                        break;
+                    case 'PARENT_ID':
+                        $stmt->bindValue($identifier, $this->parent_id, PDO::PARAM_INT);
                         break;
                     case 'HASH':
                         $stmt->bindValue($identifier, $this->hash, PDO::PARAM_STR);
@@ -1367,33 +1470,36 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getHash();
+                return $this->getParentId();
                 break;
             case 2:
-                return $this->getDisableHistory();
+                return $this->getHash();
                 break;
             case 3:
-                return $this->getDisableSending();
+                return $this->getDisableHistory();
                 break;
             case 4:
-                return $this->getForceSameCustomerDisable();
+                return $this->getDisableSending();
                 break;
             case 5:
-                return $this->getNumberOfCatch();
+                return $this->getForceSameCustomerDisable();
                 break;
             case 6:
-                return $this->getEmailBcc();
+                return $this->getNumberOfCatch();
                 break;
             case 7:
-                return $this->getEmailRedirect();
+                return $this->getEmailBcc();
                 break;
             case 8:
-                return $this->getDetail();
+                return $this->getEmailRedirect();
                 break;
             case 9:
-                return $this->getCreatedAt();
+                return $this->getDetail();
                 break;
             case 10:
+                return $this->getCreatedAt();
+                break;
+            case 11:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1426,16 +1532,17 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
         $keys = EmailManagerTraceTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getHash(),
-            $keys[2] => $this->getDisableHistory(),
-            $keys[3] => $this->getDisableSending(),
-            $keys[4] => $this->getForceSameCustomerDisable(),
-            $keys[5] => $this->getNumberOfCatch(),
-            $keys[6] => $this->getEmailBcc(),
-            $keys[7] => $this->getEmailRedirect(),
-            $keys[8] => $this->getDetail(),
-            $keys[9] => $this->getCreatedAt(),
-            $keys[10] => $this->getUpdatedAt(),
+            $keys[1] => $this->getParentId(),
+            $keys[2] => $this->getHash(),
+            $keys[3] => $this->getDisableHistory(),
+            $keys[4] => $this->getDisableSending(),
+            $keys[5] => $this->getForceSameCustomerDisable(),
+            $keys[6] => $this->getNumberOfCatch(),
+            $keys[7] => $this->getEmailBcc(),
+            $keys[8] => $this->getEmailRedirect(),
+            $keys[9] => $this->getDetail(),
+            $keys[10] => $this->getCreatedAt(),
+            $keys[11] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1443,6 +1550,12 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
+            if (null !== $this->aEmailManagerTraceRelatedByParentId) {
+                $result['EmailManagerTraceRelatedByParentId'] = $this->aEmailManagerTraceRelatedByParentId->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collEmailManagerTracesRelatedById) {
+                $result['EmailManagerTracesRelatedById'] = $this->collEmailManagerTracesRelatedById->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
             if (null !== $this->collEmailManagerHistories) {
                 $result['EmailManagerHistories'] = $this->collEmailManagerHistories->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
@@ -1487,41 +1600,44 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setHash($value);
+                $this->setParentId($value);
                 break;
             case 2:
-                $this->setDisableHistory($value);
+                $this->setHash($value);
                 break;
             case 3:
-                $this->setDisableSending($value);
+                $this->setDisableHistory($value);
                 break;
             case 4:
-                $this->setForceSameCustomerDisable($value);
+                $this->setDisableSending($value);
                 break;
             case 5:
-                $this->setNumberOfCatch($value);
+                $this->setForceSameCustomerDisable($value);
                 break;
             case 6:
-                if (!is_array($value)) {
-                    $v = trim(substr($value, 2, -2));
-                    $value = $v ? explode(' | ', $v) : array();
-                }
-                $this->setEmailBcc($value);
+                $this->setNumberOfCatch($value);
                 break;
             case 7:
                 if (!is_array($value)) {
                     $v = trim(substr($value, 2, -2));
                     $value = $v ? explode(' | ', $v) : array();
                 }
-                $this->setEmailRedirect($value);
+                $this->setEmailBcc($value);
                 break;
             case 8:
-                $this->setDetail($value);
+                if (!is_array($value)) {
+                    $v = trim(substr($value, 2, -2));
+                    $value = $v ? explode(' | ', $v) : array();
+                }
+                $this->setEmailRedirect($value);
                 break;
             case 9:
-                $this->setCreatedAt($value);
+                $this->setDetail($value);
                 break;
             case 10:
+                $this->setCreatedAt($value);
+                break;
+            case 11:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1549,16 +1665,17 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
         $keys = EmailManagerTraceTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setHash($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setDisableHistory($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setDisableSending($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setForceSameCustomerDisable($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setNumberOfCatch($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setEmailBcc($arr[$keys[6]]);
-        if (array_key_exists($keys[7], $arr)) $this->setEmailRedirect($arr[$keys[7]]);
-        if (array_key_exists($keys[8], $arr)) $this->setDetail($arr[$keys[8]]);
-        if (array_key_exists($keys[9], $arr)) $this->setCreatedAt($arr[$keys[9]]);
-        if (array_key_exists($keys[10], $arr)) $this->setUpdatedAt($arr[$keys[10]]);
+        if (array_key_exists($keys[1], $arr)) $this->setParentId($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setHash($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setDisableHistory($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setDisableSending($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setForceSameCustomerDisable($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setNumberOfCatch($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setEmailBcc($arr[$keys[7]]);
+        if (array_key_exists($keys[8], $arr)) $this->setEmailRedirect($arr[$keys[8]]);
+        if (array_key_exists($keys[9], $arr)) $this->setDetail($arr[$keys[9]]);
+        if (array_key_exists($keys[10], $arr)) $this->setCreatedAt($arr[$keys[10]]);
+        if (array_key_exists($keys[11], $arr)) $this->setUpdatedAt($arr[$keys[11]]);
     }
 
     /**
@@ -1571,6 +1688,7 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
         $criteria = new Criteria(EmailManagerTraceTableMap::DATABASE_NAME);
 
         if ($this->isColumnModified(EmailManagerTraceTableMap::ID)) $criteria->add(EmailManagerTraceTableMap::ID, $this->id);
+        if ($this->isColumnModified(EmailManagerTraceTableMap::PARENT_ID)) $criteria->add(EmailManagerTraceTableMap::PARENT_ID, $this->parent_id);
         if ($this->isColumnModified(EmailManagerTraceTableMap::HASH)) $criteria->add(EmailManagerTraceTableMap::HASH, $this->hash);
         if ($this->isColumnModified(EmailManagerTraceTableMap::DISABLE_HISTORY)) $criteria->add(EmailManagerTraceTableMap::DISABLE_HISTORY, $this->disable_history);
         if ($this->isColumnModified(EmailManagerTraceTableMap::DISABLE_SENDING)) $criteria->add(EmailManagerTraceTableMap::DISABLE_SENDING, $this->disable_sending);
@@ -1644,6 +1762,7 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
+        $copyObj->setParentId($this->getParentId());
         $copyObj->setHash($this->getHash());
         $copyObj->setDisableHistory($this->getDisableHistory());
         $copyObj->setDisableSending($this->getDisableSending());
@@ -1659,6 +1778,12 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
             // important: temporarily setNew(false) because this affects the behavior of
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
+
+            foreach ($this->getEmailManagerTracesRelatedById() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addEmailManagerTraceRelatedById($relObj->copy($deepCopy));
+                }
+            }
 
             foreach ($this->getEmailManagerHistories() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1702,6 +1827,57 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
         return $copyObj;
     }
 
+    /**
+     * Declares an association between this object and a ChildEmailManagerTrace object.
+     *
+     * @param                  ChildEmailManagerTrace $v
+     * @return                 \TheliaEmailManager\Model\EmailManagerTrace The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setEmailManagerTraceRelatedByParentId(ChildEmailManagerTrace $v = null)
+    {
+        if ($v === null) {
+            $this->setParentId(NULL);
+        } else {
+            $this->setParentId($v->getId());
+        }
+
+        $this->aEmailManagerTraceRelatedByParentId = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildEmailManagerTrace object, it will not be re-added.
+        if ($v !== null) {
+            $v->addEmailManagerTraceRelatedById($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildEmailManagerTrace object
+     *
+     * @param      ConnectionInterface $con Optional Connection object.
+     * @return                 ChildEmailManagerTrace The associated ChildEmailManagerTrace object.
+     * @throws PropelException
+     */
+    public function getEmailManagerTraceRelatedByParentId(ConnectionInterface $con = null)
+    {
+        if ($this->aEmailManagerTraceRelatedByParentId === null && ($this->parent_id !== null)) {
+            $this->aEmailManagerTraceRelatedByParentId = ChildEmailManagerTraceQuery::create()->findPk($this->parent_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aEmailManagerTraceRelatedByParentId->addEmailManagerTracesRelatedById($this);
+             */
+        }
+
+        return $this->aEmailManagerTraceRelatedByParentId;
+    }
+
 
     /**
      * Initializes a collection based on the name of a relation.
@@ -1713,12 +1889,233 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
+        if ('EmailManagerTraceRelatedById' == $relationName) {
+            return $this->initEmailManagerTracesRelatedById();
+        }
         if ('EmailManagerHistory' == $relationName) {
             return $this->initEmailManagerHistories();
         }
         if ('EmailManagerTraceI18n' == $relationName) {
             return $this->initEmailManagerTraceI18ns();
         }
+    }
+
+    /**
+     * Clears out the collEmailManagerTracesRelatedById collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addEmailManagerTracesRelatedById()
+     */
+    public function clearEmailManagerTracesRelatedById()
+    {
+        $this->collEmailManagerTracesRelatedById = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collEmailManagerTracesRelatedById collection loaded partially.
+     */
+    public function resetPartialEmailManagerTracesRelatedById($v = true)
+    {
+        $this->collEmailManagerTracesRelatedByIdPartial = $v;
+    }
+
+    /**
+     * Initializes the collEmailManagerTracesRelatedById collection.
+     *
+     * By default this just sets the collEmailManagerTracesRelatedById collection to an empty array (like clearcollEmailManagerTracesRelatedById());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initEmailManagerTracesRelatedById($overrideExisting = true)
+    {
+        if (null !== $this->collEmailManagerTracesRelatedById && !$overrideExisting) {
+            return;
+        }
+        $this->collEmailManagerTracesRelatedById = new ObjectCollection();
+        $this->collEmailManagerTracesRelatedById->setModel('\TheliaEmailManager\Model\EmailManagerTrace');
+    }
+
+    /**
+     * Gets an array of ChildEmailManagerTrace objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildEmailManagerTrace is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return Collection|ChildEmailManagerTrace[] List of ChildEmailManagerTrace objects
+     * @throws PropelException
+     */
+    public function getEmailManagerTracesRelatedById($criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collEmailManagerTracesRelatedByIdPartial && !$this->isNew();
+        if (null === $this->collEmailManagerTracesRelatedById || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collEmailManagerTracesRelatedById) {
+                // return empty collection
+                $this->initEmailManagerTracesRelatedById();
+            } else {
+                $collEmailManagerTracesRelatedById = ChildEmailManagerTraceQuery::create(null, $criteria)
+                    ->filterByEmailManagerTraceRelatedByParentId($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collEmailManagerTracesRelatedByIdPartial && count($collEmailManagerTracesRelatedById)) {
+                        $this->initEmailManagerTracesRelatedById(false);
+
+                        foreach ($collEmailManagerTracesRelatedById as $obj) {
+                            if (false == $this->collEmailManagerTracesRelatedById->contains($obj)) {
+                                $this->collEmailManagerTracesRelatedById->append($obj);
+                            }
+                        }
+
+                        $this->collEmailManagerTracesRelatedByIdPartial = true;
+                    }
+
+                    reset($collEmailManagerTracesRelatedById);
+
+                    return $collEmailManagerTracesRelatedById;
+                }
+
+                if ($partial && $this->collEmailManagerTracesRelatedById) {
+                    foreach ($this->collEmailManagerTracesRelatedById as $obj) {
+                        if ($obj->isNew()) {
+                            $collEmailManagerTracesRelatedById[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collEmailManagerTracesRelatedById = $collEmailManagerTracesRelatedById;
+                $this->collEmailManagerTracesRelatedByIdPartial = false;
+            }
+        }
+
+        return $this->collEmailManagerTracesRelatedById;
+    }
+
+    /**
+     * Sets a collection of EmailManagerTraceRelatedById objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $emailManagerTracesRelatedById A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return   ChildEmailManagerTrace The current object (for fluent API support)
+     */
+    public function setEmailManagerTracesRelatedById(Collection $emailManagerTracesRelatedById, ConnectionInterface $con = null)
+    {
+        $emailManagerTracesRelatedByIdToDelete = $this->getEmailManagerTracesRelatedById(new Criteria(), $con)->diff($emailManagerTracesRelatedById);
+
+
+        $this->emailManagerTracesRelatedByIdScheduledForDeletion = $emailManagerTracesRelatedByIdToDelete;
+
+        foreach ($emailManagerTracesRelatedByIdToDelete as $emailManagerTraceRelatedByIdRemoved) {
+            $emailManagerTraceRelatedByIdRemoved->setEmailManagerTraceRelatedByParentId(null);
+        }
+
+        $this->collEmailManagerTracesRelatedById = null;
+        foreach ($emailManagerTracesRelatedById as $emailManagerTraceRelatedById) {
+            $this->addEmailManagerTraceRelatedById($emailManagerTraceRelatedById);
+        }
+
+        $this->collEmailManagerTracesRelatedById = $emailManagerTracesRelatedById;
+        $this->collEmailManagerTracesRelatedByIdPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related EmailManagerTrace objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related EmailManagerTrace objects.
+     * @throws PropelException
+     */
+    public function countEmailManagerTracesRelatedById(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collEmailManagerTracesRelatedByIdPartial && !$this->isNew();
+        if (null === $this->collEmailManagerTracesRelatedById || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collEmailManagerTracesRelatedById) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getEmailManagerTracesRelatedById());
+            }
+
+            $query = ChildEmailManagerTraceQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByEmailManagerTraceRelatedByParentId($this)
+                ->count($con);
+        }
+
+        return count($this->collEmailManagerTracesRelatedById);
+    }
+
+    /**
+     * Method called to associate a ChildEmailManagerTrace object to this object
+     * through the ChildEmailManagerTrace foreign key attribute.
+     *
+     * @param    ChildEmailManagerTrace $l ChildEmailManagerTrace
+     * @return   \TheliaEmailManager\Model\EmailManagerTrace The current object (for fluent API support)
+     */
+    public function addEmailManagerTraceRelatedById(ChildEmailManagerTrace $l)
+    {
+        if ($this->collEmailManagerTracesRelatedById === null) {
+            $this->initEmailManagerTracesRelatedById();
+            $this->collEmailManagerTracesRelatedByIdPartial = true;
+        }
+
+        if (!in_array($l, $this->collEmailManagerTracesRelatedById->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddEmailManagerTraceRelatedById($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param EmailManagerTraceRelatedById $emailManagerTraceRelatedById The emailManagerTraceRelatedById object to add.
+     */
+    protected function doAddEmailManagerTraceRelatedById($emailManagerTraceRelatedById)
+    {
+        $this->collEmailManagerTracesRelatedById[]= $emailManagerTraceRelatedById;
+        $emailManagerTraceRelatedById->setEmailManagerTraceRelatedByParentId($this);
+    }
+
+    /**
+     * @param  EmailManagerTraceRelatedById $emailManagerTraceRelatedById The emailManagerTraceRelatedById object to remove.
+     * @return ChildEmailManagerTrace The current object (for fluent API support)
+     */
+    public function removeEmailManagerTraceRelatedById($emailManagerTraceRelatedById)
+    {
+        if ($this->getEmailManagerTracesRelatedById()->contains($emailManagerTraceRelatedById)) {
+            $this->collEmailManagerTracesRelatedById->remove($this->collEmailManagerTracesRelatedById->search($emailManagerTraceRelatedById));
+            if (null === $this->emailManagerTracesRelatedByIdScheduledForDeletion) {
+                $this->emailManagerTracesRelatedByIdScheduledForDeletion = clone $this->collEmailManagerTracesRelatedById;
+                $this->emailManagerTracesRelatedByIdScheduledForDeletion->clear();
+            }
+            $this->emailManagerTracesRelatedByIdScheduledForDeletion[]= $emailManagerTraceRelatedById;
+            $emailManagerTraceRelatedById->setEmailManagerTraceRelatedByParentId(null);
+        }
+
+        return $this;
     }
 
     /**
@@ -2170,6 +2567,7 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
     public function clear()
     {
         $this->id = null;
+        $this->parent_id = null;
         $this->hash = null;
         $this->disable_history = null;
         $this->disable_sending = null;
@@ -2202,6 +2600,11 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collEmailManagerTracesRelatedById) {
+                foreach ($this->collEmailManagerTracesRelatedById as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collEmailManagerHistories) {
                 foreach ($this->collEmailManagerHistories as $o) {
                     $o->clearAllReferences($deep);
@@ -2218,8 +2621,10 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
         $this->currentLocale = 'en_US';
         $this->currentTranslations = null;
 
+        $this->collEmailManagerTracesRelatedById = null;
         $this->collEmailManagerHistories = null;
         $this->collEmailManagerTraceI18ns = null;
+        $this->aEmailManagerTraceRelatedByParentId = null;
     }
 
     /**

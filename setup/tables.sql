@@ -7,9 +7,12 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- email_manager_trace
 -- ---------------------------------------------------------------------
 
+DROP TABLE IF EXISTS `email_manager_trace`;
+
 CREATE TABLE `email_manager_trace`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `parent_id` INTEGER,
     `hash` CHAR(32) NOT NULL,
     `disable_history` TINYINT(1) DEFAULT 0,
     `disable_sending` TINYINT(1) DEFAULT 0,
@@ -21,7 +24,13 @@ CREATE TABLE `email_manager_trace`
     `created_at` DATETIME,
     `updated_at` DATETIME,
     PRIMARY KEY (`id`),
-    UNIQUE INDEX `email_manager_trace_U_1` (`hash`)
+    UNIQUE INDEX `email_manager_trace_U_1` (`hash`),
+    INDEX `FI_email_manager_trace__email_manager_trace` (`parent_id`),
+    CONSTRAINT `fk_email_manager_trace__email_manager_trace`
+        FOREIGN KEY (`parent_id`)
+        REFERENCES `email_manager_trace` (`id`)
+        ON UPDATE RESTRICT
+        ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------

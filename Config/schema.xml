@@ -9,6 +9,7 @@
 
     <table name="email_manager_trace" namespace="TheliaEmailManager\Model">
         <column autoIncrement="true" name="id" primaryKey="true" required="true" type="INTEGER" />
+        <column name="parent_id" type="INTEGER" />
         <column name="hash" required="true" size="32" type="CHAR" />
         <column defaultValue="0" name="disable_history" type="BOOLEAN" />
         <column defaultValue="0" name="disable_sending" type="BOOLEAN" />
@@ -19,6 +20,10 @@
         <column name="detail" required="true" type="LONGVARCHAR" />
         <column name="title" type="LONGVARCHAR" />
         <column name="description" type="VARCHAR" />
+
+        <foreign-key foreignTable="email_manager_trace" name="fk_email_manager_trace__email_manager_trace" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference foreign="id" local="parent_id" />
+        </foreign-key>
 
         <behavior name="i18n">
             <parameter name="i18n_columns" value="title, description"/>

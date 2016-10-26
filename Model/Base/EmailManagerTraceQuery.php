@@ -23,6 +23,7 @@ use TheliaEmailManager\Model\Map\EmailManagerTraceTableMap;
  *
  *
  * @method     ChildEmailManagerTraceQuery orderById($order = Criteria::ASC) Order by the id column
+ * @method     ChildEmailManagerTraceQuery orderByParentId($order = Criteria::ASC) Order by the parent_id column
  * @method     ChildEmailManagerTraceQuery orderByHash($order = Criteria::ASC) Order by the hash column
  * @method     ChildEmailManagerTraceQuery orderByDisableHistory($order = Criteria::ASC) Order by the disable_history column
  * @method     ChildEmailManagerTraceQuery orderByDisableSending($order = Criteria::ASC) Order by the disable_sending column
@@ -35,6 +36,7 @@ use TheliaEmailManager\Model\Map\EmailManagerTraceTableMap;
  * @method     ChildEmailManagerTraceQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildEmailManagerTraceQuery groupById() Group by the id column
+ * @method     ChildEmailManagerTraceQuery groupByParentId() Group by the parent_id column
  * @method     ChildEmailManagerTraceQuery groupByHash() Group by the hash column
  * @method     ChildEmailManagerTraceQuery groupByDisableHistory() Group by the disable_history column
  * @method     ChildEmailManagerTraceQuery groupByDisableSending() Group by the disable_sending column
@@ -50,6 +52,14 @@ use TheliaEmailManager\Model\Map\EmailManagerTraceTableMap;
  * @method     ChildEmailManagerTraceQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildEmailManagerTraceQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildEmailManagerTraceQuery leftJoinEmailManagerTraceRelatedByParentId($relationAlias = null) Adds a LEFT JOIN clause to the query using the EmailManagerTraceRelatedByParentId relation
+ * @method     ChildEmailManagerTraceQuery rightJoinEmailManagerTraceRelatedByParentId($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EmailManagerTraceRelatedByParentId relation
+ * @method     ChildEmailManagerTraceQuery innerJoinEmailManagerTraceRelatedByParentId($relationAlias = null) Adds a INNER JOIN clause to the query using the EmailManagerTraceRelatedByParentId relation
+ *
+ * @method     ChildEmailManagerTraceQuery leftJoinEmailManagerTraceRelatedById($relationAlias = null) Adds a LEFT JOIN clause to the query using the EmailManagerTraceRelatedById relation
+ * @method     ChildEmailManagerTraceQuery rightJoinEmailManagerTraceRelatedById($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EmailManagerTraceRelatedById relation
+ * @method     ChildEmailManagerTraceQuery innerJoinEmailManagerTraceRelatedById($relationAlias = null) Adds a INNER JOIN clause to the query using the EmailManagerTraceRelatedById relation
+ *
  * @method     ChildEmailManagerTraceQuery leftJoinEmailManagerHistory($relationAlias = null) Adds a LEFT JOIN clause to the query using the EmailManagerHistory relation
  * @method     ChildEmailManagerTraceQuery rightJoinEmailManagerHistory($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EmailManagerHistory relation
  * @method     ChildEmailManagerTraceQuery innerJoinEmailManagerHistory($relationAlias = null) Adds a INNER JOIN clause to the query using the EmailManagerHistory relation
@@ -62,6 +72,7 @@ use TheliaEmailManager\Model\Map\EmailManagerTraceTableMap;
  * @method     ChildEmailManagerTrace findOneOrCreate(ConnectionInterface $con = null) Return the first ChildEmailManagerTrace matching the query, or a new ChildEmailManagerTrace object populated from the query conditions when no match is found
  *
  * @method     ChildEmailManagerTrace findOneById(int $id) Return the first ChildEmailManagerTrace filtered by the id column
+ * @method     ChildEmailManagerTrace findOneByParentId(int $parent_id) Return the first ChildEmailManagerTrace filtered by the parent_id column
  * @method     ChildEmailManagerTrace findOneByHash(string $hash) Return the first ChildEmailManagerTrace filtered by the hash column
  * @method     ChildEmailManagerTrace findOneByDisableHistory(boolean $disable_history) Return the first ChildEmailManagerTrace filtered by the disable_history column
  * @method     ChildEmailManagerTrace findOneByDisableSending(boolean $disable_sending) Return the first ChildEmailManagerTrace filtered by the disable_sending column
@@ -74,6 +85,7 @@ use TheliaEmailManager\Model\Map\EmailManagerTraceTableMap;
  * @method     ChildEmailManagerTrace findOneByUpdatedAt(string $updated_at) Return the first ChildEmailManagerTrace filtered by the updated_at column
  *
  * @method     array findById(int $id) Return ChildEmailManagerTrace objects filtered by the id column
+ * @method     array findByParentId(int $parent_id) Return ChildEmailManagerTrace objects filtered by the parent_id column
  * @method     array findByHash(string $hash) Return ChildEmailManagerTrace objects filtered by the hash column
  * @method     array findByDisableHistory(boolean $disable_history) Return ChildEmailManagerTrace objects filtered by the disable_history column
  * @method     array findByDisableSending(boolean $disable_sending) Return ChildEmailManagerTrace objects filtered by the disable_sending column
@@ -172,7 +184,7 @@ abstract class EmailManagerTraceQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, HASH, DISABLE_HISTORY, DISABLE_SENDING, FORCE_SAME_CUSTOMER_DISABLE, NUMBER_OF_CATCH, EMAIL_BCC, EMAIL_REDIRECT, DETAIL, CREATED_AT, UPDATED_AT FROM email_manager_trace WHERE ID = :p0';
+        $sql = 'SELECT ID, PARENT_ID, HASH, DISABLE_HISTORY, DISABLE_SENDING, FORCE_SAME_CUSTOMER_DISABLE, NUMBER_OF_CATCH, EMAIL_BCC, EMAIL_REDIRECT, DETAIL, CREATED_AT, UPDATED_AT FROM email_manager_trace WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -300,6 +312,49 @@ abstract class EmailManagerTraceQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(EmailManagerTraceTableMap::ID, $id, $comparison);
+    }
+
+    /**
+     * Filter the query on the parent_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByParentId(1234); // WHERE parent_id = 1234
+     * $query->filterByParentId(array(12, 34)); // WHERE parent_id IN (12, 34)
+     * $query->filterByParentId(array('min' => 12)); // WHERE parent_id > 12
+     * </code>
+     *
+     * @see       filterByEmailManagerTraceRelatedByParentId()
+     *
+     * @param     mixed $parentId The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildEmailManagerTraceQuery The current query, for fluid interface
+     */
+    public function filterByParentId($parentId = null, $comparison = null)
+    {
+        if (is_array($parentId)) {
+            $useMinMax = false;
+            if (isset($parentId['min'])) {
+                $this->addUsingAlias(EmailManagerTraceTableMap::PARENT_ID, $parentId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($parentId['max'])) {
+                $this->addUsingAlias(EmailManagerTraceTableMap::PARENT_ID, $parentId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(EmailManagerTraceTableMap::PARENT_ID, $parentId, $comparison);
     }
 
     /**
@@ -666,6 +721,154 @@ abstract class EmailManagerTraceQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(EmailManagerTraceTableMap::UPDATED_AT, $updatedAt, $comparison);
+    }
+
+    /**
+     * Filter the query by a related \TheliaEmailManager\Model\EmailManagerTrace object
+     *
+     * @param \TheliaEmailManager\Model\EmailManagerTrace|ObjectCollection $emailManagerTrace The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildEmailManagerTraceQuery The current query, for fluid interface
+     */
+    public function filterByEmailManagerTraceRelatedByParentId($emailManagerTrace, $comparison = null)
+    {
+        if ($emailManagerTrace instanceof \TheliaEmailManager\Model\EmailManagerTrace) {
+            return $this
+                ->addUsingAlias(EmailManagerTraceTableMap::PARENT_ID, $emailManagerTrace->getId(), $comparison);
+        } elseif ($emailManagerTrace instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(EmailManagerTraceTableMap::PARENT_ID, $emailManagerTrace->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByEmailManagerTraceRelatedByParentId() only accepts arguments of type \TheliaEmailManager\Model\EmailManagerTrace or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the EmailManagerTraceRelatedByParentId relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ChildEmailManagerTraceQuery The current query, for fluid interface
+     */
+    public function joinEmailManagerTraceRelatedByParentId($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('EmailManagerTraceRelatedByParentId');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'EmailManagerTraceRelatedByParentId');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the EmailManagerTraceRelatedByParentId relation EmailManagerTrace object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \TheliaEmailManager\Model\EmailManagerTraceQuery A secondary query class using the current class as primary query
+     */
+    public function useEmailManagerTraceRelatedByParentIdQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinEmailManagerTraceRelatedByParentId($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'EmailManagerTraceRelatedByParentId', '\TheliaEmailManager\Model\EmailManagerTraceQuery');
+    }
+
+    /**
+     * Filter the query by a related \TheliaEmailManager\Model\EmailManagerTrace object
+     *
+     * @param \TheliaEmailManager\Model\EmailManagerTrace|ObjectCollection $emailManagerTrace  the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildEmailManagerTraceQuery The current query, for fluid interface
+     */
+    public function filterByEmailManagerTraceRelatedById($emailManagerTrace, $comparison = null)
+    {
+        if ($emailManagerTrace instanceof \TheliaEmailManager\Model\EmailManagerTrace) {
+            return $this
+                ->addUsingAlias(EmailManagerTraceTableMap::ID, $emailManagerTrace->getParentId(), $comparison);
+        } elseif ($emailManagerTrace instanceof ObjectCollection) {
+            return $this
+                ->useEmailManagerTraceRelatedByIdQuery()
+                ->filterByPrimaryKeys($emailManagerTrace->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByEmailManagerTraceRelatedById() only accepts arguments of type \TheliaEmailManager\Model\EmailManagerTrace or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the EmailManagerTraceRelatedById relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ChildEmailManagerTraceQuery The current query, for fluid interface
+     */
+    public function joinEmailManagerTraceRelatedById($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('EmailManagerTraceRelatedById');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'EmailManagerTraceRelatedById');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the EmailManagerTraceRelatedById relation EmailManagerTrace object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \TheliaEmailManager\Model\EmailManagerTraceQuery A secondary query class using the current class as primary query
+     */
+    public function useEmailManagerTraceRelatedByIdQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinEmailManagerTraceRelatedById($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'EmailManagerTraceRelatedById', '\TheliaEmailManager\Model\EmailManagerTraceQuery');
     }
 
     /**
