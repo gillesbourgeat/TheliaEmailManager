@@ -41,15 +41,6 @@
                 <th>{intl l="Action" d="theliaemailmanager.bo.default"}</th>
               </tr>
               </thead>
-              <tfoot>
-              <tr>
-                <th>{intl l="ID" d="theliaemailmanager.bo.default"}</th>
-                <th>{intl l="Name" d="theliaemailmanager.bo.default"}</th>
-                <th>{intl l="Email" d="theliaemailmanager.bo.default"}</th>
-                <th>{intl l="Disabling date" d="theliaemailmanager.bo.default"}</th>
-                <th>{intl l="Action" d="theliaemailmanager.bo.default"}</th>
-              </tr>
-              </tfoot>
               <tbody>
               </tbody>
             </table>
@@ -115,14 +106,14 @@
             targets: TABLE_DIRECTORY.NAME
           },
           {
-            "render": function(data, type, row) {
+            render: function(data, type, row) {
               return row[AJAX_DIRECTORY.DATE];
             },
             responsivePriority: 3,
             targets: TABLE_DIRECTORY.DATE
           },
           {
-            "render": function(data, type, row) {
+            render: function(data, type, row) {
               return '<button ' + ((!row[AJAX_DIRECTORY.DATE]) ? 'disabled' : '') + ' data-id="' + row[AJAX_DIRECTORY.ID] + '" class="btn btn-primary js-action-delete" href="#sublime_message_history_delete_dialog" data-toggle="modal">{intl l="Reactivate" d="theliaemailmanager.bo.default"}</button>'
                   + '<button data-id="' + row[AJAX_DIRECTORY.ID] + '" class="btn btn-info js-action-view" href="#sublime_message_history_view_dialog" data-toggle="modal">{intl l="Edit" d="theliaemailmanager.bo.default"}</button>';
             },

@@ -31,7 +31,7 @@ class TraceController extends BaseAdminController
         }
 
         return $this->render('TheliaEmailManager/traces', [
-            'traces' => EmailManagerTraceQuery::create()->find()
+            'traces' => EmailManagerTraceQuery::create()->filterByParentId(null)->find()
         ]);
     }
 
@@ -50,7 +50,7 @@ class TraceController extends BaseAdminController
             ['TITLE', 'DESCRIPTION']
         );
 
-        if (null === $trace = $trace = $query->findOneById($traceId)) {
+        if (null === $trace = $query->findOneById($traceId)) {
             throw new NotFoundHttpException();
         }
 
