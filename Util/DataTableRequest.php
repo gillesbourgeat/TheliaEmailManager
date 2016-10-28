@@ -4,7 +4,7 @@ namespace TheliaEmailManager\Util;
 
 use Symfony\Component\HttpFoundation\Request;
 
-class DataTableColumnCollection extends ObjectCollection
+class DataTableColumnCollection extends \ArrayObject
 {
     /**
      * @param int $offset

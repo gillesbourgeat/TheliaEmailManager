@@ -59,6 +59,7 @@ class EmailController extends BaseAdminController
 
         $query = EmailManagerEmailQuery::create();
 
+        // search
         if (null !== $search = $dataTableRequest->getSearchValue()) {
             $query
                 ->filterByEmail('%' . $search . '%', Criteria::LIKE)
@@ -66,13 +67,16 @@ class EmailController extends BaseAdminController
                 ->filterByName('%' . $search . '%', Criteria::LIKE);
         }
 
+        // first query for count without pagination
         $dataTableResponse->setRecordsFiltered($query->count());
 
+        // order
         $query->orderBy(
             $dataTableRequest->getOrderBy(),
             $dataTableRequest->getOrder()
         );
 
+        // pagination
         $emails = $query->paginate(
             $dataTableRequest->getPage(),
             $dataTableRequest->getPerPage()

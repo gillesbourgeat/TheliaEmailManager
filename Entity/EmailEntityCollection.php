@@ -2,12 +2,10 @@
 
 namespace TheliaEmailManager\Entity;
 
-use TheliaEmailManager\Util\ObjectCollection;
-
 /**
  * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
-class EmailEntityCollection extends ObjectCollection
+class EmailEntityCollection extends \ArrayObject
 {
     /**
      * @param int $offset
