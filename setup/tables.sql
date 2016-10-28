@@ -7,8 +7,6 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- email_manager_trace
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `email_manager_trace`;
-
 CREATE TABLE `email_manager_trace`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
@@ -46,7 +44,8 @@ CREATE TABLE `email_manager_history`
     `created_at` DATETIME,
     `updated_at` DATETIME,
     PRIMARY KEY (`id`),
-    INDEX `idx_arh_customer_profile_is_default` (`trace_id`),
+    INDEX `email_manager_history_trace_id` (`trace_id`),
+    INDEX `email_manager_history_created_at` (`created_at`),
     CONSTRAINT `fk_email_manager_history__email_manager_trace`
         FOREIGN KEY (`trace_id`)
         REFERENCES `email_manager_trace` (`id`)

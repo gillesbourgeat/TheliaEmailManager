@@ -52,8 +52,12 @@
 
         <behavior name="timestampable"/>
 
-        <index name="idx_arh_customer_profile_is_default">
+        <index name="email_manager_history_trace_id">
             <index-column name="trace_id" />
+        </index>
+
+        <index name="email_manager_history_created_at">
+            <index-column name="created_at" />
         </index>
     </table>
 
