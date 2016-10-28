@@ -4,6 +4,102 @@ namespace TheliaEmailManager\Util;
 
 use Symfony\Component\HttpFoundation\Request;
 
+class DataTableColumnCollection extends ObjectCollection
+{
+    /**
+     * @param int $offset
+     * @param DataTableColumn $value
+     */
+    public function offsetSet($offset, $value)
+    {
+        if (!($value instanceof DataTableColumn)) {
+            throw new \InvalidArgumentException('Invalid argument value');
+        }
+
+        parent::offsetSet($offset, $value);
+    }
+
+    /**
+     * @param string $name
+     * @return DataTableColumn|null
+     */
+    public function getByName($name)
+    {
+        return $this[$name];
+    }
+}
+
+class DataTableColumn
+{
+    /** @var string */
+    protected $name;
+
+    /** @var bool */
+    protected $searchable;
+
+    /** @var bool */
+    protected $orderable;
+
+    /** @var string */
+    protected $searchValue;
+
+    /** @var bool */
+    protected $searchRegex;
+
+    /**
+     * DataTableColumn constructor.
+     * @param array $column
+     */
+    public function __construct(array $column)
+    {
+        $this->name = $column['name'];
+        $this->searchable = (bool) $column['searchable'];
+        $this->orderable = (bool) $column['orderable'];
+        $this->searchValue = empty($column['search']['value']) ? null : $column['search']['value'];
+        $this->searchRegex = (bool) $column['search']['regex'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSearchable()
+    {
+        return $this->searchable;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isOrderable()
+    {
+        return $this->orderable;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSearchValue()
+    {
+        return $this->searchValue;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSearchRegex()
+    {
+        return $this->searchRegex;
+    }
+}
+
 /**
  * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
@@ -15,15 +111,52 @@ class DataTableRequest
     /** @var string[ */
     protected $columnsName;
 
-    /**
-     * DataTableRequest constructor.
-     * @param Request $request
-     * @param array $columnsName
-     */
+    /** @var DataTableColumnCollection */
+    protected $columns;
+
+    /** @var string */
+    protected $searchValue;
+
+    /** @var bool */
+    protected $searchRegex;
+
+    /** @var int */
+    protected $start;
+
+    /** @var int */
+    protected $length;
+
+    /** @var int */
+    protected $draw;
+
+    /** @var string ASC or DESC */
+    protected $order;
+
+    /** @var string */
+    protected $orderBy;
+
     public function __construct(Request $request, array $columnsName)
     {
-        $this->request = $request;
         $this->columnsName = $columnsName;
+        $this->request = $request;
+
+        $this->columns = new DataTableColumnCollection();
+
+        $columns = $this->request->query->get('columns');
+
+        foreach ($columns as $column) {
+            $this->columns[empty($column['name']) ? null : $column['name']] = new DataTableColumn($column);
+        }
+
+        $search = $this->request->query->get('search');
+
+        $this->searchValue = empty($search['value']) ? null : $search['value'];
+        $this->searchRegex = (bool) $search['regex'];
+        $this->start = (int) $this->request->query->get('start');
+        $this->length = (int) $this->request->query->get('length');
+        $this->draw = (int) $this->request->query->get('draw');
+        $this->order = $this->request->query->get('order')[0]['dir'] === 'asc' ? 'ASC' : 'DESC';
+        $this->orderBy = $this->columnsName[$this->request->query->get('order')[0]['column']];
     }
 
     /**
@@ -31,9 +164,15 @@ class DataTableRequest
      */
     public function getPerPage()
     {
-        $perPage = (int) $this->request->query->get('length');
+        return $this->getLength();
+    }
 
-        return !in_array($perPage, [10, 25, 50, 100]) ? 25 : $perPage;
+    /**
+     * @return int
+     */
+    public function getLength()
+    {
+        return !in_array($this->length, [10, 25, 50, 100]) ? 25 : $this->length;
     }
 
     /**
@@ -41,54 +180,55 @@ class DataTableRequest
      */
     public function getPage()
     {
-        $start = (int) $this->request->query->get('start');
-
-        return (int) $start / $this->getPerPage() + 1;
+        return (int) $this->start / $this->length + 1;
     }
 
     /**
-     * @return int|null
+     * @return int
      */
     public function getDraw()
     {
-        $draw = $this->request->query->get('draw', null);
-
-        if ($draw !== null) {
-            return (int) $draw;
-        }
-
-        return null;
+        return $this->draw;
     }
 
     /**
-     * @return null|string
+     * @return bool
+     */
+    public function getSearchRegex()
+    {
+        return $this->searchRegex;
+    }
+
+    /**
+     * @return string
      */
     public function getSearchValue()
     {
-        $search = $this->request->query->get('search');
-
-        return !empty($search['value']) ? $search['value'] : null;
+        return $this->searchValue;
     }
 
+    /**
+     * @return DataTableColumnCollection
+     */
     public function getColumns()
     {
-        return (array) $this->request->query->get('columns');
+        return $this->columns;
     }
 
-    public function getColumnName($n)
-    {
-        return $this->columnsName[$n];
-    }
-
+    /**
+     * @return string
+     */
     public function getOrderBy()
     {
-        $n = $this->request->query->get('order')[0]['column'];
-
-        return $this->getColumnName($n);
+        return $this->orderBy;
     }
 
+    /**
+     * ASC or DESC
+     * @return string
+     */
     public function getOrder()
     {
-        return $this->request->query->get('order')[0]['dir'] === 'asc' ? 'ASC' : 'DESC';
+        return $this->order;
     }
 }

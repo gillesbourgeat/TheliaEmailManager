@@ -89,9 +89,29 @@ class HistoryController extends BaseAdminController
 
         $query = EmailManagerHistoryQuery::create();
 
-        if (null !== $search = $dataTableRequest->getSearchValue()) {
-            $query
-                ->filterBySubject('%' . $search . '%', Criteria::LIKE);
+        if (null !== $search = $dataTableRequest->getColumns()->getByName('trace')->getSearchValue()) {
+            $query->filterByTraceId($search);
+        }
+
+        if (null !== $search = $dataTableRequest->getColumns()->getByName('subject')->getSearchValue()) {
+            $query->filterBySubject('%' . $search . '%', Criteria::LIKE);
+        }
+
+        if (null !== $search = $dataTableRequest->getColumns()->getByName('date')->getSearchValue()) {
+            $query->filterByCreatedAt([
+                'min' => $search . ' 00:00:00',
+                'max' =>  $search . ' 23:59:59'
+            ]);
+        }
+
+        if (null !== $search = $dataTableRequest->getColumns()->getByName('emails')->getSearchValue()) {
+            $query->useEmailManagerHistoryEmailQuery()
+                ->useEmailManagerEmailQuery()
+                ->filterByEmail('%' . $search . '%', Criteria::LIKE)
+                ->_or()
+                ->filterByName('%' . $search . '%', Criteria::LIKE)
+                ->endUse()
+                ->endUse();
         }
 
         $dataTableResponse->setRecordsFiltered($query->count());

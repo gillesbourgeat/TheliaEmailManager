@@ -36,7 +36,7 @@
                             <tr>
                                 <th data-column="id">{intl l="ID" d="theliaemailmanager.bo.default"}</th>
                                 <th data-column="trace">
-                                    <select data-column="trace" class="form-control" style="width: 100%;">
+                                    <select data-column="trace" class="form-control js-input-trace" style="width: 100%; max-width: 550px;">
                                         <option value="">{intl l="Trace" d="theliaemailmanager.bo.default"}</option>
                                         {foreach from=$traces item=trace}
                                             <option value="{$trace.id}">{$trace.title}</option>
@@ -44,13 +44,13 @@
                                     </select>
                                 </th>
                                 <th data-column="date">
-                                    <input class="form-control" type="date" placeholder="{intl l="Date" d="theliaemailmanager.bo.default"}" />
+                                    <input class="form-control js-input-date" type="date" placeholder="{intl l="Date" d="theliaemailmanager.bo.default"}" />
                                 </th>
                                 <th data-column="subject">
-                                    <input class="form-control" type="text" placeholder="{intl l="Subject" d="theliaemailmanager.bo.default"}" />
+                                    <input class="form-control js-input-subject" type="text" placeholder="{intl l="Subject" d="theliaemailmanager.bo.default"}" />
                                 </th>
-                                <th data-column="email">
-                                    <input class="form-control" type="text" placeholder="{intl l="Email" d="theliaemailmanager.bo.default"}" />
+                                <th data-column="emails">
+                                    <input class="form-control js-input-emails" type="text" placeholder="{intl l="Email" d="theliaemailmanager.bo.default"}" />
                                 </th>
                                 <th data-column="action">{intl l="Action" d="theliaemailmanager.bo.default"}</th>
                             </tr>
@@ -104,15 +104,26 @@
                 },
                 processing: true,
                 serverSide: true,
-                ajax : ROUTE.LIST_AJAX,
+                ajax: {
+                    url: ROUTE.LIST_AJAX,
+                    data: function(data){
+                        data['columns'][1]['search']['value'] = $tableAjax.find('.js-input-trace').val();
+                        data['columns'][2]['search']['value'] = $tableAjax.find('.js-input-date').val();
+                        data['columns'][3]['search']['value'] = $tableAjax.find('.js-input-subject').val();
+                        data['columns'][4]['search']['value'] = $tableAjax.find('.js-input-emails').val();
+                        return data;
+                    }
+                },
                 fixedHeader: true,
                 searching: false,
                 columnDefs: [
                     {
+                        name: 'id',
                         responsivePriority: 4,
                         targets: TABLE_DIRECTORY.ID
                     },
                     {
+                        name: 'trace',
                         render: function(data, type, row) {
                             var title = data['title'].length > 50 ? data['title'].substring(0, 35) + '...' : data['title'];
                             return '<a href="' + data['url'] + '">' + title + '</a>'
@@ -122,6 +133,7 @@
                         targets: TABLE_DIRECTORY.TRACE
                     },
                     {
+                        name: 'emails',
                         render: function(data, type, row) {
                             var html = [];
                             for (var i in data) {
@@ -134,6 +146,7 @@
                         targets: TABLE_DIRECTORY.EMAILS
                     },
                     {
+                        name: 'subject',
                         render: function(data, type, row) {
                             return data.length > 50 ? data.substring(0, 35) + '...' : data;
                         },
@@ -141,10 +154,12 @@
                         targets: TABLE_DIRECTORY.SUBJECT
                     },
                     {
+                        name: 'date',
                         responsivePriority: 2,
                         targets: TABLE_DIRECTORY.DATE
                     },
                     {
+                        name: 'action',
                         render: function(data, type, row) {
                             return '<button data-id="' + row[AJAX_DIRECTORY.ID] + '" class="btn btn-info js-action-view" href="#sublime_message_history_view_dialog" data-toggle="modal">{intl l="View" d="theliaemailmanager.bo.default"}</button>';
                         },
@@ -154,44 +169,27 @@
                     }
                 ],
                 initComplete: function(settings, json) {
-                    var timer = null, lastValue = null, datatable = this;
-                    $(this[0])
-                            .parents('.dataTables_wrapper')
-                            .find('.dataTables_filter input')
-                            .off()
-                            .on('keyup', function (e) {
-                                clearTimeout(timer);
-                                timer = setTimeout(function (item) {
-                                    if (item.value.length === 0 || (item.value.length > 3 && item.value !== lastValue)) {
-                                        lastValue = item.value;
-                                        datatable.fnFilter(lastValue);
-                                    }
-                                }, 400, this);
-                            });
+                    this.api().columns().every( function () {
+                        $( 'input, select', this.header()).on('click', function(e) {
+                            e.stopPropagation();
+                        });
+                        var th = this;
+                        var timer = [], lastValue = [];
+                        $( 'input, select', this.header()).on('keyup change', function() {
+                            var column = this.parentNode.dataset.column;
+                            clearTimeout(timer[column]);
+                            timer[column] = setTimeout(function (item) {
+                                if (item.tagName.toLowerCase() === 'select'
+                                        || (item.value.length === 0 || item.value.length > 3)
+                                        && item.value !== lastValue[column]
+                                ) {
+                                    lastValue[column] = item.value;
+                                    th.search(item.value).draw();
+                                }
+                            }, 400, this);
+                        });
+                    });
                 }
-            });
-
-            // search
-            tableAjax.api().columns().every( function () {
-                $( 'input, select', this.header()).on('click', function(e) {
-                    e.stopPropagation();
-                });
-                var th = this;
-                var timer = [], lastValue = [];
-                $( 'input, select', this.header()).on('keyup change', function() {
-                    var column = this.parentNode.dataset.column;
-                    clearTimeout(timer[column]);
-                    timer[column] = setTimeout(function (item) {
-                        if (item.tagName.toLowerCase() === 'select'
-                            || (item.value.length === 0 || (item.value.length > 3 && item.value !== lastValue[column]))
-                        ) {
-                            lastValue[column] = item.value;
-                            th.search(item.value).draw();
-
-                            //tableAjax.fnFilter(item.value, 4);
-                        }
-                    }, 400, this);
-                });
             });
 
         }(jQuery, jQuery('.email-manager-history .js-table-list')));
