@@ -172,14 +172,37 @@ class HistoryController extends BaseAdminController
         return new JsonResponse($dataTableResponse->getData());
     }
 
-    public function viwAction(Request $request, $historyId)
+    public function viewAction(Request $request, $historyId)
     {
         // Check current user authorization
         if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_HISTORY, null, AccessManager::VIEW)) {
             return $response;
         }
 
-        return $this->render('TheliaEmailManager/modal/history', ['historyId' => $historyId]);
+        $emailManagerHistoryEmails = EmailManagerHistoryEmailQuery::create()
+            ->innerJoinEmailManagerEmail(EmailManagerEmailTableMap::TABLE_NAME)
+            ->withColumn(EmailManagerEmailTableMap::NAME, 'Name')
+            ->withColumn(EmailManagerEmailTableMap::EMAIL, 'Email')
+            ->findByHistoryId($historyId)->toArray('id');
+
+        $historyEmails = [];
+        /** @var EmailManagerHistoryEmail $emailManagerHistoryEmail */
+        foreach ($emailManagerHistoryEmails as $emailManagerHistoryEmail) {
+            $historyEmails[$emailManagerHistoryEmail['Type']][] = [
+                'name' => $emailManagerHistoryEmail['Name'],
+                'email' => $emailManagerHistoryEmail['Email'],
+                'type' => $emailManagerHistoryEmail['Type'],
+            ];
+        }
+
+        $history = EmailManagerHistoryQuery::create()
+            ->findOneById($historyId);
+
+        return $this->render('TheliaEmailManager/modal/history', [
+            'history' => $history,
+            'historyEmails' => $historyEmails,
+            'historyBody' => stream_get_contents($history->getBody())
+        ]);
     }
 
     public function resendAction(Request $request, $historyId)

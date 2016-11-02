@@ -64,6 +64,27 @@
 
             {hook name='email-manager.history.bottom'}
         </div>
+
+        {* View email modal *}
+
+        <div class="modal fade" id="email_manager_history_view_dialog" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h3>{intl l="View message" d="theliaemailmanager.bo.default"}</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center"><span class="loading">{intl l="Please wait, loading" d="theliaemailmanager.bo.default"}</span></div>
+                        <iframe></iframe>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">{intl l="Close" d="theliaemailmanager.bo.default"}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 {/block}
 
@@ -71,9 +92,13 @@
     {include file="TheliaEmailManager/include/jqueryDataTableJS.html"}
     <script>
         "use strict";
-        (function($, $tableAjax){
+        (function($, $module){
+            var $tableAjax = $module.find('.js-table-list');
+            var $modalView = $module.find('#email_manager_history_view_dialog');
+
             var ROUTE = {
-                LIST_AJAX: "{url router="theliaemailmanager" route_id="admin_email_manager_history"}"
+                LIST_AJAX: "{url router="theliaemailmanager" route_id="admin_email_manager_history"}",
+                VIEW_EMAIL: "{url router="theliaemailmanager" route_id="admin_email_manager_history_view" historyId="-historyId-"}"
             };
 
             // AJAX directory
@@ -104,18 +129,19 @@
                 },
                 processing: true,
                 serverSide: true,
+                pageLength: 25,
                 // stateSave: true,
                 ajax: {
                     url: ROUTE.LIST_AJAX,
                     data: function(data){
-                        data['columns'][1]['search']['value'] = $tableAjax.find('.js-input-trace').val();
-                        data['columns'][2]['search']['value'] = $tableAjax.find('.js-input-date').val();
-                        data['columns'][3]['search']['value'] = $tableAjax.find('.js-input-subject').val();
-                        data['columns'][4]['search']['value'] = $tableAjax.find('.js-input-emails').val();
+                        data['columns'][1]['search']['value'] = $module.find('.js-input-trace').val();
+                        data['columns'][2]['search']['value'] = $module.find('.js-input-date').val();
+                        data['columns'][3]['search']['value'] = $module.find('.js-input-subject').val();
+                        data['columns'][4]['search']['value'] = $module.find('.js-input-emails').val();
                         return data;
                     }
                 },
-                fixedHeader: true,
+                //fixedHeader: true,
                 searching: false,
                 columnDefs: [
                     {
@@ -162,7 +188,7 @@
                     {
                         name: 'action',
                         render: function(data, type, row) {
-                            return '<button data-id="' + row[AJAX_DIRECTORY.ID] + '" class="btn btn-info js-action-view" href="#sublime_message_history_view_dialog" data-toggle="modal">{intl l="View" d="theliaemailmanager.bo.default"}</button>';
+                            return '<button data-id="' + row[AJAX_DIRECTORY.ID] + '" class="btn btn-info js-action-view" href="#email_manager_history_view_dialog" data-toggle="modal">{intl l="View" d="theliaemailmanager.bo.default"}</button>';
                         },
                         sortable: false,
                         responsivePriority: 1,
@@ -193,7 +219,34 @@
                 }
             });
 
-        }(jQuery, jQuery('.email-manager-history .js-table-list')));
+            // event modal view
+            $modalView
+                .on("show.bs.modal", function(e) {
+                    console.log(e.relatedTarget.dataset.id);
+                    $.ajax(ROUTE.VIEW_EMAIL.replace('-historyId-', e.relatedTarget.dataset.id))
+                        .done(function(data){
+                            $modalView.find('.modal-body').html(data);
+
+                            var messageBody;
+                            if ($modalView.find('.tpl-message-body html').length) {
+                                messageBody = $modalView.find('.tpl-message-body html').html();
+                            } else {
+                                messageBody = $modalView.find('.tpl-message-body').html();
+                            }
+
+                            var $iframe = $modalView.find('iframe');
+                            $iframe.contents().find('html').html(messageBody);
+                        })
+                        .fail(function(jqXHR, textStatus) {
+                            $modalView.find('.modal-body').html(jqXHR.responseText);
+                        });
+                })
+                .on("hidden.bs.modal", function() {
+                    $modalView.find('.modal-body').html('<div class="text-center"><span class="loading">{intl l="Please wait, loading"}</span></div>');
+                });
+
+
+        }(jQuery, jQuery('.email-manager-history')));
     </script>
 {/block}
 
