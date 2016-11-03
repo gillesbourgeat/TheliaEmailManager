@@ -1,0 +1,31 @@
+<script type="text/html" id="tpl-email-manager-configuration">
+  <div class="menu-list-table general-block-decorator">
+    <div class="table-responsive">
+      <table class="table table-striped table-condensed">
+        <caption>{intl l="Module Email Manager" d="theliaemailmanager.bo.default"}</caption>
+        <tbody>
+        <tr>
+          <td><a href="{url router='theliaemailmanager' route_id='admin_email_manager_configuration'}">{intl l="Global configuration" d="theliaemailmanager.bo.default"}</a></td>
+          <td><a class="btn btn-default btn-xs" href="{url router='theliaemailmanager' route_id='admin_email_manager_configuration'}"><i class="glyphicon glyphicon-edit"></i></a></td>
+        </tr>
+        <tr>
+          <td><a href="{url router='theliaemailmanager' route_id='admin_email_manager_trace'}">{intl l="Traces configuration" d="theliaemailmanager.bo.default"}</a></td>
+          <td><a class="btn btn-default btn-xs" href="{url router='theliaemailmanager' route_id='admin_email_manager_trace'}"><i class="glyphicon glyphicon-edit"></i></a></td>
+        </tr>
+        <tr>
+          <td><a href="{url router='theliaemailmanager' route_id='admin_email_manager_email'}">{intl l="Emails list" d="theliaemailmanager.bo.default"}</a></td>
+          <td><a class="btn btn-default btn-xs" href="{url router='theliaemailmanager' route_id='admin_email_manager_email'}"><i class="glyphicon glyphicon-edit"></i></a></td>
+        </tr>
+        <tr>
+          <td><a href="{url router='theliaemailmanager' route_id='admin_email_manager_history'}">{intl l="Global history" d="theliaemailmanager.bo.default"}</a></td>
+          <td><a class="btn btn-default btn-xs" href="{url router='theliaemailmanager' route_id='admin_email_manager_history'}"><i class="glyphicon glyphicon-edit"></i></a></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</script>
+<script type="text/javascript">
+  document.querySelector(".configuration .row .col-md-4:nth-child(2)").innerHTML
+  += document.querySelector("#tpl-email-manager-configuration").innerHTML;
+</script>

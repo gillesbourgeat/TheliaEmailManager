@@ -8,6 +8,9 @@
         <hook id="thelia.email.manager.hook.home.top">
             <tag name="hook.event_listener" event="home.top" type="back" templates="render:TheliaEmailManager/hook/home.top.html" />
         </hook>
+        <hook id="thelia.email.manager.hook.configuration.js">
+            <tag name="hook.event_listener" event="configuration.js" type="back" templates="render:TheliaEmailManager/hook/configuration.js.html" />
+        </hook>
     </hooks>
 
     <forms>
