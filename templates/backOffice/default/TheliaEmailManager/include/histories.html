@@ -1,0 +1,54 @@
+<div class="col-md-12 email-manager-history">
+  <table class="display js-table-list" cellspacing="0" width="100%">
+    <thead>
+    <tr>
+      <th data-column="id">{intl l="ID" d="theliaemailmanager.bo.default"}</th>
+      <th data-column="trace">
+        {if $traceEdit}
+          {intl l="Trace" d="theliaemailmanager.bo.default"}
+          <input type="hidden" class="js-input-trace" data-column="trace" value="{$traceEdit->getId()}" />
+          {else}
+          <select data-column="trace" class="form-control js-input-trace" style="width: 100%; max-width: 550px;">
+            <option value="">{intl l="Trace" d="theliaemailmanager.bo.default"}</option>
+            {foreach from=$traces item=trace}
+              <option value="{$trace.id}">{$trace.title}</option>
+            {/foreach}
+          </select>
+        {/if}
+      </th>
+      <th data-column="date">
+        <input class="form-control js-input-date" type="date" placeholder="{intl l="Date" d="theliaemailmanager.bo.default"}" />
+      </th>
+      <th data-column="subject">
+        <input class="form-control js-input-subject" type="text" placeholder="{intl l="Subject" d="theliaemailmanager.bo.default"}" />
+      </th>
+      <th data-column="emails">
+        <input class="form-control js-input-emails" type="text" placeholder="{intl l="Email" d="theliaemailmanager.bo.default"}" />
+      </th>
+      <th data-column="action">{intl l="Action" d="theliaemailmanager.bo.default"}</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+  {* View history modal *}
+
+  <div class="modal fade" id="email_manager_history_view_dialog" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h3>{intl l="View History" d="theliaemailmanager.bo.default"}</h3>
+        </div>
+        <div class="modal-body">
+          <div class="text-center"><span class="loading">{intl l="Please wait, loading" d="theliaemailmanager.bo.default"}</span></div>
+          <iframe class="hide"></iframe>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">{intl l="Close" d="theliaemailmanager.bo.default"}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

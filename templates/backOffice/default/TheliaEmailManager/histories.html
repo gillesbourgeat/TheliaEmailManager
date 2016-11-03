@@ -10,244 +10,34 @@
 {block name="check-access"}view{/block}
 
 {block name="main-content"}
-    <div class="email-manager-history">
+    <div id="wrapper" class="container">
 
-        <div id="wrapper" class="container">
+        <ul class="breadcrumb">
+            <li><a href="{url route_id="admin.home.view"}">{intl l="Home" d="theliaemailmanager.bo.default"}</a></li>
+            <li><a href="{url route_id="admin.configuration.index"}">{intl l="Configuration" d="theliaemailmanager.bo.default"}</a></li>
+            <li>{intl l="Email Manager Histories" d="theliaemailmanager.bo.default"}</li>
+        </ul>
 
-            <ul class="breadcrumb">
-                <li><a href="{url route_id="admin.home.view"}">{intl l="Home" d="theliaemailmanager.bo.default"}</a></li>
-                <li><a href="{url route_id="admin.configuration.index"}">{intl l="Configuration" d="theliaemailmanager.bo.default"}</a></li>
-                <li>{intl l="Email Manager Histories" d="theliaemailmanager.bo.default"}</li>
-            </ul>
+        {hook name='email-manager.history.top'}
 
-            {hook name='email-manager.history.top'}
-
-            <div class="row">
-                <div class="col-md-12 general-block-decorator">
-                    <div class="row">
-                        <div class="col-md-7 title">
-                            {intl l="Email Manager Histories" d="theliaemailmanager.bo.default"}
-                        </div>
-                    </div>
-
-                    <div class="col-md-12">
-                        <table class="display js-table-list" cellspacing="0" width="100%">
-                            <thead>
-                            <tr>
-                                <th data-column="id">{intl l="ID" d="theliaemailmanager.bo.default"}</th>
-                                <th data-column="trace">
-                                    <select data-column="trace" class="form-control js-input-trace" style="width: 100%; max-width: 550px;">
-                                        <option value="">{intl l="Trace" d="theliaemailmanager.bo.default"}</option>
-                                        {foreach from=$traces item=trace}
-                                            <option value="{$trace.id}">{$trace.title}</option>
-                                        {/foreach}
-                                    </select>
-                                </th>
-                                <th data-column="date">
-                                    <input class="form-control js-input-date" type="date" placeholder="{intl l="Date" d="theliaemailmanager.bo.default"}" />
-                                </th>
-                                <th data-column="subject">
-                                    <input class="form-control js-input-subject" type="text" placeholder="{intl l="Subject" d="theliaemailmanager.bo.default"}" />
-                                </th>
-                                <th data-column="emails">
-                                    <input class="form-control js-input-emails" type="text" placeholder="{intl l="Email" d="theliaemailmanager.bo.default"}" />
-                                </th>
-                                <th data-column="action">{intl l="Action" d="theliaemailmanager.bo.default"}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+        <div class="row">
+            <div class="col-md-12 general-block-decorator">
+                <div class="row">
+                    <div class="col-md-7 title">
+                        {intl l="Email Manager Histories" d="theliaemailmanager.bo.default"}
                     </div>
                 </div>
-            </div>
 
-            {hook name='email-manager.history.bottom'}
-        </div>
-
-        {* View email modal *}
-
-        <div class="modal fade" id="email_manager_history_view_dialog" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h3>{intl l="View message" d="theliaemailmanager.bo.default"}</h3>
-                    </div>
-                    <div class="modal-body">
-                        <div class="text-center"><span class="loading">{intl l="Please wait, loading" d="theliaemailmanager.bo.default"}</span></div>
-                        <iframe></iframe>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">{intl l="Close" d="theliaemailmanager.bo.default"}</button>
-                    </div>
-                </div>
+                {include file="TheliaEmailManager/include/histories.html"}
             </div>
         </div>
 
+        {hook name='email-manager.history.bottom'}
     </div>
 {/block}
 
 {block name="javascript-initialization"}
-    {include file="TheliaEmailManager/include/jqueryDataTableJS.html"}
-    <script>
-        "use strict";
-        (function($, $module){
-            var $tableAjax = $module.find('.js-table-list');
-            var $modalView = $module.find('#email_manager_history_view_dialog');
-
-            var ROUTE = {
-                LIST_AJAX: "{url router="theliaemailmanager" route_id="admin_email_manager_history"}",
-                VIEW_EMAIL: "{url router="theliaemailmanager" route_id="admin_email_manager_history_view" historyId="-historyId-"}"
-            };
-
-            // AJAX directory
-            var AJAX_DIRECTORY = {
-                ID: 0,
-                TRACE: 1,
-                DATE: 2,
-                SUBJECT: 3,
-                EMAILS: 4
-            };
-
-            // Table directory
-            var TABLE_DIRECTORY = {
-                ID: 0,
-                TRACE: 1,
-                DATE: 2,
-                SUBJECT: 3,
-                EMAILS: 4,
-                ACTION: 5
-            };
-
-            var tableAjax = $tableAjax.dataTable({
-                language: {
-                    url: jQueryDataTableGetI18nUrl()
-                },
-                responsive: {
-                    details: false
-                },
-                processing: true,
-                serverSide: true,
-                pageLength: 25,
-                // stateSave: true,
-                ajax: {
-                    url: ROUTE.LIST_AJAX,
-                    data: function(data){
-                        data['columns'][1]['search']['value'] = $module.find('.js-input-trace').val();
-                        data['columns'][2]['search']['value'] = $module.find('.js-input-date').val();
-                        data['columns'][3]['search']['value'] = $module.find('.js-input-subject').val();
-                        data['columns'][4]['search']['value'] = $module.find('.js-input-emails').val();
-                        return data;
-                    }
-                },
-                //fixedHeader: true,
-                searching: false,
-                columnDefs: [
-                    {
-                        name: 'id',
-                        responsivePriority: 4,
-                        targets: TABLE_DIRECTORY.ID
-                    },
-                    {
-                        name: 'trace',
-                        render: function(data, type, row) {
-                            var title = data['title'].length > 50 ? data['title'].substring(0, 35) + '...' : data['title'];
-                            return '<a href="' + data['url'] + '">' + title + '</a>'
-                        },
-                        sortable: false,
-                        responsivePriority: 2,
-                        targets: TABLE_DIRECTORY.TRACE
-                    },
-                    {
-                        name: 'emails',
-                        render: function(data, type, row) {
-                            var html = [];
-                            for (var i in data) {
-                                html.push(data[i]['type'] + ' : ' + data[i]['email']);
-                            }
-                            return html.join('<br/>');
-                        },
-                        sortable: false,
-                        responsivePriority: 2,
-                        targets: TABLE_DIRECTORY.EMAILS
-                    },
-                    {
-                        name: 'subject',
-                        render: function(data, type, row) {
-                            return data.length > 50 ? data.substring(0, 35) + '...' : data;
-                        },
-                        responsivePriority: 1,
-                        targets: TABLE_DIRECTORY.SUBJECT
-                    },
-                    {
-                        name: 'date',
-                        responsivePriority: 2,
-                        targets: TABLE_DIRECTORY.DATE
-                    },
-                    {
-                        name: 'action',
-                        render: function(data, type, row) {
-                            return '<button data-id="' + row[AJAX_DIRECTORY.ID] + '" class="btn btn-info js-action-view" href="#email_manager_history_view_dialog" data-toggle="modal">{intl l="View" d="theliaemailmanager.bo.default"}</button>';
-                        },
-                        sortable: false,
-                        responsivePriority: 1,
-                        targets: TABLE_DIRECTORY.ACTION
-                    }
-                ],
-                initComplete: function(settings, json) {
-                    this.api().columns().every( function () {
-                        $( 'input, select', this.header()).on('click', function(e) {
-                            e.stopPropagation();
-                        });
-                        var th = this;
-                        var timer = [], lastValue = [];
-                        $( 'input, select', this.header()).on('keyup change', function() {
-                            var column = this.parentNode.dataset.column;
-                            clearTimeout(timer[column]);
-                            timer[column] = setTimeout(function (item) {
-                                if (item.tagName.toLowerCase() === 'select'
-                                        || (item.value.length === 0 || item.value.length > 3)
-                                        && item.value !== lastValue[column]
-                                ) {
-                                    lastValue[column] = item.value;
-                                    th.search(item.value).draw();
-                                }
-                            }, 400, this);
-                        });
-                    });
-                }
-            });
-
-            // event modal view
-            $modalView
-                .on("show.bs.modal", function(e) {
-                    console.log(e.relatedTarget.dataset.id);
-                    $.ajax(ROUTE.VIEW_EMAIL.replace('-historyId-', e.relatedTarget.dataset.id))
-                        .done(function(data){
-                            $modalView.find('.modal-body').html(data);
-
-                            var messageBody;
-                            if ($modalView.find('.tpl-message-body html').length) {
-                                messageBody = $modalView.find('.tpl-message-body html').html();
-                            } else {
-                                messageBody = $modalView.find('.tpl-message-body').html();
-                            }
-
-                            var $iframe = $modalView.find('iframe');
-                            $iframe.contents().find('html').html(messageBody);
-                        })
-                        .fail(function(jqXHR, textStatus) {
-                            $modalView.find('.modal-body').html(jqXHR.responseText);
-                        });
-                })
-                .on("hidden.bs.modal", function() {
-                    $modalView.find('.modal-body').html('<div class="text-center"><span class="loading">{intl l="Please wait, loading"}</span></div>');
-                });
-
-
-        }(jQuery, jQuery('.email-manager-history')));
-    </script>
+    {include file="TheliaEmailManager/include/historiesJs.html"}
 {/block}
 
 {block name="after-admin-css"}

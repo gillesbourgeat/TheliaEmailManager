@@ -40,7 +40,7 @@
 
     <route id="admin_email_manager_history_view" path="/admin/email-manager/history/{historyId}" methods="GET">
         <default key="_controller">TheliaEmailManager:Back\History:view</default>
-        <requirement key="-historyId-">\d+|historyId</requirement>
+        <requirement key="historyId">\d+</requirement>
     </route>
 
     <route id="admin_email_manager_history_resend_email" path="/admin/email-manager/history/{historyId}/resend" methods="POST">

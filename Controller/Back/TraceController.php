@@ -67,8 +67,26 @@ class TraceController extends BaseAdminController
 
         $this->getParserContext()->addForm($form);
 
+        $emailManagerTraces = EmailManagerTraceQuery::create();
+
+        I18nTrait::buildCriteriaI18n(
+            $emailManagerTraces,
+            $request->getSession()->getAdminEditionLang()->getLocale(),
+            ['TITLE']
+        );
+
+        $traces = [];
+        /** @var EmailManagerTrace $emailManagerTrace */
+        foreach ($emailManagerTraces->filterByParentId(null)->find() as $emailManagerTrace) {
+            $traces[$emailManagerTrace->getId()] = [
+                'id' => $emailManagerTrace->getId(),
+                'title' => $emailManagerTrace->getVirtualColumn('i18n_TITLE')
+            ];
+        }
+
         return $this->render('TheliaEmailManager/traceEdit', [
-            'trace' => $trace
+            'trace' => $trace,
+            'traces' => $traces
         ]);
     }
 

@@ -144,7 +144,10 @@
 
                 {if !$trace->getDisableHistory()}
                   <div class="tab-pane fade" id="history">
-
+                    <br/>
+                    <div class="roW">
+                      {include file="TheliaEmailManager/include/histories.html" traceEdit=$trace}
+                    </div>
                   </div>
                 {/if}
 
@@ -178,6 +181,7 @@
 
 
 {block name="javascript-initialization"}
+  {include file="TheliaEmailManager/include/historiesJs.html"}
   <script>
     $(function() {
       // Show proper tab, if defined
@@ -199,5 +203,10 @@
 {/block}
 
 {block name="javascript-last-call"}
+  {hook name='email-manager.history.js'}
   {hook name='email-manager.trace.view.js' trace=$trace}}
+{/block}
+
+{block name="after-admin-css"}
+  {include file="TheliaEmailManager/include/jqueryDataTableCSS.html"}
 {/block}
