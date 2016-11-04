@@ -11,6 +11,10 @@
         <hook id="thelia.email.manager.hook.configuration.js">
             <tag name="hook.event_listener" event="configuration.js" type="back" templates="render:TheliaEmailManager/hook/configuration.js.html" />
         </hook>
+        <hook id="thelia.email.manager.hook.customer.edit.top" class="TheliaEmailManager\Hook\BackHook">
+            <tag name="hook.event_listener" event="customer-edit.top" type="back" />
+            <argument type="service" id="request_stack" />
+        </hook>
     </hooks>
 
     <forms>
