@@ -1,0 +1,25 @@
+
+
+<div class="row">
+  <div class="col-md-12 general-block-decorator">
+
+    <h2>{intl l='Module Email Manager' d="theliaemailmanager.bo.default"}</h2>
+
+    <br>
+
+
+    {if $emailManagerEmail && $emailManagerEmail->getDisableSend()}
+      <div class="alert alert-info">
+        {intl l='This customer has disabled receiving email on %date, on the email %email' d="theliaemailmanager.bo.default" date={format_date date=$emailManagerEmail->getDisableSendDate()} email=$emailManagerEmail->getEmail()}
+        &nbsp;&nbsp;&nbsp;
+        <button class="btn btn-primary">
+          {intl l='To re-activate the send' d="theliaemailmanager.bo.default"}
+        </button>
+      </div>
+    {else}
+
+    {/if}
+
+
+  </div>
+</div>

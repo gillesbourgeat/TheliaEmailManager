@@ -30,8 +30,20 @@ class TraceController extends BaseAdminController
             return $response;
         }
 
+        $emailManagerTraces = EmailManagerTraceQuery::create()->filterByParentId(null)->find();
+
+        $traces = [];
+
+        /** @var EmailManagerTrace $emailManagerTrace */
+        foreach ($emailManagerTraces as $emailManagerTrace) {
+            $traces[] = [
+                'parent' => $emailManagerTrace,
+                'children' => EmailManagerTraceQuery::create()->filterByParentId($emailManagerTrace->getId())->find()
+            ];
+        }
+
         return $this->render('TheliaEmailManager/traces', [
-            'traces' => EmailManagerTraceQuery::create()->filterByParentId(null)->find()
+            'traces' => $traces
         ]);
     }
 
@@ -54,16 +66,31 @@ class TraceController extends BaseAdminController
             throw new NotFoundHttpException();
         }
 
-        $form = $this->createForm(Forms::TRACE_UPDATE, 'form', [
-            TraceForm::FIELD_ID => $trace->getId(),
-            TraceForm::FIELD_TITLE => $trace->getVirtualColumn('i18n_TITLE'),
-            TraceForm::FIELD_DESCRIPTION => $trace->getVirtualColumn('i18n_DESCRIPTION'),
-            TraceForm::FIELD_DISABLE_HISTORY => $trace->getDisableHistory(),
-            TraceForm::FIELD_DISABLE_SENDING => $trace->getDisableSending(),
-            TraceForm::FIELD_FORCE_SAME_CUSTOMER_DISABLE => $trace->getForceSameCustomerDisable(),
-            TraceForm::FIELD_EMAIL_BCC => $trace->getEmailBcc(),
-            TraceForm::FIELD_EMAIL_REDIRECT => $trace->getEmailRedirect()
-        ]);
+        if ($trace->getParentId()) {
+            $parent = EmailManagerTraceQuery::create()->findOneById($trace->getParentId());
+
+            $form = $this->createForm(Forms::TRACE_UPDATE, 'form', [
+                TraceForm::FIELD_ID => $trace->getId(),
+                TraceForm::FIELD_TITLE => $trace->getVirtualColumn('i18n_TITLE'),
+                TraceForm::FIELD_DESCRIPTION => $trace->getVirtualColumn('i18n_DESCRIPTION'),
+                TraceForm::FIELD_DISABLE_HISTORY => $parent->getDisableHistory(),
+                TraceForm::FIELD_DISABLE_SENDING => $parent->getDisableSending(),
+                TraceForm::FIELD_FORCE_SAME_CUSTOMER_DISABLE => $parent->getForceSameCustomerDisable(),
+                TraceForm::FIELD_EMAIL_BCC => $parent->getEmailBcc(),
+                TraceForm::FIELD_EMAIL_REDIRECT => $parent->getEmailRedirect()
+            ]);
+        } else {
+            $form = $this->createForm(Forms::TRACE_UPDATE, 'form', [
+                TraceForm::FIELD_ID => $trace->getId(),
+                TraceForm::FIELD_TITLE => $trace->getVirtualColumn('i18n_TITLE'),
+                TraceForm::FIELD_DESCRIPTION => $trace->getVirtualColumn('i18n_DESCRIPTION'),
+                TraceForm::FIELD_DISABLE_HISTORY => $trace->getDisableHistory(),
+                TraceForm::FIELD_DISABLE_SENDING => $trace->getDisableSending(),
+                TraceForm::FIELD_FORCE_SAME_CUSTOMER_DISABLE => $trace->getForceSameCustomerDisable(),
+                TraceForm::FIELD_EMAIL_BCC => $trace->getEmailBcc(),
+                TraceForm::FIELD_EMAIL_REDIRECT => $trace->getEmailRedirect()
+            ]);
+        }
 
         $this->getParserContext()->addForm($form);
 
@@ -84,9 +111,18 @@ class TraceController extends BaseAdminController
             ];
         }
 
+        $childrenTraces = EmailManagerTraceQuery::create();
+
+        I18nTrait::buildCriteriaI18n(
+            $childrenTraces,
+            $request->getSession()->getAdminEditionLang()->getLocale(),
+            ['TITLE']
+        );
+
         return $this->render('TheliaEmailManager/traceEdit', [
             'trace' => $trace,
-            'traces' => $traces
+            'traces' => $traces,
+            'childrenTraces' => $childrenTraces->findByParentId($trace->getId())
         ]);
     }
 
@@ -107,12 +143,16 @@ class TraceController extends BaseAdminController
         try {
             $formUpdate = $this->validateForm($form);
 
+            if (!$trace->getParentId()) {
+                $trace
+                    ->setDisableHistory($formUpdate->get(TraceForm::FIELD_DISABLE_HISTORY)->getData())
+                    ->setDisableSending($formUpdate->get(TraceForm::FIELD_DISABLE_SENDING)->getData())
+                    ->setForceSameCustomerDisable($formUpdate->get(TraceForm::FIELD_FORCE_SAME_CUSTOMER_DISABLE)->getData())
+                    ->setEmailBcc($formUpdate->get(TraceForm::FIELD_EMAIL_BCC)->getData())
+                    ->setEmailRedirect($formUpdate->get(TraceForm::FIELD_EMAIL_REDIRECT)->getData());
+            }
+
             $trace
-                ->setDisableHistory($formUpdate->get(TraceForm::FIELD_DISABLE_HISTORY)->getData())
-                ->setDisableSending($formUpdate->get(TraceForm::FIELD_DISABLE_SENDING)->getData())
-                ->setForceSameCustomerDisable($formUpdate->get(TraceForm::FIELD_FORCE_SAME_CUSTOMER_DISABLE)->getData())
-                ->setEmailBcc($formUpdate->get(TraceForm::FIELD_EMAIL_BCC)->getData())
-                ->setEmailRedirect($formUpdate->get(TraceForm::FIELD_EMAIL_REDIRECT)->getData())
                 ->setLocale($formUpdate->get(TraceForm::FIELD_LOCALE)->getData())
                 ->setTitle($formUpdate->get(TraceForm::FIELD_TITLE)->getData())
                 ->setDescription($formUpdate->get(TraceForm::FIELD_DESCRIPTION)->getData())

@@ -33,6 +33,7 @@
               <thead>
               <tr>
                 <th>{intl l='ID' d="theliaemailmanager.bo.default"}</th>
+                <th></th>
                 <th>{intl l='Title' d="theliaemailmanager.bo.default"}</th>
                 <th>{intl l='Number of catch' d="theliaemailmanager.bo.default"}</th>
                 <th>{intl l='History disabled' d="theliaemailmanager.bo.default"}</th>
@@ -48,43 +49,135 @@
               <tbody>
               {foreach from=$traces item=trace}
                 <tr>
-                  <td>{$trace->getId()}</td>
+                  {if count($trace['children'])}
+                  <td>~</td>
                   <td>
-                      <span data-toggle="tooltip" title="{$trace->getTitle()}">
-                      {$trace->getTitle()|truncate:50:'...'}
+                    <button class="btn btn-primary btn-xs js-open" data-parent-id="{$trace['parent']->getId()}">
+                      <i class="glyphicon glyphicon-chevron-down"></i>
+                    </button>
+                  </td>
+                  {else}
+                  <td>
+                    {$trace->getId()}
+                  </td>
+                  <td>
+
+                  </td>
+                  {/if}
+                  <td>
+                      <span data-toggle="tooltip">
+                        {$title = '|'|explode:$trace['parent']->getTitle()}
+                        {$title[0]|truncate:50:'...'}
                       </span>
                   </td>
-                  <td class="text-center">{$trace->getNumberOfCatch()}</td>
+                  <td class="text-center">
+                    {$nb = $trace['parent']->getNumberOfCatch()}
+                    {foreach from=$trace['children'] item=traceChildren}
+                      {$nb = $nb + $traceChildren->getNumberOfCatch()}
+                    {/foreach}
+
+                    {$nb}
+                  </td>
                   <td>
-                    {if $trace->getDisableHistory()}
+                    {if $trace['parent']->getDisableHistory()}
                       <span class="label label-warning">{intl l='History disabled' d="theliaemailmanager.bo.default"}</span>
                     {else}
                       <span class="label label-info">{intl l='History enabled' d="theliaemailmanager.bo.default"}</span>
                     {/if}
                   </td>
                   <td>
-                    {if $trace->getDisableSending()}
+                    {if $trace['parent']->getDisableSending()}
                       <span class="label label-danger">{intl l='Sending disabled' d="theliaemailmanager.bo.default"}</span>
                     {else}
                       <span class="label label-success">{intl l='Sending enabled' d="theliaemailmanager.bo.default"}</span>
                     {/if}
                   </td>
 
-                  <td>{format_date date=$trace->getCreatedAt()}</td>
+                  <td>{if !count($trace['children'])}{format_date date=$trace['parent']->getCreatedAt()}{/if}</td>
 
                   {hook name='email-manager.trace.table-row' trace=$trace}
 
                   <td class="actions">
-                    {if !$trace->getDisableHistory()}
-                      <a class="btn btn-info" href="{url router="theliaemailmanager" route_id="admin_email_manager_trace_view" traceId=$trace->getId() current_tab='history'}">
+                    {if !$trace['parent']->getDisableHistory()}
+                      <a class="btn btn-info" href="{url router="theliaemailmanager" route_id="admin_email_manager_trace_view" traceId=$trace['parent']->getId() current_tab='history'}">
                         {intl l='View history' d="theliaemailmanager.bo.default"}
                       </a>
                     {/if}
-                    <a class="btn btn-primary" href="{url router="theliaemailmanager" route_id="admin_email_manager_trace_view" traceId=$trace->getId()}">
+                    <a class="btn btn-primary" href="{url router="theliaemailmanager" route_id="admin_email_manager_trace_view" traceId=$trace['parent']->getId()}">
                       {intl l='Configure' d="theliaemailmanager.bo.default"}
                     </a>
                   </td>
                 </tr>
+
+                <tr class="active hidden" data-parent-id="{$trace['parent']->getId()}">
+                  <td>|---</td>
+                  <td>{$trace['parent']->getId()}</td>
+                  <td>
+                      <span data-toggle="tooltip" title="{$trace['parent']->getTitle()}">
+                      {$trace['parent']->getTitle()|truncate:50:'...'}
+                      </span>
+                  </td>
+                  <td class="text-center">
+                    {$trace['parent']->getNumberOfCatch()}
+                  </td>
+                  <td>
+
+                  </td>
+                  <td>
+
+                  </td>
+
+                  <td>{format_date date=$trace['parent']->getCreatedAt()}</td>
+
+                  {hook name='email-manager.trace.table-row' trace=$trace}
+
+                  <td class="actions">
+                    {if !$trace['parent']->getDisableHistory()}
+                      <a class="btn btn-info" href="{url router="theliaemailmanager" route_id="admin_email_manager_trace_view" traceId=$trace['parent']->getId() current_tab='history'}">
+                        {intl l='View history' d="theliaemailmanager.bo.default"}
+                      </a>
+                    {/if}
+                    <a class="btn btn-warning" href="{url router="theliaemailmanager" route_id="admin_email_manager_trace_view" traceId=$trace['parent']->getId()}">
+                      {intl l='Unlink' d="theliaemailmanager.bo.default"}
+                    </a>
+                  </td>
+                </tr>
+
+                {foreach from=$trace['children'] item=traceChildren}
+                  <tr class="active hidden" data-parent-id="{$trace['parent']->getId()}">
+                    <td>|---</td>
+                    <td>{$traceChildren->getId()}</td>
+                    <td>
+                      <span data-toggle="tooltip" title="{$traceChildren->getTitle()}">
+                      {$traceChildren->getTitle()|truncate:50:'...'}
+                      </span>
+                    </td>
+                    <td class="text-center">
+                      {$traceChildren->getNumberOfCatch()}
+                    </td>
+                    <td>
+
+                    </td>
+                    <td>
+
+                    </td>
+
+                    <td>{format_date date=$traceChildren->getCreatedAt()}</td>
+
+                    {hook name='email-manager.trace.table-row' trace=$traceChildren}
+
+                    <td class="actions">
+                      {if !$trace['parent']->getDisableHistory()}
+                        <a class="btn btn-info" href="{url router="theliaemailmanager" route_id="admin_email_manager_trace_view" traceId=$traceChildren->getId() current_tab='history'}">
+                          {intl l='View history' d="theliaemailmanager.bo.default"}
+                        </a>
+                      {/if}
+                      <a class="btn btn-warning" href="{url router="theliaemailmanager" route_id="admin_email_manager_trace_view" traceId=$trace['parent']->getId()}">
+                        {intl l='Unlink' d="theliaemailmanager.bo.default"}
+                      </a>
+                    </td>
+                  </tr>
+                {/foreach}
               {/foreach}
 
               {if !count($traces)}
@@ -110,4 +203,12 @@
 
 {block name="javascript-last-call"}
   {hook name='email-manager.trace.js'}
+  <script>
+    "use strict";
+    (function($, $module){
+      $module.find('.js-open').on('click', function(){
+        $module.find('tr[data-parent-id=' + this.dataset.parentId + ']').removeClass('hidden');
+      });
+    }(jQuery, jQuery('.email-manager-trace')))
+  </script>
 {/block}

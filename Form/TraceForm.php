@@ -50,7 +50,7 @@ class TraceForm extends BaseForm
                     1 => $this->trans('Yes'),
                     0 => $this->trans('No')
                 ],
-                'required'    => true,
+                'required'    => false,
                 'label' => $this->trans('Disable the history of emails for this trace'),
                 'label_attr'  => ['for' => self::FIELD_DISABLE_HISTORY]
             ])
@@ -59,7 +59,7 @@ class TraceForm extends BaseForm
                     1 => $this->trans('Yes'),
                     0 => $this->trans('No')
                 ],
-                'required'    => true,
+                'required'    => false,
                 'label' => $this->trans('Disable the sending of emails for this trace'),
                 'label_attr'  => ['for' => self::FIELD_DISABLE_SENDING]
             ])
@@ -68,7 +68,7 @@ class TraceForm extends BaseForm
                     1 => $this->trans('Yes'),
                     0 => $this->trans('No')
                 ],
-                'required'    => true,
+                'required'    => false,
                 'label' => $this->trans('Force the sending of emails for this trace'),
                 'label_attr'  => [
                     'for' => self::FIELD_FORCE_SAME_CUSTOMER_DISABLE,

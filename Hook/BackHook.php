@@ -40,4 +40,20 @@ class BackHook extends BaseHook
             ])
         );
     }
+
+    /**
+     * @param HookRenderEvent $event
+     */
+    public function onCustomerEditBottom(HookRenderEvent $event)
+    {
+        $customer = CustomerQuery::create()->findOneById((int) $event->getArgument('customer_id'));
+
+        $event->add(
+            $this->render("TheliaEmailManager/hook/customer-edit.bottom.html", [
+                'emailManagerEmail' => EmailManagerEmailQuery::create()
+                    ->filterByEmail($customer->getEmail())
+                    ->findOne()
+            ])
+        );
+    }
 }

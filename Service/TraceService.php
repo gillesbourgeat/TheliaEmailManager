@@ -59,6 +59,8 @@ class TraceService
                         $emailManagerTrace->setLocale($language->getLocale())->setTitle($title);
                     }
 
+                    $this->detectParentTrace($emailManagerTrace);
+
                     $this->eventDispatcher->dispatch(Events::TRACE_CREATE, new TraceEvent($emailManagerTrace));
                 }
 
@@ -69,6 +71,25 @@ class TraceService
         }
 
         return null;
+    }
+
+    /**
+     * @param EmailManagerTrace $childrenEmailManagerTrace
+     */
+    protected function detectParentTrace(EmailManagerTrace $childrenEmailManagerTrace)
+    {
+        $emailManagerTraces = EmailManagerTraceQuery::create()->filterByParentId(null)->find();
+
+        $possibleChildren = unserialize($childrenEmailManagerTrace->getDetail());
+
+        /** @var EmailManagerTrace $emailManagerTrace */
+        foreach ($emailManagerTraces as $emailManagerTrace) {
+            if ($this->getMineTrace($possibleChildren)[0]
+                === $this->getMineTrace(unserialize($emailManagerTrace->getDetail()))[0]) {
+                $childrenEmailManagerTrace->setParentId($emailManagerTrace->getId());
+                break;
+            }
+        }
     }
 
     /**

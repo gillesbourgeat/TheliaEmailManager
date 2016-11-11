@@ -1,11 +1,5 @@
 {if $emailManagerEmail && $emailManagerEmail->getDisableSend()}
   <div class="alert alert-info">
-    {intl l='This customer has disabled receiving email on the email %email' d="theliaemailmanager.bo.default" email=$emailManagerEmail->getEmail()}
-    &nbsp;&nbsp;&nbsp;
-    <button class="btn btn-primary">
-      {intl l='To re-activate the send' d="theliaemailmanager.bo.default"}
-    </button>
+    {intl l='This customer has disabled receiving email on %date, on the email %email' d="theliaemailmanager.bo.default" date={format_date date=$emailManagerEmail->getDisableSendDate()} email=$emailManagerEmail->getEmail()}
   </div>
-  {else}
-
 {/if}

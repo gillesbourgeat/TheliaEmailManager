@@ -45,7 +45,7 @@ return array(
     'Sending email is disabled' => 'L\'envoi d\'e-mail est désactivé',
     'Sending enabled' => 'Envoi activé',
     'Subject' => 'Sujet',
-    'This customer has disabled receiving email on the email %email' => 'Ce client a désactivée la réception d\'e-mail sur %email',
+    'This customer has disabled receiving email on %date, on the email %email' => 'Ce client a désactivé la réception d\'e-mail le %date, sur %email',
     'Title' => 'Titre',
     'To' => 'To',
     'To re-activate the send' => 'Réactiver l\'envoi',
