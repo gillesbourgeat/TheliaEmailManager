@@ -43,6 +43,10 @@ class TraceService
      */
     public function getEmailManagerTrace(array $trace, $force = false)
     {
+        if ($this->environment === 'test') {
+            return null;
+        }
+
         $minTrace = $this->getMineTrace($trace);
 
         if (count($minTrace)) {

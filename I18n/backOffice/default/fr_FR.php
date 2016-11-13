@@ -51,7 +51,7 @@ return array(
     'Sending email is disabled' => 'L\'envoi d\'e-mail est désactivé',
     'Sending enabled' => 'Envoi activé',
     'Subject' => 'Sujet',
-    'The associated traces' => 'Les trace associées',
+    'The associated traces' => 'Les traces associées',
     'This customer has disabled receiving email on %date, on the email %email' => 'Ce client a désactivé la réception d\'e-mail le %date, sur %email',
     'This trace is a child of another trace and uses its configuration parameters.' => 'Cette trace est l\'enfant d\'une autre trace et utilise ses configurations',
     'Title' => 'Titre',
