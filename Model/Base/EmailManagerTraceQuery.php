@@ -25,6 +25,8 @@ use TheliaEmailManager\Model\Map\EmailManagerTraceTableMap;
  * @method     ChildEmailManagerTraceQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildEmailManagerTraceQuery orderByParentId($order = Criteria::ASC) Order by the parent_id column
  * @method     ChildEmailManagerTraceQuery orderByHash($order = Criteria::ASC) Order by the hash column
+ * @method     ChildEmailManagerTraceQuery orderByCli($order = Criteria::ASC) Order by the cli column
+ * @method     ChildEmailManagerTraceQuery orderByEnvironment($order = Criteria::ASC) Order by the environment column
  * @method     ChildEmailManagerTraceQuery orderByDisableHistory($order = Criteria::ASC) Order by the disable_history column
  * @method     ChildEmailManagerTraceQuery orderByDisableSending($order = Criteria::ASC) Order by the disable_sending column
  * @method     ChildEmailManagerTraceQuery orderByForceSameCustomerDisable($order = Criteria::ASC) Order by the force_same_customer_disable column
@@ -38,6 +40,8 @@ use TheliaEmailManager\Model\Map\EmailManagerTraceTableMap;
  * @method     ChildEmailManagerTraceQuery groupById() Group by the id column
  * @method     ChildEmailManagerTraceQuery groupByParentId() Group by the parent_id column
  * @method     ChildEmailManagerTraceQuery groupByHash() Group by the hash column
+ * @method     ChildEmailManagerTraceQuery groupByCli() Group by the cli column
+ * @method     ChildEmailManagerTraceQuery groupByEnvironment() Group by the environment column
  * @method     ChildEmailManagerTraceQuery groupByDisableHistory() Group by the disable_history column
  * @method     ChildEmailManagerTraceQuery groupByDisableSending() Group by the disable_sending column
  * @method     ChildEmailManagerTraceQuery groupByForceSameCustomerDisable() Group by the force_same_customer_disable column
@@ -74,6 +78,8 @@ use TheliaEmailManager\Model\Map\EmailManagerTraceTableMap;
  * @method     ChildEmailManagerTrace findOneById(int $id) Return the first ChildEmailManagerTrace filtered by the id column
  * @method     ChildEmailManagerTrace findOneByParentId(int $parent_id) Return the first ChildEmailManagerTrace filtered by the parent_id column
  * @method     ChildEmailManagerTrace findOneByHash(string $hash) Return the first ChildEmailManagerTrace filtered by the hash column
+ * @method     ChildEmailManagerTrace findOneByCli(boolean $cli) Return the first ChildEmailManagerTrace filtered by the cli column
+ * @method     ChildEmailManagerTrace findOneByEnvironment(string $environment) Return the first ChildEmailManagerTrace filtered by the environment column
  * @method     ChildEmailManagerTrace findOneByDisableHistory(boolean $disable_history) Return the first ChildEmailManagerTrace filtered by the disable_history column
  * @method     ChildEmailManagerTrace findOneByDisableSending(boolean $disable_sending) Return the first ChildEmailManagerTrace filtered by the disable_sending column
  * @method     ChildEmailManagerTrace findOneByForceSameCustomerDisable(boolean $force_same_customer_disable) Return the first ChildEmailManagerTrace filtered by the force_same_customer_disable column
@@ -87,6 +93,8 @@ use TheliaEmailManager\Model\Map\EmailManagerTraceTableMap;
  * @method     array findById(int $id) Return ChildEmailManagerTrace objects filtered by the id column
  * @method     array findByParentId(int $parent_id) Return ChildEmailManagerTrace objects filtered by the parent_id column
  * @method     array findByHash(string $hash) Return ChildEmailManagerTrace objects filtered by the hash column
+ * @method     array findByCli(boolean $cli) Return ChildEmailManagerTrace objects filtered by the cli column
+ * @method     array findByEnvironment(string $environment) Return ChildEmailManagerTrace objects filtered by the environment column
  * @method     array findByDisableHistory(boolean $disable_history) Return ChildEmailManagerTrace objects filtered by the disable_history column
  * @method     array findByDisableSending(boolean $disable_sending) Return ChildEmailManagerTrace objects filtered by the disable_sending column
  * @method     array findByForceSameCustomerDisable(boolean $force_same_customer_disable) Return ChildEmailManagerTrace objects filtered by the force_same_customer_disable column
@@ -184,7 +192,7 @@ abstract class EmailManagerTraceQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, PARENT_ID, HASH, DISABLE_HISTORY, DISABLE_SENDING, FORCE_SAME_CUSTOMER_DISABLE, NUMBER_OF_CATCH, EMAIL_BCC, EMAIL_REDIRECT, DETAIL, CREATED_AT, UPDATED_AT FROM email_manager_trace WHERE ID = :p0';
+        $sql = 'SELECT ID, PARENT_ID, HASH, CLI, ENVIRONMENT, DISABLE_HISTORY, DISABLE_SENDING, FORCE_SAME_CUSTOMER_DISABLE, NUMBER_OF_CATCH, EMAIL_BCC, EMAIL_REDIRECT, DETAIL, CREATED_AT, UPDATED_AT FROM email_manager_trace WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -384,6 +392,62 @@ abstract class EmailManagerTraceQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(EmailManagerTraceTableMap::HASH, $hash, $comparison);
+    }
+
+    /**
+     * Filter the query on the cli column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCli(true); // WHERE cli = true
+     * $query->filterByCli('yes'); // WHERE cli = true
+     * </code>
+     *
+     * @param     boolean|string $cli The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildEmailManagerTraceQuery The current query, for fluid interface
+     */
+    public function filterByCli($cli = null, $comparison = null)
+    {
+        if (is_string($cli)) {
+            $cli = in_array(strtolower($cli), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(EmailManagerTraceTableMap::CLI, $cli, $comparison);
+    }
+
+    /**
+     * Filter the query on the environment column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByEnvironment('fooValue');   // WHERE environment = 'fooValue'
+     * $query->filterByEnvironment('%fooValue%'); // WHERE environment LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $environment The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildEmailManagerTraceQuery The current query, for fluid interface
+     */
+    public function filterByEnvironment($environment = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($environment)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $environment)) {
+                $environment = str_replace('*', '%', $environment);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(EmailManagerTraceTableMap::ENVIRONMENT, $environment, $comparison);
     }
 
     /**

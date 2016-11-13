@@ -36,6 +36,8 @@
                 <th></th>
                 <th>{intl l='Title' d="theliaemailmanager.bo.default"}</th>
                 <th>{intl l='Number of catch' d="theliaemailmanager.bo.default"}</th>
+                <th>{intl l='Environment' d="theliaemailmanager.bo.default"}</th>
+                <th title="{intl l='PHP CLI' d="theliaemailmanager.bo.default"}">{intl l='CLI' d="theliaemailmanager.bo.default"}</th>
                 <th>{intl l='History disabled' d="theliaemailmanager.bo.default"}</th>
                 <th>{intl l='Sending disabled' d="theliaemailmanager.bo.default"}</th>
                 <th>{intl l='Detection date' d="theliaemailmanager.bo.default"}</th>
@@ -61,7 +63,6 @@
                     {$trace['parent']->getId()}
                   </td>
                   <td>
-
                   </td>
                   {/if}
                   <td>
@@ -78,6 +79,20 @@
 
                     {$nb}
                   </td>
+                  {if !count($trace['children'])}
+                  <td>
+                    {$trace['parent']->getEnvironment()}
+                  </td>
+                  <td>
+                    {if $trace['parent']->getCli()}
+                    <span class="label label-success">{intl l='Yes' d="theliaemailmanager.bo.default"}</span>
+                    {else}
+                    <span class="label label-danger">{intl l='No' d="theliaemailmanager.bo.default"}</span>
+                    {/if}
+                  </td>
+                  {else}
+                    <td></td><td></td>
+                  {/if}
                   <td>
                     {if $trace['parent']->getDisableHistory()}
                       <span class="label label-warning">{intl l='History disabled' d="theliaemailmanager.bo.default"}</span>
@@ -121,11 +136,16 @@
                     {$trace['parent']->getNumberOfCatch()}
                   </td>
                   <td>
-
+                    {$trace['parent']->getEnvironment()}
                   </td>
                   <td>
-
+                    {if $trace['parent']->getCli()}
+                      <span class="label label-success">{intl l='Yes' d="theliaemailmanager.bo.default"}</span>
+                    {else}
+                      <span class="label label-danger">{intl l='No' d="theliaemailmanager.bo.default"}</span>
+                    {/if}
                   </td>
+                  <td></td><td></td>
 
                   <td>{format_date date=$trace['parent']->getCreatedAt()}</td>
 
@@ -154,6 +174,16 @@
                     </td>
                     <td class="text-center">
                       {$traceChildren->getNumberOfCatch()}
+                    </td>
+                    <td>
+                      {$traceChildren->getEnvironment()}
+                    </td>
+                    <td>
+                      {if $traceChildren->getCli()}
+                        <span class="label label-success">{intl l='Yes' d="theliaemailmanager.bo.default"}</span>
+                      {else}
+                        <span class="label label-danger">{intl l='No' d="theliaemailmanager.bo.default"}</span>
+                      {/if}
                     </td>
                     <td>
 

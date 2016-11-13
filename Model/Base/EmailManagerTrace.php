@@ -78,6 +78,19 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
     protected $hash;
 
     /**
+     * The value for the cli field.
+     * Note: this column has a database default value of: false
+     * @var        boolean
+     */
+    protected $cli;
+
+    /**
+     * The value for the environment field.
+     * @var        string
+     */
+    protected $environment;
+
+    /**
      * The value for the disable_history field.
      * Note: this column has a database default value of: false
      * @var        boolean
@@ -220,6 +233,7 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
+        $this->cli = false;
         $this->disable_history = false;
         $this->disable_sending = false;
         $this->force_same_customer_disable = false;
@@ -520,6 +534,28 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
     }
 
     /**
+     * Get the [cli] column value.
+     *
+     * @return   boolean
+     */
+    public function getCli()
+    {
+
+        return $this->cli;
+    }
+
+    /**
+     * Get the [environment] column value.
+     *
+     * @return   string
+     */
+    public function getEnvironment()
+    {
+
+        return $this->environment;
+    }
+
+    /**
      * Get the [disable_history] column value.
      *
      * @return   boolean
@@ -716,6 +752,56 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
 
         return $this;
     } // setHash()
+
+    /**
+     * Sets the value of the [cli] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     *
+     * @param      boolean|integer|string $v The new value
+     * @return   \TheliaEmailManager\Model\EmailManagerTrace The current object (for fluent API support)
+     */
+    public function setCli($v)
+    {
+        if ($v !== null) {
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
+        }
+
+        if ($this->cli !== $v) {
+            $this->cli = $v;
+            $this->modifiedColumns[EmailManagerTraceTableMap::CLI] = true;
+        }
+
+
+        return $this;
+    } // setCli()
+
+    /**
+     * Set the value of [environment] column.
+     *
+     * @param      string $v new value
+     * @return   \TheliaEmailManager\Model\EmailManagerTrace The current object (for fluent API support)
+     */
+    public function setEnvironment($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->environment !== $v) {
+            $this->environment = $v;
+            $this->modifiedColumns[EmailManagerTraceTableMap::ENVIRONMENT] = true;
+        }
+
+
+        return $this;
+    } // setEnvironment()
 
     /**
      * Sets the value of the [disable_history] column.
@@ -934,6 +1020,10 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->cli !== false) {
+                return false;
+            }
+
             if ($this->disable_history !== false) {
                 return false;
             }
@@ -986,36 +1076,42 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : EmailManagerTraceTableMap::translateFieldName('Hash', TableMap::TYPE_PHPNAME, $indexType)];
             $this->hash = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : EmailManagerTraceTableMap::translateFieldName('DisableHistory', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : EmailManagerTraceTableMap::translateFieldName('Cli', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->cli = (null !== $col) ? (boolean) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : EmailManagerTraceTableMap::translateFieldName('Environment', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->environment = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : EmailManagerTraceTableMap::translateFieldName('DisableHistory', TableMap::TYPE_PHPNAME, $indexType)];
             $this->disable_history = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : EmailManagerTraceTableMap::translateFieldName('DisableSending', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : EmailManagerTraceTableMap::translateFieldName('DisableSending', TableMap::TYPE_PHPNAME, $indexType)];
             $this->disable_sending = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : EmailManagerTraceTableMap::translateFieldName('ForceSameCustomerDisable', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : EmailManagerTraceTableMap::translateFieldName('ForceSameCustomerDisable', TableMap::TYPE_PHPNAME, $indexType)];
             $this->force_same_customer_disable = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : EmailManagerTraceTableMap::translateFieldName('NumberOfCatch', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : EmailManagerTraceTableMap::translateFieldName('NumberOfCatch', TableMap::TYPE_PHPNAME, $indexType)];
             $this->number_of_catch = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : EmailManagerTraceTableMap::translateFieldName('EmailBcc', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : EmailManagerTraceTableMap::translateFieldName('EmailBcc', TableMap::TYPE_PHPNAME, $indexType)];
             $this->email_bcc = $col;
             $this->email_bcc_unserialized = null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : EmailManagerTraceTableMap::translateFieldName('EmailRedirect', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : EmailManagerTraceTableMap::translateFieldName('EmailRedirect', TableMap::TYPE_PHPNAME, $indexType)];
             $this->email_redirect = $col;
             $this->email_redirect_unserialized = null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : EmailManagerTraceTableMap::translateFieldName('Detail', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : EmailManagerTraceTableMap::translateFieldName('Detail', TableMap::TYPE_PHPNAME, $indexType)];
             $this->detail = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : EmailManagerTraceTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : EmailManagerTraceTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : EmailManagerTraceTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : EmailManagerTraceTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -1028,7 +1124,7 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 12; // 12 = EmailManagerTraceTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 14; // 14 = EmailManagerTraceTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \TheliaEmailManager\Model\EmailManagerTrace object", 0, $e);
@@ -1330,6 +1426,12 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
         if ($this->isColumnModified(EmailManagerTraceTableMap::HASH)) {
             $modifiedColumns[':p' . $index++]  = 'HASH';
         }
+        if ($this->isColumnModified(EmailManagerTraceTableMap::CLI)) {
+            $modifiedColumns[':p' . $index++]  = 'CLI';
+        }
+        if ($this->isColumnModified(EmailManagerTraceTableMap::ENVIRONMENT)) {
+            $modifiedColumns[':p' . $index++]  = 'ENVIRONMENT';
+        }
         if ($this->isColumnModified(EmailManagerTraceTableMap::DISABLE_HISTORY)) {
             $modifiedColumns[':p' . $index++]  = 'DISABLE_HISTORY';
         }
@@ -1376,6 +1478,12 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
                         break;
                     case 'HASH':
                         $stmt->bindValue($identifier, $this->hash, PDO::PARAM_STR);
+                        break;
+                    case 'CLI':
+                        $stmt->bindValue($identifier, (int) $this->cli, PDO::PARAM_INT);
+                        break;
+                    case 'ENVIRONMENT':
+                        $stmt->bindValue($identifier, $this->environment, PDO::PARAM_STR);
                         break;
                     case 'DISABLE_HISTORY':
                         $stmt->bindValue($identifier, (int) $this->disable_history, PDO::PARAM_INT);
@@ -1476,30 +1584,36 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
                 return $this->getHash();
                 break;
             case 3:
-                return $this->getDisableHistory();
+                return $this->getCli();
                 break;
             case 4:
-                return $this->getDisableSending();
+                return $this->getEnvironment();
                 break;
             case 5:
-                return $this->getForceSameCustomerDisable();
+                return $this->getDisableHistory();
                 break;
             case 6:
-                return $this->getNumberOfCatch();
+                return $this->getDisableSending();
                 break;
             case 7:
-                return $this->getEmailBcc();
+                return $this->getForceSameCustomerDisable();
                 break;
             case 8:
-                return $this->getEmailRedirect();
+                return $this->getNumberOfCatch();
                 break;
             case 9:
-                return $this->getDetail();
+                return $this->getEmailBcc();
                 break;
             case 10:
-                return $this->getCreatedAt();
+                return $this->getEmailRedirect();
                 break;
             case 11:
+                return $this->getDetail();
+                break;
+            case 12:
+                return $this->getCreatedAt();
+                break;
+            case 13:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1534,15 +1648,17 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
             $keys[0] => $this->getId(),
             $keys[1] => $this->getParentId(),
             $keys[2] => $this->getHash(),
-            $keys[3] => $this->getDisableHistory(),
-            $keys[4] => $this->getDisableSending(),
-            $keys[5] => $this->getForceSameCustomerDisable(),
-            $keys[6] => $this->getNumberOfCatch(),
-            $keys[7] => $this->getEmailBcc(),
-            $keys[8] => $this->getEmailRedirect(),
-            $keys[9] => $this->getDetail(),
-            $keys[10] => $this->getCreatedAt(),
-            $keys[11] => $this->getUpdatedAt(),
+            $keys[3] => $this->getCli(),
+            $keys[4] => $this->getEnvironment(),
+            $keys[5] => $this->getDisableHistory(),
+            $keys[6] => $this->getDisableSending(),
+            $keys[7] => $this->getForceSameCustomerDisable(),
+            $keys[8] => $this->getNumberOfCatch(),
+            $keys[9] => $this->getEmailBcc(),
+            $keys[10] => $this->getEmailRedirect(),
+            $keys[11] => $this->getDetail(),
+            $keys[12] => $this->getCreatedAt(),
+            $keys[13] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1606,38 +1722,44 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
                 $this->setHash($value);
                 break;
             case 3:
-                $this->setDisableHistory($value);
+                $this->setCli($value);
                 break;
             case 4:
-                $this->setDisableSending($value);
+                $this->setEnvironment($value);
                 break;
             case 5:
-                $this->setForceSameCustomerDisable($value);
+                $this->setDisableHistory($value);
                 break;
             case 6:
-                $this->setNumberOfCatch($value);
+                $this->setDisableSending($value);
                 break;
             case 7:
+                $this->setForceSameCustomerDisable($value);
+                break;
+            case 8:
+                $this->setNumberOfCatch($value);
+                break;
+            case 9:
                 if (!is_array($value)) {
                     $v = trim(substr($value, 2, -2));
                     $value = $v ? explode(' | ', $v) : array();
                 }
                 $this->setEmailBcc($value);
                 break;
-            case 8:
+            case 10:
                 if (!is_array($value)) {
                     $v = trim(substr($value, 2, -2));
                     $value = $v ? explode(' | ', $v) : array();
                 }
                 $this->setEmailRedirect($value);
                 break;
-            case 9:
+            case 11:
                 $this->setDetail($value);
                 break;
-            case 10:
+            case 12:
                 $this->setCreatedAt($value);
                 break;
-            case 11:
+            case 13:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1667,15 +1789,17 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setParentId($arr[$keys[1]]);
         if (array_key_exists($keys[2], $arr)) $this->setHash($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setDisableHistory($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setDisableSending($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setForceSameCustomerDisable($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setNumberOfCatch($arr[$keys[6]]);
-        if (array_key_exists($keys[7], $arr)) $this->setEmailBcc($arr[$keys[7]]);
-        if (array_key_exists($keys[8], $arr)) $this->setEmailRedirect($arr[$keys[8]]);
-        if (array_key_exists($keys[9], $arr)) $this->setDetail($arr[$keys[9]]);
-        if (array_key_exists($keys[10], $arr)) $this->setCreatedAt($arr[$keys[10]]);
-        if (array_key_exists($keys[11], $arr)) $this->setUpdatedAt($arr[$keys[11]]);
+        if (array_key_exists($keys[3], $arr)) $this->setCli($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setEnvironment($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setDisableHistory($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setDisableSending($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setForceSameCustomerDisable($arr[$keys[7]]);
+        if (array_key_exists($keys[8], $arr)) $this->setNumberOfCatch($arr[$keys[8]]);
+        if (array_key_exists($keys[9], $arr)) $this->setEmailBcc($arr[$keys[9]]);
+        if (array_key_exists($keys[10], $arr)) $this->setEmailRedirect($arr[$keys[10]]);
+        if (array_key_exists($keys[11], $arr)) $this->setDetail($arr[$keys[11]]);
+        if (array_key_exists($keys[12], $arr)) $this->setCreatedAt($arr[$keys[12]]);
+        if (array_key_exists($keys[13], $arr)) $this->setUpdatedAt($arr[$keys[13]]);
     }
 
     /**
@@ -1690,6 +1814,8 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
         if ($this->isColumnModified(EmailManagerTraceTableMap::ID)) $criteria->add(EmailManagerTraceTableMap::ID, $this->id);
         if ($this->isColumnModified(EmailManagerTraceTableMap::PARENT_ID)) $criteria->add(EmailManagerTraceTableMap::PARENT_ID, $this->parent_id);
         if ($this->isColumnModified(EmailManagerTraceTableMap::HASH)) $criteria->add(EmailManagerTraceTableMap::HASH, $this->hash);
+        if ($this->isColumnModified(EmailManagerTraceTableMap::CLI)) $criteria->add(EmailManagerTraceTableMap::CLI, $this->cli);
+        if ($this->isColumnModified(EmailManagerTraceTableMap::ENVIRONMENT)) $criteria->add(EmailManagerTraceTableMap::ENVIRONMENT, $this->environment);
         if ($this->isColumnModified(EmailManagerTraceTableMap::DISABLE_HISTORY)) $criteria->add(EmailManagerTraceTableMap::DISABLE_HISTORY, $this->disable_history);
         if ($this->isColumnModified(EmailManagerTraceTableMap::DISABLE_SENDING)) $criteria->add(EmailManagerTraceTableMap::DISABLE_SENDING, $this->disable_sending);
         if ($this->isColumnModified(EmailManagerTraceTableMap::FORCE_SAME_CUSTOMER_DISABLE)) $criteria->add(EmailManagerTraceTableMap::FORCE_SAME_CUSTOMER_DISABLE, $this->force_same_customer_disable);
@@ -1764,6 +1890,8 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
     {
         $copyObj->setParentId($this->getParentId());
         $copyObj->setHash($this->getHash());
+        $copyObj->setCli($this->getCli());
+        $copyObj->setEnvironment($this->getEnvironment());
         $copyObj->setDisableHistory($this->getDisableHistory());
         $copyObj->setDisableSending($this->getDisableSending());
         $copyObj->setForceSameCustomerDisable($this->getForceSameCustomerDisable());
@@ -2569,6 +2697,8 @@ abstract class EmailManagerTrace implements ActiveRecordInterface
         $this->id = null;
         $this->parent_id = null;
         $this->hash = null;
+        $this->cli = null;
+        $this->environment = null;
         $this->disable_history = null;
         $this->disable_sending = null;
         $this->force_same_customer_disable = null;

@@ -12,6 +12,8 @@ CREATE TABLE `email_manager_trace`
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `parent_id` INTEGER,
     `hash` CHAR(32) NOT NULL,
+    `cli` TINYINT(1) DEFAULT 0,
+    `environment` CHAR(32) NOT NULL,
     `disable_history` TINYINT(1) DEFAULT 0,
     `disable_sending` TINYINT(1) DEFAULT 0,
     `force_same_customer_disable` TINYINT(1) DEFAULT 0,

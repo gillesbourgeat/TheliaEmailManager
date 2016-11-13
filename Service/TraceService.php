@@ -21,9 +21,17 @@ class TraceService
     /** @var EmailManagerTrace[] */
     protected $emailManagerTraceCache = [];
 
-    public function __construct(EventDispatcherInterface $eventDispatcher)
+    /** @var string */
+    protected $environment;
+
+    /** @var bool */
+    protected $cli;
+
+    public function __construct(EventDispatcherInterface $eventDispatcher, $environment)
     {
         $this->eventDispatcher = $eventDispatcher;
+        $this->environment = $environment;
+        $this->cli = php_sapi_name() === "cli";
     }
 
     /**
@@ -44,6 +52,8 @@ class TraceService
                 if (null === $emailManagerTrace = EmailManagerTraceQuery::create()->findOneByHash($hash)) {
                     $emailManagerTrace = (new EmailManagerTrace())
                         ->setHash($hash)
+                        ->setEnvironment($this->environment)
+                        ->setCli($this->cli)
                         ->setDetail(serialize($trace));
 
                     $title = $this->getTitleFromTrace($minTrace);
@@ -138,6 +148,6 @@ class TraceService
      */
     protected function getHash($trace)
     {
-        return md5(serialize($trace));
+        return md5(serialize($trace) . $this->environment . $this->cli);
     }
 }

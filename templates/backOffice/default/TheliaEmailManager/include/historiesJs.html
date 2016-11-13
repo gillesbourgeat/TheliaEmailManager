@@ -132,7 +132,6 @@
     // event modal view
     $modalView
       .on("show.bs.modal", function(e) {
-        console.log(e.relatedTarget.dataset.id);
         $.ajax(ROUTE.VIEW_EMAIL.replace('0', e.relatedTarget.dataset.id))
           .done(function(data){
             $modalView.find('.modal-body').html(data);

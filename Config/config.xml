@@ -35,6 +35,7 @@
         </service>
         <service id="thelia.email.manager.trace.service" class="TheliaEmailManager\Service\TraceService">
             <argument type="service" id="event_dispatcher" />
+            <argument>%kernel.environment%</argument>
         </service>
         <service id="thelia.email.manager.smarty" class="TheliaEmailManager\Plugin\SmartyPlugin">
             <tag name="thelia.parser.register_plugin"/>

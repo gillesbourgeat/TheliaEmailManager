@@ -174,6 +174,8 @@
                           <th>{intl l='ID' d="theliaemailmanager.bo.default"}</th>
                           <th>{intl l='Title' d="theliaemailmanager.bo.default"}</th>
                           <th>{intl l='Number of catch' d="theliaemailmanager.bo.default"}</th>
+                          <th>{intl l='Environment' d="theliaemailmanager.bo.default"}</th>
+                          <th title="{intl l='PHP CLI' d="theliaemailmanager.bo.default"}">{intl l='CLI' d="theliaemailmanager.bo.default"}</th>
                           <th>{intl l='Detection date' d="theliaemailmanager.bo.default"}</th>
 
                           {hook name='email-manager.trace.table-header'}
@@ -196,6 +198,17 @@
                             </td>
                             <td class="text-center">
                               {$childrenTrace->getNumberOfCatch()}
+                            </td>
+
+                            <td>
+                              {$childrenTrace->getEnvironment()}
+                            </td>
+                            <td>
+                              {if $childrenTrace->getCli()}
+                                <span class="label label-success">{intl l='Yes' d="theliaemailmanager.bo.default"}</span>
+                              {else}
+                                <span class="label label-danger">{intl l='No' d="theliaemailmanager.bo.default"}</span>
+                              {/if}
                             </td>
 
                             <td>{format_date date=$childrenTrace->getCreatedAt()}</td>

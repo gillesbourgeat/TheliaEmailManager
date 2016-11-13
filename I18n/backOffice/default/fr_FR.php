@@ -34,7 +34,7 @@ return array(
     'Module Email Manager' => 'Module E-mail Manager',
     'Modules' => 'Modules',
     'Name' => 'Nom',
-    'No trace has been detected.' => 'Aucune trace détecté',
+    'No trace has been detected.' => 'Aucune trace détectée',
     'Number of catch' => 'Attrapé',
     'PHP trace' => 'Trace PHP',
     'Please wait, loading' => 'Veillez patienter, chargement ...',

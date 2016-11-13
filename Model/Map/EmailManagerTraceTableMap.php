@@ -58,7 +58,7 @@ class EmailManagerTraceTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 12;
+    const NUM_COLUMNS = 14;
 
     /**
      * The number of lazy-loaded columns
@@ -68,7 +68,7 @@ class EmailManagerTraceTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 12;
+    const NUM_HYDRATE_COLUMNS = 14;
 
     /**
      * the column name for the ID field
@@ -84,6 +84,16 @@ class EmailManagerTraceTableMap extends TableMap
      * the column name for the HASH field
      */
     const HASH = 'email_manager_trace.HASH';
+
+    /**
+     * the column name for the CLI field
+     */
+    const CLI = 'email_manager_trace.CLI';
+
+    /**
+     * the column name for the ENVIRONMENT field
+     */
+    const ENVIRONMENT = 'email_manager_trace.ENVIRONMENT';
 
     /**
      * the column name for the DISABLE_HISTORY field
@@ -151,12 +161,12 @@ class EmailManagerTraceTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'ParentId', 'Hash', 'DisableHistory', 'DisableSending', 'ForceSameCustomerDisable', 'NumberOfCatch', 'EmailBcc', 'EmailRedirect', 'Detail', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'parentId', 'hash', 'disableHistory', 'disableSending', 'forceSameCustomerDisable', 'numberOfCatch', 'emailBcc', 'emailRedirect', 'detail', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(EmailManagerTraceTableMap::ID, EmailManagerTraceTableMap::PARENT_ID, EmailManagerTraceTableMap::HASH, EmailManagerTraceTableMap::DISABLE_HISTORY, EmailManagerTraceTableMap::DISABLE_SENDING, EmailManagerTraceTableMap::FORCE_SAME_CUSTOMER_DISABLE, EmailManagerTraceTableMap::NUMBER_OF_CATCH, EmailManagerTraceTableMap::EMAIL_BCC, EmailManagerTraceTableMap::EMAIL_REDIRECT, EmailManagerTraceTableMap::DETAIL, EmailManagerTraceTableMap::CREATED_AT, EmailManagerTraceTableMap::UPDATED_AT, ),
-        self::TYPE_RAW_COLNAME   => array('ID', 'PARENT_ID', 'HASH', 'DISABLE_HISTORY', 'DISABLE_SENDING', 'FORCE_SAME_CUSTOMER_DISABLE', 'NUMBER_OF_CATCH', 'EMAIL_BCC', 'EMAIL_REDIRECT', 'DETAIL', 'CREATED_AT', 'UPDATED_AT', ),
-        self::TYPE_FIELDNAME     => array('id', 'parent_id', 'hash', 'disable_history', 'disable_sending', 'force_same_customer_disable', 'number_of_catch', 'email_bcc', 'email_redirect', 'detail', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
+        self::TYPE_PHPNAME       => array('Id', 'ParentId', 'Hash', 'Cli', 'Environment', 'DisableHistory', 'DisableSending', 'ForceSameCustomerDisable', 'NumberOfCatch', 'EmailBcc', 'EmailRedirect', 'Detail', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'parentId', 'hash', 'cli', 'environment', 'disableHistory', 'disableSending', 'forceSameCustomerDisable', 'numberOfCatch', 'emailBcc', 'emailRedirect', 'detail', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(EmailManagerTraceTableMap::ID, EmailManagerTraceTableMap::PARENT_ID, EmailManagerTraceTableMap::HASH, EmailManagerTraceTableMap::CLI, EmailManagerTraceTableMap::ENVIRONMENT, EmailManagerTraceTableMap::DISABLE_HISTORY, EmailManagerTraceTableMap::DISABLE_SENDING, EmailManagerTraceTableMap::FORCE_SAME_CUSTOMER_DISABLE, EmailManagerTraceTableMap::NUMBER_OF_CATCH, EmailManagerTraceTableMap::EMAIL_BCC, EmailManagerTraceTableMap::EMAIL_REDIRECT, EmailManagerTraceTableMap::DETAIL, EmailManagerTraceTableMap::CREATED_AT, EmailManagerTraceTableMap::UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('ID', 'PARENT_ID', 'HASH', 'CLI', 'ENVIRONMENT', 'DISABLE_HISTORY', 'DISABLE_SENDING', 'FORCE_SAME_CUSTOMER_DISABLE', 'NUMBER_OF_CATCH', 'EMAIL_BCC', 'EMAIL_REDIRECT', 'DETAIL', 'CREATED_AT', 'UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'parent_id', 'hash', 'cli', 'environment', 'disable_history', 'disable_sending', 'force_same_customer_disable', 'number_of_catch', 'email_bcc', 'email_redirect', 'detail', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, )
     );
 
     /**
@@ -166,12 +176,12 @@ class EmailManagerTraceTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'ParentId' => 1, 'Hash' => 2, 'DisableHistory' => 3, 'DisableSending' => 4, 'ForceSameCustomerDisable' => 5, 'NumberOfCatch' => 6, 'EmailBcc' => 7, 'EmailRedirect' => 8, 'Detail' => 9, 'CreatedAt' => 10, 'UpdatedAt' => 11, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'parentId' => 1, 'hash' => 2, 'disableHistory' => 3, 'disableSending' => 4, 'forceSameCustomerDisable' => 5, 'numberOfCatch' => 6, 'emailBcc' => 7, 'emailRedirect' => 8, 'detail' => 9, 'createdAt' => 10, 'updatedAt' => 11, ),
-        self::TYPE_COLNAME       => array(EmailManagerTraceTableMap::ID => 0, EmailManagerTraceTableMap::PARENT_ID => 1, EmailManagerTraceTableMap::HASH => 2, EmailManagerTraceTableMap::DISABLE_HISTORY => 3, EmailManagerTraceTableMap::DISABLE_SENDING => 4, EmailManagerTraceTableMap::FORCE_SAME_CUSTOMER_DISABLE => 5, EmailManagerTraceTableMap::NUMBER_OF_CATCH => 6, EmailManagerTraceTableMap::EMAIL_BCC => 7, EmailManagerTraceTableMap::EMAIL_REDIRECT => 8, EmailManagerTraceTableMap::DETAIL => 9, EmailManagerTraceTableMap::CREATED_AT => 10, EmailManagerTraceTableMap::UPDATED_AT => 11, ),
-        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'PARENT_ID' => 1, 'HASH' => 2, 'DISABLE_HISTORY' => 3, 'DISABLE_SENDING' => 4, 'FORCE_SAME_CUSTOMER_DISABLE' => 5, 'NUMBER_OF_CATCH' => 6, 'EMAIL_BCC' => 7, 'EMAIL_REDIRECT' => 8, 'DETAIL' => 9, 'CREATED_AT' => 10, 'UPDATED_AT' => 11, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'parent_id' => 1, 'hash' => 2, 'disable_history' => 3, 'disable_sending' => 4, 'force_same_customer_disable' => 5, 'number_of_catch' => 6, 'email_bcc' => 7, 'email_redirect' => 8, 'detail' => 9, 'created_at' => 10, 'updated_at' => 11, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'ParentId' => 1, 'Hash' => 2, 'Cli' => 3, 'Environment' => 4, 'DisableHistory' => 5, 'DisableSending' => 6, 'ForceSameCustomerDisable' => 7, 'NumberOfCatch' => 8, 'EmailBcc' => 9, 'EmailRedirect' => 10, 'Detail' => 11, 'CreatedAt' => 12, 'UpdatedAt' => 13, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'parentId' => 1, 'hash' => 2, 'cli' => 3, 'environment' => 4, 'disableHistory' => 5, 'disableSending' => 6, 'forceSameCustomerDisable' => 7, 'numberOfCatch' => 8, 'emailBcc' => 9, 'emailRedirect' => 10, 'detail' => 11, 'createdAt' => 12, 'updatedAt' => 13, ),
+        self::TYPE_COLNAME       => array(EmailManagerTraceTableMap::ID => 0, EmailManagerTraceTableMap::PARENT_ID => 1, EmailManagerTraceTableMap::HASH => 2, EmailManagerTraceTableMap::CLI => 3, EmailManagerTraceTableMap::ENVIRONMENT => 4, EmailManagerTraceTableMap::DISABLE_HISTORY => 5, EmailManagerTraceTableMap::DISABLE_SENDING => 6, EmailManagerTraceTableMap::FORCE_SAME_CUSTOMER_DISABLE => 7, EmailManagerTraceTableMap::NUMBER_OF_CATCH => 8, EmailManagerTraceTableMap::EMAIL_BCC => 9, EmailManagerTraceTableMap::EMAIL_REDIRECT => 10, EmailManagerTraceTableMap::DETAIL => 11, EmailManagerTraceTableMap::CREATED_AT => 12, EmailManagerTraceTableMap::UPDATED_AT => 13, ),
+        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'PARENT_ID' => 1, 'HASH' => 2, 'CLI' => 3, 'ENVIRONMENT' => 4, 'DISABLE_HISTORY' => 5, 'DISABLE_SENDING' => 6, 'FORCE_SAME_CUSTOMER_DISABLE' => 7, 'NUMBER_OF_CATCH' => 8, 'EMAIL_BCC' => 9, 'EMAIL_REDIRECT' => 10, 'DETAIL' => 11, 'CREATED_AT' => 12, 'UPDATED_AT' => 13, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'parent_id' => 1, 'hash' => 2, 'cli' => 3, 'environment' => 4, 'disable_history' => 5, 'disable_sending' => 6, 'force_same_customer_disable' => 7, 'number_of_catch' => 8, 'email_bcc' => 9, 'email_redirect' => 10, 'detail' => 11, 'created_at' => 12, 'updated_at' => 13, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, )
     );
 
     /**
@@ -193,6 +203,8 @@ class EmailManagerTraceTableMap extends TableMap
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
         $this->addForeignKey('PARENT_ID', 'ParentId', 'INTEGER', 'email_manager_trace', 'ID', false, null, null);
         $this->addColumn('HASH', 'Hash', 'CHAR', true, 32, null);
+        $this->addColumn('CLI', 'Cli', 'BOOLEAN', false, 1, false);
+        $this->addColumn('ENVIRONMENT', 'Environment', 'CHAR', true, 32, null);
         $this->addColumn('DISABLE_HISTORY', 'DisableHistory', 'BOOLEAN', false, 1, false);
         $this->addColumn('DISABLE_SENDING', 'DisableSending', 'BOOLEAN', false, 1, false);
         $this->addColumn('FORCE_SAME_CUSTOMER_DISABLE', 'ForceSameCustomerDisable', 'BOOLEAN', false, 1, false);
@@ -381,6 +393,8 @@ class EmailManagerTraceTableMap extends TableMap
             $criteria->addSelectColumn(EmailManagerTraceTableMap::ID);
             $criteria->addSelectColumn(EmailManagerTraceTableMap::PARENT_ID);
             $criteria->addSelectColumn(EmailManagerTraceTableMap::HASH);
+            $criteria->addSelectColumn(EmailManagerTraceTableMap::CLI);
+            $criteria->addSelectColumn(EmailManagerTraceTableMap::ENVIRONMENT);
             $criteria->addSelectColumn(EmailManagerTraceTableMap::DISABLE_HISTORY);
             $criteria->addSelectColumn(EmailManagerTraceTableMap::DISABLE_SENDING);
             $criteria->addSelectColumn(EmailManagerTraceTableMap::FORCE_SAME_CUSTOMER_DISABLE);
@@ -394,6 +408,8 @@ class EmailManagerTraceTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.PARENT_ID');
             $criteria->addSelectColumn($alias . '.HASH');
+            $criteria->addSelectColumn($alias . '.CLI');
+            $criteria->addSelectColumn($alias . '.ENVIRONMENT');
             $criteria->addSelectColumn($alias . '.DISABLE_HISTORY');
             $criteria->addSelectColumn($alias . '.DISABLE_SENDING');
             $criteria->addSelectColumn($alias . '.FORCE_SAME_CUSTOMER_DISABLE');
