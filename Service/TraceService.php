@@ -21,10 +21,6 @@ class TraceService
     /** @var EmailManagerTrace[] */
     protected $emailManagerTraceCache = [];
 
-    /**
-     * TraceService constructor.
-     * @param EventDispatcherInterface $eventDispatcher
-     */
     public function __construct(EventDispatcherInterface $eventDispatcher)
     {
         $this->eventDispatcher = $eventDispatcher;
@@ -59,9 +55,18 @@ class TraceService
                         $emailManagerTrace->setLocale($language->getLocale())->setTitle($title);
                     }
 
-                    $this->detectParentTrace($emailManagerTrace);
+                    $this->linkToParentTrace($emailManagerTrace);
 
                     $this->eventDispatcher->dispatch(Events::TRACE_CREATE, new TraceEvent($emailManagerTrace));
+                } else {
+                    // override by parent
+                    if (null !== $parent = $emailManagerTrace->getEmailManagerTraceRelatedByParentId()) {
+                        $emailManagerTrace->setEmailBcc($parent->getEmailBcc())
+                            ->setEmailRedirect($parent->getEmailRedirect())
+                            ->setDisableHistory($parent->getDisableHistory())
+                            ->setDisableSending($parent->getDisableSending())
+                            ->setForceSameCustomerDisable($parent->getForceSameCustomerDisable());
+                    }
                 }
 
                 $this->emailManagerTraceCache[$hash] = $emailManagerTrace;
@@ -76,7 +81,7 @@ class TraceService
     /**
      * @param EmailManagerTrace $childrenEmailManagerTrace
      */
-    protected function detectParentTrace(EmailManagerTrace $childrenEmailManagerTrace)
+    protected function linkToParentTrace(EmailManagerTrace $childrenEmailManagerTrace)
     {
         $emailManagerTraces = EmailManagerTraceQuery::create()->filterByParentId(null)->find();
 
@@ -109,7 +114,9 @@ class TraceService
                 && strpos($entry['class'], 'Thelia\Core\\') !== 0
                 && strpos($entry['class'], 'Stack\\') !== 0
             ) {
-                $return[] = $entry['class'] . '::' . $entry['function'];
+                if (!in_array($entry['class'] . '::' . $entry['function'], $return)) {
+                    $return[] = $entry['class'] . '::' . $entry['function'];
+                }
             }
         }
 

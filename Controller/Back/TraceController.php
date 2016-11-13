@@ -171,7 +171,39 @@ class TraceController extends BaseAdminController
             $form->setErrorMessage($e->getMessage());
             $this->getParserContext()->addForm($form);
 
-            return $this->render('TheliaEmailManager/traceEdit', ['traceId' => $traceId]);
+            return $this->viewAction($request, $traceId);
+        }
+    }
+
+    public function unlinkAction(Request $request, $traceId)
+    {
+        // Check current user authorization
+        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_TRACE, null, AccessManager::UPDATE)) {
+            return $response;
+        }
+
+        /** @var EmailManagerTrace $trace */
+        if (null === $trace = EmailManagerTraceQuery::create()->findOneById($traceId)) {
+            throw new NotFoundHttpException();
+        }
+
+        $form = $this->createForm(Forms::GENERIC);
+
+        try {
+            $this->validateForm($form);
+
+            $this->getDispatcher()->dispatch(Events::TRACE_UNLINK, new TraceEvent($trace));
+
+            return $this->generateRedirectFromRoute(
+                'admin_email_manager_trace_view',
+                [],
+                ['traceId' => $traceId]
+            );
+        } catch (\Exception $e) {
+            $form->setErrorMessage($e->getMessage());
+            $this->getParserContext()->addForm($form);
+
+            return $this->viewAction($request, $traceId);
         }
     }
 }

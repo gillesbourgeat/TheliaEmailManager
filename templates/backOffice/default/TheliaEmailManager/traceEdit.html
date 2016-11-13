@@ -31,6 +31,21 @@
             </div>
           </div>
 
+          {if $trace->getParentId()}
+          <div class="alert alert-info">
+              <a class="btn btn-danger pull-right" href="#unlink_trace" data-id="{$ID}" data-toggle="modal">
+                {intl l="Unlick this trace" d="theliaemailmanager.bo.default"}
+              </a>
+              <a href="{url router="theliaemailmanager" route_id="admin_email_manager_trace_view" traceId=$trace->getParentId()}" class="btn btn-primary pull-right">
+                {intl l="View parent trace" d="theliaemailmanager.bo.default"}
+              </a>
+
+            {intl l="This trace is a child of another trace and uses its configuration parameters." d="theliaemailmanager.bo.default"}
+            <br/>
+            {intl l="You can unlink this trace to be able to apply others configuration parameters." d="theliaemailmanager.bo.default"}
+          </div>
+          {/if}
+
           <div class="row">
             <div class="col-md-12">
 
@@ -193,6 +208,9 @@
                                   {intl l='View history' d="theliaemailmanager.bo.default"}
                                 </a>
                               {/if}
+                              <a class="btn btn-primary" href="{url router="theliaemailmanager" route_id="admin_email_manager_trace_view" traceId=$childrenTrace->getId()}">
+                                {intl l='View' d="theliaemailmanager.bo.default"}
+                              </a>
                             </td>
                           </tr>
                         {/foreach}
@@ -234,6 +252,27 @@
       </div>
 
       {hook name="email-manager.trace.view.bottom" trace=$trace}
+
+      {form name="email_manager_generic"}
+        {capture name="unlink_trace"}
+          {form_hidden_fields}
+
+          {if $form_error}
+            <div class="alert alert-danger">{$form_error_message}</div>
+          {/if}
+        {/capture}
+
+        {include
+        file = "includes/generic-confirm-dialog.html"
+
+        dialog_id       = "unlink_trace"
+        dialog_title    = {intl l="Unlink trace"}
+        dialog_message  = {intl l="Do you really want to unlink this trace ?"}
+
+        form_action         = {url router="theliaemailmanager" route_id="admin_email_manager_trace_unlink" traceId=$trace->getId()}
+        form_content        = {$smarty.capture.unlink_trace nofilter}
+        }
+      {/form}
 
     </div>
   </div>

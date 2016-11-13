@@ -58,7 +58,7 @@
                   </td>
                   {else}
                   <td>
-                    {$trace->getId()}
+                    {$trace['parent']->getId()}
                   </td>
                   <td>
 
@@ -137,8 +137,8 @@
                         {intl l='View history' d="theliaemailmanager.bo.default"}
                       </a>
                     {/if}
-                    <a class="btn btn-warning" href="{url router="theliaemailmanager" route_id="admin_email_manager_trace_view" traceId=$trace['parent']->getId()}">
-                      {intl l='Unlink' d="theliaemailmanager.bo.default"}
+                    <a class="btn btn-primary" href="{url router="theliaemailmanager" route_id="admin_email_manager_trace_view" traceId=$trace['parent']->getId()}">
+                      {intl l='View' d="theliaemailmanager.bo.default"}
                     </a>
                   </td>
                 </tr>
@@ -172,8 +172,8 @@
                           {intl l='View history' d="theliaemailmanager.bo.default"}
                         </a>
                       {/if}
-                      <a class="btn btn-warning" href="{url router="theliaemailmanager" route_id="admin_email_manager_trace_view" traceId=$trace['parent']->getId()}">
-                        {intl l='Unlink' d="theliaemailmanager.bo.default"}
+                      <a class="btn btn-primary" href="{url router="theliaemailmanager" route_id="admin_email_manager_trace_view" traceId=$traceChildren->getId()}">
+                        {intl l='View' d="theliaemailmanager.bo.default"}
                       </a>
                     </td>
                   </tr>

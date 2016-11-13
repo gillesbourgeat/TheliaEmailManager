@@ -52,15 +52,26 @@
       {hook name='email-manager.email.bottom'}
     </div>
 
-    {include
-    file = "includes/generic-confirm-dialog.html"
+    {form name="email_manager_generic"}
+      {capture "email_reactivate_dialog"}
+        {form_hidden_fields}
 
-    dialog_id       = "email_reactivate_dialog"
-    dialog_title    = {intl l="Reactivate email" d="theliaemailmanager.bo.default"}
-    dialog_message  = {intl l="Do you really want to delete this company ?" d="theliaemailmanager.bo.default"}
-    form_action     = ''
-    }
+        {if $form_error}
+          <div class="alert alert-danger">{$form_error_message}</div>
+        {/if}
+      {/capture}
 
+      {include
+        file = "includes/generic-confirm-dialog.html"
+
+        dialog_id       = "email_reactivate_dialog"
+        dialog_title    = {intl l="Reactivate email" d="theliaemailmanager.bo.default"}
+        dialog_message  = {intl l="Do you really want to reactivate this email ?" d="theliaemailmanager.bo.default"}
+
+      form_action         = ""
+      form_content        = {$smarty.capture.email_reactivate_dialog nofilter}
+      }
+    {/form}
   </div>
 {/block}
 
@@ -128,8 +139,8 @@
           },
           {
             render: function(data, type, row) {
-              return '<button ' + ((!row[AJAX_DIRECTORY.DATE]) ? 'disabled' : '') + ' data-id="' + row[AJAX_DIRECTORY.ID] + '" class="btn btn-primary js-action-reactivate">{intl l="Reactivate" d="theliaemailmanager.bo.default"}</button>'
-                  + '<button data-id="' + row[AJAX_DIRECTORY.ID] + '" class="btn btn-info js-action-edit">{intl l="Edit" d="theliaemailmanager.bo.default"}</button>';
+              return '<button ' + ((!row[AJAX_DIRECTORY.DATE]) ? 'disabled' : '') + ' data-action="{url path="/admin/email-manager/email"}/' + row[AJAX_DIRECTORY.ID] + '/reactivate" class="btn btn-primary js-action-reactivate">{intl l="Reactivate" d="theliaemailmanager.bo.default"}</button>';
+                  // + '<button data-id="' + row[AJAX_DIRECTORY.ID] + '" class="btn btn-info js-action-edit">{intl l="Edit" d="theliaemailmanager.bo.default"}</button>';
             },
             sortable: false,
             responsivePriority: 1,
@@ -156,17 +167,10 @@
 
       var $reactivateModal = $('#email_reactivate_dialog');
 
-      $tableAjax.on('click', '.js-action-reactivate', function(){
-        console.log($module.find('#email_reactivate_dialog'));
+      $tableAjax.on('click', '.js-action-reactivate', function(e){
+        $reactivateModal.find('form').attr('action', this.dataset.action);
         $reactivateModal.modal('show');
-        console.log('tst');
-        return false;
-      });
-
-      $reactivateModal.on('submit', 'form', function(){
-        $reactivateModal.modal('hide');
-        console.log('tst');
-        return false;
+        e.preventDefault();
       });
     }(jQuery, jQuery('.email-manager-email')));
   </script>

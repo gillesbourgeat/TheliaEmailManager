@@ -4,9 +4,13 @@ namespace TheliaEmailManager\Controller\Back;
 
 use Propel\Runtime\ActiveQuery\Criteria;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\HttpFoundation\Request;
 use Thelia\Core\Security\AccessManager;
+use TheliaEmailManager\Event\EmailEvent;
+use TheliaEmailManager\Event\Events;
+use TheliaEmailManager\Form\Forms;
 use TheliaEmailManager\Model\EmailManagerEmail;
 use TheliaEmailManager\Model\EmailManagerEmailQuery;
 use TheliaEmailManager\Model\Map\EmailManagerEmailTableMap;
@@ -93,5 +97,40 @@ class EmailController extends BaseAdminController
         }
 
         return new JsonResponse($dataTableResponse->getData());
+    }
+
+    public function reactivateAction(Request $request, $emailId)
+    {
+        // Check current user authorization
+        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_EMAIL, null, AccessManager::UPDATE)) {
+            return $response;
+        }
+
+        /** @var EmailManagerEmail $email */
+        if (null === $email = EmailManagerEmailQuery::create()->findOneById($emailId)) {
+            throw new NotFoundHttpException();
+        }
+
+        $form = $this->createForm(Forms::GENERIC);
+
+        try {
+            $this->validateForm($form);
+
+            $email
+                ->setDisableSendDate(null)
+                ->setDisableSend(false);
+
+            $this->getDispatcher()->dispatch(Events::EMAIL_UPDATE, new EmailEvent($email));
+
+            return $this->generateRedirectFromRoute(
+                'admin_email_manager_email',
+                []
+            );
+        } catch (\Exception $e) {
+            $form->setErrorMessage($e->getMessage());
+            $this->getParserContext()->addForm($form);
+
+            return $this->listAction($request);
+        }
     }
 }

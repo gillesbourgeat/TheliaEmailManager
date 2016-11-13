@@ -32,9 +32,19 @@
         <requirement key="traceId">\d+</requirement>
     </route>
 
+    <route id="admin_email_manager_trace_unlink" path="/admin/email-manager/trace/{traceId}/unlink" methods="POST">
+        <default key="_controller">TheliaEmailManager:Back\Trace:unlink</default>
+        <requirement key="traceId">\d+</requirement>
+    </route>
+
     <!-- - Email - -->
     <route id="admin_email_manager_email" path="/admin/email-manager/email" methods="GET">
         <default key="_controller">TheliaEmailManager:Back\Email:list</default>
+    </route>
+
+    <route id="admin_email_manager_email_reactivate" path="/admin/email-manager/email/{emailId}/reactivate" methods="POST">
+        <default key="_controller">TheliaEmailManager:Back\Email:reactivate</default>
+        <requirement key="emailId">\d+</requirement>
     </route>
 
     <!-- - History - -->
