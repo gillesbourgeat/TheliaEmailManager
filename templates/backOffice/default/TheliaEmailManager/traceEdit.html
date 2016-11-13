@@ -144,6 +144,20 @@
                         <div class="panel panel-info">
                           <div class="panel-heading">{intl l="PHP trace" d="theliaemailmanager.bo.default"}</div>
                           <div class="panel-body">
+                            <div class="row">
+                              <div class="col-md-3">
+                                {intl l='Environment' d="theliaemailmanager.bo.default"} : {$trace->getEnvironment()}
+                              </div>
+                              <div class="col-md-3">
+                                {intl l='PHP CLI' d="theliaemailmanager.bo.default"} :
+                                {if $trace->getCli()}
+                                  <span class="label label-success">{intl l='Yes' d="theliaemailmanager.bo.default"}</span>
+                                {else}
+                                  <span class="label label-danger">{intl l='No' d="theliaemailmanager.bo.default"}</span>
+                                {/if}
+                              </div>
+                            </div>
+                            <br/>
                             <pre style="height: 300px;">{print_r(unserialize($trace->getDetail()))}</pre>
                           </div>
                         </div>
