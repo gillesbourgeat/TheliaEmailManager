@@ -1,5 +1,5 @@
 {
-  "name": "gillesbourgeat/thelia-mail-manager-module",
+  "name": "gillesbourgeat/thelia-email-manager-module",
   "license": "LGPL-3.0+",
   "type": "thelia-module",
   "require": {
