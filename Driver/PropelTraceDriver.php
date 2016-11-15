@@ -68,6 +68,8 @@ class PropelTraceDriver implements TraceDriverInterface
     {
         $history = (new EmailManagerHistory())
             ->setTraceId($emailEntity->getTraceId())
+            ->setStatus($emailEntity->getStatus())
+            ->setInfo($emailEntity->getInfo())
             ->setSubject($emailEntity->getSubject())
             ->setBody($emailEntity->getBody());
 

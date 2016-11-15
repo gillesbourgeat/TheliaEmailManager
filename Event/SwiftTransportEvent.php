@@ -10,20 +10,30 @@
 
 namespace TheliaEmailManager\Event;
 
+use Symfony\Component\EventDispatcher\Event;
+
 /**
  * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
-class Events
+class SwiftTransportEvent extends Event
 {
-    const SWIFT_SEND_PERFORMED = 'thelia.email.manager.swift.send';
-    const SWIFT_BEFORE_SEND_PERFORMED = 'thelia.email.manager.swift.send.before';
-    const SWIFT_EXCEPTION_THROWN = 'thelia.email.manager.swift.exception.thrown';
-    const SWIFT_RESPONSE_RECEIVED = 'thelia.email.manager.swift.response.received';
+    /** @var \Swift_Events_TransportExceptionEvent */
+    protected $swiftEvent;
 
-    const TRACE_CREATE = 'thelia.email.manager.trace.create';
-    const TRACE_UPDATE = 'thelia.email.manager.trace.update';
-    const TRACE_UNLINK = 'thelia.email.manager.trace.unlink';
+    /**
+     * SendPerformedEvent constructor.
+     * @param \Swift_Events_TransportExceptionEvent $swiftEvent
+     */
+    public function __construct(\Swift_Events_TransportExceptionEvent $swiftEvent)
+    {
+        $this->swiftEvent = $swiftEvent;
+    }
 
-    const EMAIL_CREATE = 'thelia.email.manager.email.create';
-    const EMAIL_UPDATE = 'thelia.email.manager.email.update';
+    /**
+     * @return \Swift_Events_TransportExceptionEvent
+     */
+    public function getSwiftEvent()
+    {
+        return $this->swiftEvent;
+    }
 }

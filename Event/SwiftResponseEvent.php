@@ -15,22 +15,22 @@ use Symfony\Component\EventDispatcher\Event;
 /**
  * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
-class SwiftEvent extends Event
+class SwiftResponseEvent extends Event
 {
-    /** @var \Swift_Events_SendEvent|null */
+    /** @var \Swift_Events_ResponseEvent */
     protected $swiftEvent;
 
     /**
      * SendPerformedEvent constructor.
-     * @param \Swift_Events_SendEvent $swiftEvent
+     * @param \Swift_Events_ResponseEvent $swiftEvent
      */
-    public function __construct(\Swift_Events_SendEvent $swiftEvent)
+    public function __construct(\Swift_Events_ResponseEvent $swiftEvent)
     {
         $this->swiftEvent = $swiftEvent;
     }
 
     /**
-     * @return \Swift_Events_SendEvent
+     * @return \Swift_Events_ResponseEvent
      */
     public function getSwiftEvent()
     {

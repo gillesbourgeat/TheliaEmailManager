@@ -43,6 +43,12 @@ class TheliaEmailManager extends BaseModule
 
     const RESOURCE_EMAIL = 'admin.email-manager.email';
 
+    const STATUS_SUCCESS = 1;
+
+    const STATUS_BLOCKED = 2;
+
+    const STATUS_ERROR = 3;
+
     protected static $config = [];
 
     /**

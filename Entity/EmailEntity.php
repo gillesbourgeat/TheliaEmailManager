@@ -50,6 +50,12 @@ class EmailEntity
     /** @var \DateTime */
     protected $date;
 
+    /** @var integer */
+    protected $status;
+
+    /** @var string */
+    protected $info;
+
     public function __construct()
     {
         $this->date = new \DateTime();
@@ -310,6 +316,42 @@ class EmailEntity
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param int $status
+     * @return EmailEntity
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInfo()
+    {
+        return $this->info;
+    }
+
+    /**
+     * @param string $info
+     * @return EmailEntity
+     */
+    public function setInfo($info)
+    {
+        $this->info = $info;
         return $this;
     }
 }

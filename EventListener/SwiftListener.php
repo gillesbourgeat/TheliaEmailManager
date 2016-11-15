@@ -15,7 +15,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use TheliaEmailManager\Driver\TraceDriverInterface;
 use TheliaEmailManager\Entity\EmailEntity;
 use TheliaEmailManager\Event\Events;
-use TheliaEmailManager\Event\SwiftEvent;
+use TheliaEmailManager\Event\SwiftResponseEvent;
+use TheliaEmailManager\Event\SwiftSendEvent;
+use TheliaEmailManager\Event\SwiftTransportEvent;
 use TheliaEmailManager\Event\TraceEvent;
 use TheliaEmailManager\Model\EmailManagerEmail;
 use TheliaEmailManager\Model\EmailManagerTrace;
@@ -40,8 +42,14 @@ class SwiftListener implements EventSubscriberInterface
     /** @var EmailManagerTrace */
     protected $lastEmailManagerTrace;
 
+    /** @var \Swift_TransportException|null */
+    protected $lastSwiftException;
+
     /** @var EventDispatcherInterface */
     protected $eventDispatcher;
+
+    /** @var bool */
+    protected $debug;
 
     /**
      * SwiftListener constructor.
@@ -49,34 +57,49 @@ class SwiftListener implements EventSubscriberInterface
      * @param TraceService $traceService
      * @param TraceDriverInterface $traceDriver
      * @param EventDispatcherInterface $eventDispatcher
+     * @param bool
      */
     public function __construct(
         EmailService $emailService,
         TraceService $traceService,
         TraceDriverInterface $traceDriver,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        $debug
     ) {
         $this->emailService = $emailService;
         $this->traceService = $traceService;
         $this->traceDriver = $traceDriver;
         $this->eventDispatcher = $eventDispatcher;
+        $this->debug = $debug;
     }
 
-    public function send(SwiftEvent $event)
+    /**
+     * Step 4
+     *
+     * @param SwiftSendEvent $event
+     */
+    public function send(SwiftSendEvent $event)
     {
-        if (TheliaEmailManager::getEnableHistory() && !$this->lastEmailManagerTrace->getDisableHistory()) {
-            /** @var \Swift_Mime_Message $message */
-            $message = $event->getSwiftEvent()->getMessage();
-
+        if ($this->lastSwiftException === null
+            && TheliaEmailManager::getEnableHistory()
+            && !$this->lastEmailManagerTrace->getDisableHistory()
+        ) {
             $this->traceDriver->push(
                 (new EmailEntity())
-                    ->hydrateBySwiftMimeMessage($message)
+                    ->setInfo($event->getSwiftEvent()->getResult())
+                    ->setStatus(TheliaEmailManager::STATUS_SUCCESS)
+                    ->hydrateBySwiftMimeMessage($event->getSwiftEvent()->getMessage())
                     ->setTraceId($this->lastEmailManagerTrace->getId())
             );
         }
     }
 
-    public function beforeSend(SwiftEvent $event)
+    /**
+     * Step 3
+     *
+     * @param SwiftSendEvent $event
+     */
+    public function beforeSend(SwiftSendEvent $event)
     {
         if (null === $emailManagerTrace = $this->traceService->getEmailManagerTrace($this->getFullTrace())) {
             return;
@@ -164,6 +187,45 @@ class SwiftListener implements EventSubscriberInterface
             }
             $message->setTo($to);
         }
+
+        // if Swift_TransportException
+        if ($this->lastSwiftException !== null) {
+            if (TheliaEmailManager::getEnableHistory() && !$this->lastEmailManagerTrace->getDisableHistory()) {
+                $this->traceDriver->push(
+                    (new EmailEntity())
+                        ->setInfo($this->lastSwiftException->getMessage())
+                        ->setStatus(TheliaEmailManager::STATUS_ERROR)
+                        ->hydrateBySwiftMimeMessage($event->getSwiftEvent()->getMessage())
+                        ->setTraceId($emailManagerTrace->getId())
+                );
+            }
+            $event->getSwiftEvent()->cancelBubble(true);
+
+            if ($this->debug) {
+                throw $this->lastSwiftException;
+            }
+        }
+    }
+
+    /**
+     * Step 2
+     *
+     * @param SwiftTransportEvent $event
+     */
+    public function exceptionThrown(SwiftTransportEvent $event)
+    {
+        $this->lastSwiftException = $event->getSwiftEvent()->getException();
+        $event->getSwiftEvent()->cancelBubble(true);
+    }
+
+    /**
+     * Step 1
+     *
+     * @param SwiftResponseEvent $event
+     */
+    public function responseReceived(SwiftResponseEvent $event)
+    {
+        $this->lastSwiftException = null;
     }
 
     /**
@@ -180,6 +242,8 @@ class SwiftListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
+            Events::SWIFT_RESPONSE_RECEIVED => ['responseReceived', 128],
+            Events::SWIFT_EXCEPTION_THROWN => ['exceptionThrown', 128],
             Events::SWIFT_SEND_PERFORMED => ['send', 128],
             Events::SWIFT_BEFORE_SEND_PERFORMED => ['beforeSend', 128]
         ];
