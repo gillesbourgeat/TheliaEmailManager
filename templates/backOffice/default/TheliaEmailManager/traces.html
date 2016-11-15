@@ -67,7 +67,7 @@
                   {/if}
                   <td>
                       <span data-toggle="tooltip">
-                        {$title = '|'|explode:$trace['parent']->getTitle()}
+                        {$title = '|'|explode:$trace['parent']->getVirtualColumn('i18n_TITLE')}
                         {$title[0]|truncate:50:'...'}
                       </span>
                   </td>
@@ -128,8 +128,8 @@
                   <td>|---</td>
                   <td>{$trace['parent']->getId()}</td>
                   <td>
-                      <span data-toggle="tooltip" title="{$trace['parent']->getTitle()}">
-                      {$trace['parent']->getTitle()|truncate:50:'...'}
+                      <span data-toggle="tooltip" title="{$trace['parent']->getVirtualColumn('i18n_TITLE')}">
+                      {$trace['parent']->getVirtualColumn('i18n_TITLE')|truncate:50:'...'}
                       </span>
                   </td>
                   <td class="text-center">
@@ -168,8 +168,8 @@
                     <td>|---</td>
                     <td>{$traceChildren->getId()}</td>
                     <td>
-                      <span data-toggle="tooltip" title="{$traceChildren->getTitle()}">
-                      {$traceChildren->getTitle()|truncate:50:'...'}
+                      <span data-toggle="tooltip" title="{$traceChildren->getVirtualColumn('i18n_TITLE')}">
+                      {$traceChildren->getVirtualColumn('i18n_TITLE')|truncate:50:'...'}
                       </span>
                     </td>
                     <td class="text-center">

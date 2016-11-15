@@ -38,15 +38,33 @@ class TraceController extends BaseAdminController
             return $response;
         }
 
-        $emailManagerTraces = EmailManagerTraceQuery::create()->filterByParentId(null)->find();
+        $query = EmailManagerTraceQuery::create()->filterByParentId(null);
+
+        I18nTrait::buildCriteriaI18n(
+            $query,
+            $request->getSession()->getLang()->getLocale(),
+            ['TITLE', 'DESCRIPTION']
+        );
+
+        $emailManagerTraces = $query->find();
 
         $traces = [];
 
         /** @var EmailManagerTrace $emailManagerTrace */
         foreach ($emailManagerTraces as $emailManagerTrace) {
+            $query = EmailManagerTraceQuery::create()->filterByParentId($emailManagerTrace->getId());
+
+            I18nTrait::buildCriteriaI18n(
+                $query,
+                $request->getSession()->getLang()->getLocale(),
+                ['TITLE', 'DESCRIPTION']
+            );
+
+            $emailManagerTraceChildren = $query->find();
+
             $traces[] = [
                 'parent' => $emailManagerTrace,
-                'children' => EmailManagerTraceQuery::create()->filterByParentId($emailManagerTrace->getId())->find()
+                'children' => $emailManagerTraceChildren
             ];
         }
 
