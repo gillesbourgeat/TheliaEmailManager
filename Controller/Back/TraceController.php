@@ -84,7 +84,7 @@ class TraceController extends BaseAdminController
 
         I18nTrait::buildCriteriaI18n(
             $query,
-            $request->getSession()->getAdminEditionLang()->getLocale(),
+            $this->getCurrentEditionLang()->getLocale(),
             ['TITLE', 'DESCRIPTION']
         );
 
@@ -124,7 +124,7 @@ class TraceController extends BaseAdminController
 
         I18nTrait::buildCriteriaI18n(
             $emailManagerTraces,
-            $request->getSession()->getAdminEditionLang()->getLocale(),
+            $request->getSession()->getLang()->getLocale(),
             ['TITLE']
         );
 
@@ -141,7 +141,7 @@ class TraceController extends BaseAdminController
 
         I18nTrait::buildCriteriaI18n(
             $childrenTraces,
-            $request->getSession()->getAdminEditionLang()->getLocale(),
+            $request->getSession()->getLang()->getLocale(),
             ['TITLE']
         );
 
