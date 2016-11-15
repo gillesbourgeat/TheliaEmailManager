@@ -7,7 +7,7 @@
 
     var ROUTE = {
       LIST_AJAX: "{url router="theliaemailmanager" route_id="admin_email_manager_history"}",
-      VIEW_EMAIL: "{url router="theliaemailmanager" route_id="admin_email_manager_history_view" historyId=0}"
+      VIEW_EMAIL: "{url router="theliaemailmanager" route_id="admin_email_manager_history_view" historyId=0}_0"
     };
 
     // AJAX directory
@@ -132,7 +132,7 @@
     // event modal view
     $modalView
       .on("show.bs.modal", function(e) {
-        $.ajax(ROUTE.VIEW_EMAIL.replace('0', e.relatedTarget.dataset.id))
+        $.ajax(ROUTE.VIEW_EMAIL.replace('0_0', e.relatedTarget.dataset.id))
           .done(function(data){
             $modalView.find('.modal-body').html(data);
 
