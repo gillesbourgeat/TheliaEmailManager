@@ -58,7 +58,7 @@ class EmailManagerHistoryTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 6;
+    const NUM_COLUMNS = 8;
 
     /**
      * The number of lazy-loaded columns
@@ -68,7 +68,7 @@ class EmailManagerHistoryTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 6;
+    const NUM_HYDRATE_COLUMNS = 8;
 
     /**
      * the column name for the ID field
@@ -81,9 +81,19 @@ class EmailManagerHistoryTableMap extends TableMap
     const TRACE_ID = 'email_manager_history.TRACE_ID';
 
     /**
+     * the column name for the STATUS field
+     */
+    const STATUS = 'email_manager_history.STATUS';
+
+    /**
      * the column name for the SUBJECT field
      */
     const SUBJECT = 'email_manager_history.SUBJECT';
+
+    /**
+     * the column name for the INFO field
+     */
+    const INFO = 'email_manager_history.INFO';
 
     /**
      * the column name for the BODY field
@@ -112,12 +122,12 @@ class EmailManagerHistoryTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'TraceId', 'Subject', 'Body', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'traceId', 'subject', 'body', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(EmailManagerHistoryTableMap::ID, EmailManagerHistoryTableMap::TRACE_ID, EmailManagerHistoryTableMap::SUBJECT, EmailManagerHistoryTableMap::BODY, EmailManagerHistoryTableMap::CREATED_AT, EmailManagerHistoryTableMap::UPDATED_AT, ),
-        self::TYPE_RAW_COLNAME   => array('ID', 'TRACE_ID', 'SUBJECT', 'BODY', 'CREATED_AT', 'UPDATED_AT', ),
-        self::TYPE_FIELDNAME     => array('id', 'trace_id', 'subject', 'body', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('Id', 'TraceId', 'Status', 'Subject', 'Info', 'Body', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'traceId', 'status', 'subject', 'info', 'body', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(EmailManagerHistoryTableMap::ID, EmailManagerHistoryTableMap::TRACE_ID, EmailManagerHistoryTableMap::STATUS, EmailManagerHistoryTableMap::SUBJECT, EmailManagerHistoryTableMap::INFO, EmailManagerHistoryTableMap::BODY, EmailManagerHistoryTableMap::CREATED_AT, EmailManagerHistoryTableMap::UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('ID', 'TRACE_ID', 'STATUS', 'SUBJECT', 'INFO', 'BODY', 'CREATED_AT', 'UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'trace_id', 'status', 'subject', 'info', 'body', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -127,12 +137,12 @@ class EmailManagerHistoryTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'TraceId' => 1, 'Subject' => 2, 'Body' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'traceId' => 1, 'subject' => 2, 'body' => 3, 'createdAt' => 4, 'updatedAt' => 5, ),
-        self::TYPE_COLNAME       => array(EmailManagerHistoryTableMap::ID => 0, EmailManagerHistoryTableMap::TRACE_ID => 1, EmailManagerHistoryTableMap::SUBJECT => 2, EmailManagerHistoryTableMap::BODY => 3, EmailManagerHistoryTableMap::CREATED_AT => 4, EmailManagerHistoryTableMap::UPDATED_AT => 5, ),
-        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'TRACE_ID' => 1, 'SUBJECT' => 2, 'BODY' => 3, 'CREATED_AT' => 4, 'UPDATED_AT' => 5, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'trace_id' => 1, 'subject' => 2, 'body' => 3, 'created_at' => 4, 'updated_at' => 5, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'TraceId' => 1, 'Status' => 2, 'Subject' => 3, 'Info' => 4, 'Body' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'traceId' => 1, 'status' => 2, 'subject' => 3, 'info' => 4, 'body' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
+        self::TYPE_COLNAME       => array(EmailManagerHistoryTableMap::ID => 0, EmailManagerHistoryTableMap::TRACE_ID => 1, EmailManagerHistoryTableMap::STATUS => 2, EmailManagerHistoryTableMap::SUBJECT => 3, EmailManagerHistoryTableMap::INFO => 4, EmailManagerHistoryTableMap::BODY => 5, EmailManagerHistoryTableMap::CREATED_AT => 6, EmailManagerHistoryTableMap::UPDATED_AT => 7, ),
+        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'TRACE_ID' => 1, 'STATUS' => 2, 'SUBJECT' => 3, 'INFO' => 4, 'BODY' => 5, 'CREATED_AT' => 6, 'UPDATED_AT' => 7, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'trace_id' => 1, 'status' => 2, 'subject' => 3, 'info' => 4, 'body' => 5, 'created_at' => 6, 'updated_at' => 7, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -153,7 +163,9 @@ class EmailManagerHistoryTableMap extends TableMap
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
         $this->addForeignKey('TRACE_ID', 'TraceId', 'INTEGER', 'email_manager_trace', 'ID', true, null, null);
+        $this->addColumn('STATUS', 'Status', 'INTEGER', false, null, 0);
         $this->addColumn('SUBJECT', 'Subject', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('INFO', 'Info', 'LONGVARCHAR', false, null, null);
         $this->addColumn('BODY', 'Body', 'BLOB', false, null, null);
         $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
         $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
@@ -330,14 +342,18 @@ class EmailManagerHistoryTableMap extends TableMap
         if (null === $alias) {
             $criteria->addSelectColumn(EmailManagerHistoryTableMap::ID);
             $criteria->addSelectColumn(EmailManagerHistoryTableMap::TRACE_ID);
+            $criteria->addSelectColumn(EmailManagerHistoryTableMap::STATUS);
             $criteria->addSelectColumn(EmailManagerHistoryTableMap::SUBJECT);
+            $criteria->addSelectColumn(EmailManagerHistoryTableMap::INFO);
             $criteria->addSelectColumn(EmailManagerHistoryTableMap::BODY);
             $criteria->addSelectColumn(EmailManagerHistoryTableMap::CREATED_AT);
             $criteria->addSelectColumn(EmailManagerHistoryTableMap::UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.TRACE_ID');
+            $criteria->addSelectColumn($alias . '.STATUS');
             $criteria->addSelectColumn($alias . '.SUBJECT');
+            $criteria->addSelectColumn($alias . '.INFO');
             $criteria->addSelectColumn($alias . '.BODY');
             $criteria->addSelectColumn($alias . '.CREATED_AT');
             $criteria->addSelectColumn($alias . '.UPDATED_AT');

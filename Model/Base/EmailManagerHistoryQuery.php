@@ -23,14 +23,18 @@ use TheliaEmailManager\Model\Map\EmailManagerHistoryTableMap;
  *
  * @method     ChildEmailManagerHistoryQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildEmailManagerHistoryQuery orderByTraceId($order = Criteria::ASC) Order by the trace_id column
+ * @method     ChildEmailManagerHistoryQuery orderByStatus($order = Criteria::ASC) Order by the status column
  * @method     ChildEmailManagerHistoryQuery orderBySubject($order = Criteria::ASC) Order by the subject column
+ * @method     ChildEmailManagerHistoryQuery orderByInfo($order = Criteria::ASC) Order by the info column
  * @method     ChildEmailManagerHistoryQuery orderByBody($order = Criteria::ASC) Order by the body column
  * @method     ChildEmailManagerHistoryQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildEmailManagerHistoryQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildEmailManagerHistoryQuery groupById() Group by the id column
  * @method     ChildEmailManagerHistoryQuery groupByTraceId() Group by the trace_id column
+ * @method     ChildEmailManagerHistoryQuery groupByStatus() Group by the status column
  * @method     ChildEmailManagerHistoryQuery groupBySubject() Group by the subject column
+ * @method     ChildEmailManagerHistoryQuery groupByInfo() Group by the info column
  * @method     ChildEmailManagerHistoryQuery groupByBody() Group by the body column
  * @method     ChildEmailManagerHistoryQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildEmailManagerHistoryQuery groupByUpdatedAt() Group by the updated_at column
@@ -52,14 +56,18 @@ use TheliaEmailManager\Model\Map\EmailManagerHistoryTableMap;
  *
  * @method     ChildEmailManagerHistory findOneById(int $id) Return the first ChildEmailManagerHistory filtered by the id column
  * @method     ChildEmailManagerHistory findOneByTraceId(int $trace_id) Return the first ChildEmailManagerHistory filtered by the trace_id column
+ * @method     ChildEmailManagerHistory findOneByStatus(int $status) Return the first ChildEmailManagerHistory filtered by the status column
  * @method     ChildEmailManagerHistory findOneBySubject(string $subject) Return the first ChildEmailManagerHistory filtered by the subject column
+ * @method     ChildEmailManagerHistory findOneByInfo(string $info) Return the first ChildEmailManagerHistory filtered by the info column
  * @method     ChildEmailManagerHistory findOneByBody(resource $body) Return the first ChildEmailManagerHistory filtered by the body column
  * @method     ChildEmailManagerHistory findOneByCreatedAt(string $created_at) Return the first ChildEmailManagerHistory filtered by the created_at column
  * @method     ChildEmailManagerHistory findOneByUpdatedAt(string $updated_at) Return the first ChildEmailManagerHistory filtered by the updated_at column
  *
  * @method     array findById(int $id) Return ChildEmailManagerHistory objects filtered by the id column
  * @method     array findByTraceId(int $trace_id) Return ChildEmailManagerHistory objects filtered by the trace_id column
+ * @method     array findByStatus(int $status) Return ChildEmailManagerHistory objects filtered by the status column
  * @method     array findBySubject(string $subject) Return ChildEmailManagerHistory objects filtered by the subject column
+ * @method     array findByInfo(string $info) Return ChildEmailManagerHistory objects filtered by the info column
  * @method     array findByBody(resource $body) Return ChildEmailManagerHistory objects filtered by the body column
  * @method     array findByCreatedAt(string $created_at) Return ChildEmailManagerHistory objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return ChildEmailManagerHistory objects filtered by the updated_at column
@@ -151,7 +159,7 @@ abstract class EmailManagerHistoryQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, TRACE_ID, SUBJECT, BODY, CREATED_AT, UPDATED_AT FROM email_manager_history WHERE ID = :p0';
+        $sql = 'SELECT ID, TRACE_ID, STATUS, SUBJECT, INFO, BODY, CREATED_AT, UPDATED_AT FROM email_manager_history WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -325,6 +333,47 @@ abstract class EmailManagerHistoryQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the status column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByStatus(1234); // WHERE status = 1234
+     * $query->filterByStatus(array(12, 34)); // WHERE status IN (12, 34)
+     * $query->filterByStatus(array('min' => 12)); // WHERE status > 12
+     * </code>
+     *
+     * @param     mixed $status The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildEmailManagerHistoryQuery The current query, for fluid interface
+     */
+    public function filterByStatus($status = null, $comparison = null)
+    {
+        if (is_array($status)) {
+            $useMinMax = false;
+            if (isset($status['min'])) {
+                $this->addUsingAlias(EmailManagerHistoryTableMap::STATUS, $status['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($status['max'])) {
+                $this->addUsingAlias(EmailManagerHistoryTableMap::STATUS, $status['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(EmailManagerHistoryTableMap::STATUS, $status, $comparison);
+    }
+
+    /**
      * Filter the query on the subject column
      *
      * Example usage:
@@ -351,6 +400,35 @@ abstract class EmailManagerHistoryQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(EmailManagerHistoryTableMap::SUBJECT, $subject, $comparison);
+    }
+
+    /**
+     * Filter the query on the info column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByInfo('fooValue');   // WHERE info = 'fooValue'
+     * $query->filterByInfo('%fooValue%'); // WHERE info LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $info The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildEmailManagerHistoryQuery The current query, for fluid interface
+     */
+    public function filterByInfo($info = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($info)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $info)) {
+                $info = str_replace('*', '%', $info);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(EmailManagerHistoryTableMap::INFO, $info, $comparison);
     }
 
     /**

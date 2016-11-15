@@ -72,10 +72,23 @@ abstract class EmailManagerHistory implements ActiveRecordInterface
     protected $trace_id;
 
     /**
+     * The value for the status field.
+     * Note: this column has a database default value of: 0
+     * @var        int
+     */
+    protected $status;
+
+    /**
      * The value for the subject field.
      * @var        string
      */
     protected $subject;
+
+    /**
+     * The value for the info field.
+     * @var        string
+     */
+    protected $info;
 
     /**
      * The value for the body field.
@@ -121,10 +134,23 @@ abstract class EmailManagerHistory implements ActiveRecordInterface
     protected $emailManagerHistoryEmailsScheduledForDeletion = null;
 
     /**
+     * Applies default values to this object.
+     * This method should be called from the object's constructor (or
+     * equivalent initialization method).
+     * @see __construct()
+     */
+    public function applyDefaultValues()
+    {
+        $this->status = 0;
+    }
+
+    /**
      * Initializes internal state of TheliaEmailManager\Model\Base\EmailManagerHistory object.
+     * @see applyDefaults()
      */
     public function __construct()
     {
+        $this->applyDefaultValues();
     }
 
     /**
@@ -401,6 +427,17 @@ abstract class EmailManagerHistory implements ActiveRecordInterface
     }
 
     /**
+     * Get the [status] column value.
+     *
+     * @return   int
+     */
+    public function getStatus()
+    {
+
+        return $this->status;
+    }
+
+    /**
      * Get the [subject] column value.
      *
      * @return   string
@@ -409,6 +446,17 @@ abstract class EmailManagerHistory implements ActiveRecordInterface
     {
 
         return $this->subject;
+    }
+
+    /**
+     * Get the [info] column value.
+     *
+     * @return   string
+     */
+    public function getInfo()
+    {
+
+        return $this->info;
     }
 
     /**
@@ -509,6 +557,27 @@ abstract class EmailManagerHistory implements ActiveRecordInterface
     } // setTraceId()
 
     /**
+     * Set the value of [status] column.
+     *
+     * @param      int $v new value
+     * @return   \TheliaEmailManager\Model\EmailManagerHistory The current object (for fluent API support)
+     */
+    public function setStatus($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->status !== $v) {
+            $this->status = $v;
+            $this->modifiedColumns[EmailManagerHistoryTableMap::STATUS] = true;
+        }
+
+
+        return $this;
+    } // setStatus()
+
+    /**
      * Set the value of [subject] column.
      *
      * @param      string $v new value
@@ -528,6 +597,27 @@ abstract class EmailManagerHistory implements ActiveRecordInterface
 
         return $this;
     } // setSubject()
+
+    /**
+     * Set the value of [info] column.
+     *
+     * @param      string $v new value
+     * @return   \TheliaEmailManager\Model\EmailManagerHistory The current object (for fluent API support)
+     */
+    public function setInfo($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->info !== $v) {
+            $this->info = $v;
+            $this->modifiedColumns[EmailManagerHistoryTableMap::INFO] = true;
+        }
+
+
+        return $this;
+    } // setInfo()
 
     /**
      * Set the value of [body] column.
@@ -605,6 +695,10 @@ abstract class EmailManagerHistory implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->status !== 0) {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -638,10 +732,16 @@ abstract class EmailManagerHistory implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : EmailManagerHistoryTableMap::translateFieldName('TraceId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->trace_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : EmailManagerHistoryTableMap::translateFieldName('Subject', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : EmailManagerHistoryTableMap::translateFieldName('Status', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->status = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : EmailManagerHistoryTableMap::translateFieldName('Subject', TableMap::TYPE_PHPNAME, $indexType)];
             $this->subject = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : EmailManagerHistoryTableMap::translateFieldName('Body', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : EmailManagerHistoryTableMap::translateFieldName('Info', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->info = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : EmailManagerHistoryTableMap::translateFieldName('Body', TableMap::TYPE_PHPNAME, $indexType)];
             if (null !== $col) {
                 $this->body = fopen('php://memory', 'r+');
                 fwrite($this->body, $col);
@@ -650,13 +750,13 @@ abstract class EmailManagerHistory implements ActiveRecordInterface
                 $this->body = null;
             }
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : EmailManagerHistoryTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : EmailManagerHistoryTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : EmailManagerHistoryTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : EmailManagerHistoryTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -669,7 +769,7 @@ abstract class EmailManagerHistory implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 6; // 6 = EmailManagerHistoryTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 8; // 8 = EmailManagerHistoryTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \TheliaEmailManager\Model\EmailManagerHistory object", 0, $e);
@@ -935,8 +1035,14 @@ abstract class EmailManagerHistory implements ActiveRecordInterface
         if ($this->isColumnModified(EmailManagerHistoryTableMap::TRACE_ID)) {
             $modifiedColumns[':p' . $index++]  = 'TRACE_ID';
         }
+        if ($this->isColumnModified(EmailManagerHistoryTableMap::STATUS)) {
+            $modifiedColumns[':p' . $index++]  = 'STATUS';
+        }
         if ($this->isColumnModified(EmailManagerHistoryTableMap::SUBJECT)) {
             $modifiedColumns[':p' . $index++]  = 'SUBJECT';
+        }
+        if ($this->isColumnModified(EmailManagerHistoryTableMap::INFO)) {
+            $modifiedColumns[':p' . $index++]  = 'INFO';
         }
         if ($this->isColumnModified(EmailManagerHistoryTableMap::BODY)) {
             $modifiedColumns[':p' . $index++]  = 'BODY';
@@ -964,8 +1070,14 @@ abstract class EmailManagerHistory implements ActiveRecordInterface
                     case 'TRACE_ID':
                         $stmt->bindValue($identifier, $this->trace_id, PDO::PARAM_INT);
                         break;
+                    case 'STATUS':
+                        $stmt->bindValue($identifier, $this->status, PDO::PARAM_INT);
+                        break;
                     case 'SUBJECT':
                         $stmt->bindValue($identifier, $this->subject, PDO::PARAM_STR);
+                        break;
+                    case 'INFO':
+                        $stmt->bindValue($identifier, $this->info, PDO::PARAM_STR);
                         break;
                     case 'BODY':
                         if (is_resource($this->body)) {
@@ -1048,15 +1160,21 @@ abstract class EmailManagerHistory implements ActiveRecordInterface
                 return $this->getTraceId();
                 break;
             case 2:
-                return $this->getSubject();
+                return $this->getStatus();
                 break;
             case 3:
-                return $this->getBody();
+                return $this->getSubject();
                 break;
             case 4:
-                return $this->getCreatedAt();
+                return $this->getInfo();
                 break;
             case 5:
+                return $this->getBody();
+                break;
+            case 6:
+                return $this->getCreatedAt();
+                break;
+            case 7:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1090,10 +1208,12 @@ abstract class EmailManagerHistory implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getTraceId(),
-            $keys[2] => $this->getSubject(),
-            $keys[3] => $this->getBody(),
-            $keys[4] => $this->getCreatedAt(),
-            $keys[5] => $this->getUpdatedAt(),
+            $keys[2] => $this->getStatus(),
+            $keys[3] => $this->getSubject(),
+            $keys[4] => $this->getInfo(),
+            $keys[5] => $this->getBody(),
+            $keys[6] => $this->getCreatedAt(),
+            $keys[7] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1148,15 +1268,21 @@ abstract class EmailManagerHistory implements ActiveRecordInterface
                 $this->setTraceId($value);
                 break;
             case 2:
-                $this->setSubject($value);
+                $this->setStatus($value);
                 break;
             case 3:
-                $this->setBody($value);
+                $this->setSubject($value);
                 break;
             case 4:
-                $this->setCreatedAt($value);
+                $this->setInfo($value);
                 break;
             case 5:
+                $this->setBody($value);
+                break;
+            case 6:
+                $this->setCreatedAt($value);
+                break;
+            case 7:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1185,10 +1311,12 @@ abstract class EmailManagerHistory implements ActiveRecordInterface
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setTraceId($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setSubject($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setBody($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setCreatedAt($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setUpdatedAt($arr[$keys[5]]);
+        if (array_key_exists($keys[2], $arr)) $this->setStatus($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setSubject($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setInfo($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setBody($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setCreatedAt($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setUpdatedAt($arr[$keys[7]]);
     }
 
     /**
@@ -1202,7 +1330,9 @@ abstract class EmailManagerHistory implements ActiveRecordInterface
 
         if ($this->isColumnModified(EmailManagerHistoryTableMap::ID)) $criteria->add(EmailManagerHistoryTableMap::ID, $this->id);
         if ($this->isColumnModified(EmailManagerHistoryTableMap::TRACE_ID)) $criteria->add(EmailManagerHistoryTableMap::TRACE_ID, $this->trace_id);
+        if ($this->isColumnModified(EmailManagerHistoryTableMap::STATUS)) $criteria->add(EmailManagerHistoryTableMap::STATUS, $this->status);
         if ($this->isColumnModified(EmailManagerHistoryTableMap::SUBJECT)) $criteria->add(EmailManagerHistoryTableMap::SUBJECT, $this->subject);
+        if ($this->isColumnModified(EmailManagerHistoryTableMap::INFO)) $criteria->add(EmailManagerHistoryTableMap::INFO, $this->info);
         if ($this->isColumnModified(EmailManagerHistoryTableMap::BODY)) $criteria->add(EmailManagerHistoryTableMap::BODY, $this->body);
         if ($this->isColumnModified(EmailManagerHistoryTableMap::CREATED_AT)) $criteria->add(EmailManagerHistoryTableMap::CREATED_AT, $this->created_at);
         if ($this->isColumnModified(EmailManagerHistoryTableMap::UPDATED_AT)) $criteria->add(EmailManagerHistoryTableMap::UPDATED_AT, $this->updated_at);
@@ -1270,7 +1400,9 @@ abstract class EmailManagerHistory implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setTraceId($this->getTraceId());
+        $copyObj->setStatus($this->getStatus());
         $copyObj->setSubject($this->getSubject());
+        $copyObj->setInfo($this->getInfo());
         $copyObj->setBody($this->getBody());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
@@ -1633,12 +1765,15 @@ abstract class EmailManagerHistory implements ActiveRecordInterface
     {
         $this->id = null;
         $this->trace_id = null;
+        $this->status = null;
         $this->subject = null;
+        $this->info = null;
         $this->body = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
+        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);
