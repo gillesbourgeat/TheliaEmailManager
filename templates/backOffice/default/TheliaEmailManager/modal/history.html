@@ -1,5 +1,28 @@
 {if $history}
     <div class="row">
+
+        {if $history->getStatus() == 3}
+        <div class="col-md-12">
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{intl l="Error while sending" d="theliaemailmanager.bo.default"}</h3>
+                </div>
+                <div class="panel-body">{$history->getInfo()}</div>
+            </div>
+        </div>
+        {/if}
+
+        {if $history->getStatus() == 2}
+            <div class="col-md-12">
+                <div class="panel panel-warning">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{intl l="Blocked while sending" d="theliaemailmanager.bo.default"}</h3>
+                    </div>
+                    <div class="panel-body">{$history->getInfo()}</div>
+                </div>
+            </div>
+        {/if}
+
         <div class="col-md-6">
             <div class="panel panel-info">
                 <div class="panel-heading">

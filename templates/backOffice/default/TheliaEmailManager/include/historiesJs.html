@@ -14,19 +14,21 @@
     var AJAX_DIRECTORY = {
       ID: 0,
       TRACE: 1,
-      DATE: 2,
-      SUBJECT: 3,
-      EMAILS: 4
+      STATUS: 2,
+      DATE: 3,
+      SUBJECT: 4,
+      EMAILS: 5
     };
 
     // Table directory
     var TABLE_DIRECTORY = {
       ID: 0,
       TRACE: 1,
-      DATE: 2,
-      SUBJECT: 3,
-      EMAILS: 4,
-      ACTION: 5
+      STATUS: 2,
+      DATE: 3,
+      SUBJECT: 4,
+      EMAILS: 5,
+      ACTION: 6
     };
 
     var tableAjax = $tableAjax.dataTable({
@@ -43,10 +45,11 @@
       ajax: {
         url: ROUTE.LIST_AJAX,
         data: function(data){
-          data['columns'][1]['search']['value'] = $module.find('.js-input-trace').val();
-          data['columns'][2]['search']['value'] = $module.find('.js-input-date').val();
-          data['columns'][3]['search']['value'] = $module.find('.js-input-subject').val();
-          data['columns'][4]['search']['value'] = $module.find('.js-input-emails').val();
+          data['columns'][AJAX_DIRECTORY.TRACE]['search']['value'] = $module.find('.js-input-trace').val();
+          data['columns'][AJAX_DIRECTORY.STATUS]['search']['value'] = $module.find('.js-input-status').val();
+          data['columns'][AJAX_DIRECTORY.DATE]['search']['value'] = $module.find('.js-input-date').val();
+          data['columns'][AJAX_DIRECTORY.SUBJECT]['search']['value'] = $module.find('.js-input-subject').val();
+          data['columns'][AJAX_DIRECTORY.EMAILS]['search']['value'] = $module.find('.js-input-emails').val();
           return data;
         }
       },
@@ -68,6 +71,20 @@
           sortable: false,
           responsivePriority: 2,
           targets: TABLE_DIRECTORY.TRACE
+        },
+        {
+          name: 'status',
+          render: function(data, type, row) {
+            if (data == 3) {
+              return '<span class="label label-danger">{intl l="Error" d="theliaemailmanager.bo.default"}</span>';
+            } else if (data == 2) {
+              return '<span class="label label-warning">{intl l="Blocked" d="theliaemailmanager.bo.default"}</span>';
+            } else {
+              return '<span class="label label-success">{intl l="Success" d="theliaemailmanager.bo.default"}</span>';
+            }
+          },
+          responsivePriority: 3,
+          targets: TABLE_DIRECTORY.STATUS
         },
         {
           name: 'emails',

@@ -86,6 +86,7 @@ class HistoryController extends BaseAdminController
             [
                 EmailManagerHistoryTableMap::ID,
                 EmailManagerHistoryTableMap::TRACE_ID,
+                EmailManagerHistoryTableMap::STATUS,
                 EmailManagerHistoryTableMap::CREATED_AT,
                 EmailManagerHistoryTableMap::SUBJECT
             ]
@@ -171,6 +172,7 @@ class HistoryController extends BaseAdminController
             $dataTableResponse->addData([
                 $history->getId(),
                 $traces[$history->getTraceId()],
+                $history->getStatus(),
                 $history->getCreatedAt($request->getSession()->getLang()->getDateFormat() . ' ' . $request->getSession()->getLang()->getTimeFormat()),
                 $history->getSubject(),
                 $historyEmails[$history->getId()]
@@ -231,6 +233,10 @@ class HistoryController extends BaseAdminController
     ) {
         if (null !== $search = $dataTableRequest->getColumns()->getByName('trace')->getSearchValue()) {
             $query->filterByTraceId($search);
+        }
+
+        if (null !== $search = $dataTableRequest->getColumns()->getByName('status')->getSearchValue()) {
+            $query->filterByStatus($search);
         }
 
         if (null !== $search = $dataTableRequest->getColumns()->getByName('subject')->getSearchValue()) {

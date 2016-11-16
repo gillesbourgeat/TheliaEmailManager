@@ -16,6 +16,14 @@
           </select>
         {/if}
       </th>
+      <th data-column="status">
+        <select data-column="status" class="form-control js-input-status" style="width: 100%; min-width: 100px;">
+          <option value="">{intl l="Status" d="theliaemailmanager.bo.default"}</option>
+          <option value="1">{intl l="Success" d="theliaemailmanager.bo.default"}</option>
+          <option value="2">{intl l="Blocked" d="theliaemailmanager.bo.default"}</option>
+          <option value="3">{intl l="Error" d="theliaemailmanager.bo.default"}</option>
+        </select>
+      </th>
       <th data-column="date">
         <input class="form-control js-input-date" type="date" placeholder="{intl l="Date" d="theliaemailmanager.bo.default"}" />
       </th>
