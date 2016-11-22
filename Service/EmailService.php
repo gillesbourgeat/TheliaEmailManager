@@ -123,6 +123,15 @@ class EmailService
             );
         }
 
+        if ($name !== null && !empty($name) && $model->getName() != $name) {
+            $model->setName($name);
+
+            $this->eventDispatcher->dispatch(
+                Events::EMAIL_UPDATE,
+                new EmailEvent($model)
+            );
+        }
+
         $this->emailManagerEmailCache[$email] = $model;
 
         return $this->emailManagerEmailCache[$email];
