@@ -54,6 +54,7 @@ return array(
     'Sending disabled' => 'Envoi désactivé',
     'Sending email is disabled' => 'L\'envoi d\'e-mail est désactivé',
     'Sending enabled' => 'Envoi activé',
+    'Source code' => 'Code source',
     'Status' => 'Statut',
     'Subject' => 'Sujet',
     'Success' => 'Succès',

@@ -158,6 +158,7 @@
               : $modalView.find('.tpl-message-body').html();
 
             $modalView.find('iframe').contents().find('html').html(messageBody);
+            $modalView.find('code').text(messageBody);
           })
           .fail(function(jqXHR, textStatus) {
             $modalView.find('.modal-body').html(jqXHR.responseText);
@@ -166,6 +167,17 @@
       .on("hidden.bs.modal", function() {
         $modalView.find('.modal-body').html('<div class="text-center"><span class="loading">{intl l="Please wait, loading" d="theliaemailmanager.bo.default"}</span></div>');
       });
+
+    // view source code
+    $modalView.on('click', '.js-source-code', function(){
+      if ($modalView.find('iframe').hasClass('hidden')) {
+        $modalView.find('pre').addClass('hidden');
+        $modalView.find('iframe').removeClass('hidden');
+      } else {
+        $modalView.find('iframe').addClass('hidden');
+        $modalView.find('pre').removeClass('hidden');
+      }
+    });
 
   }(jQuery, jQuery('.email-manager-history')));
 </script>
