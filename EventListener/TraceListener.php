@@ -81,7 +81,7 @@ class TraceListener implements EventSubscriberInterface
             /** @var Admin $admin */
             foreach ($admins as $admin) {
                 $notification = (new NotificationEntity('email_manager_new_trace'))
-                    ->toAdmins(AdminQuery::create()->find())
+                    ->toAdmins([$admin])
                     ->setByEmail(false)
                     ->setMessageType(NotificationEntity::MESSAGE_TYPE_HTML)
                     ->setType(NotificationEntity::TYPE_WARNING)
