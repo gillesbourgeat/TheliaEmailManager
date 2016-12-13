@@ -41,11 +41,14 @@ CREATE TABLE `email_manager_history`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `trace_id` INTEGER NOT NULL,
+    `status` INTEGER DEFAULT 0,
     `subject` TEXT,
+    `info` TEXT,
     `body` BLOB,
     `created_at` DATETIME,
     `updated_at` DATETIME,
     PRIMARY KEY (`id`),
+    INDEX `email_manager_history_I_1` (`status`),
     INDEX `email_manager_history_trace_id` (`trace_id`),
     INDEX `email_manager_history_created_at` (`created_at`),
     CONSTRAINT `fk_email_manager_history__email_manager_trace`
