@@ -110,7 +110,10 @@ class SwiftListener implements EventSubscriberInterface
         $emailManagerTrace->setNumberOfCatch($emailManagerTrace->getNumberOfCatch() + 1);
         $this->eventDispatcher->dispatch(Events::TRACE_UPDATE, new TraceEvent($emailManagerTrace));
 
-        if (TheliaEmailManager::getDisableSending()) {
+        if (TheliaEmailManager::getDisableSending()
+            && TheliaEmailManager::getEnableHistory()
+            && !$emailManagerTrace->getDisableHistory()
+        ) {
             $event->getSwiftEvent()->cancelBubble(true);
 
             $this->traceDriver->push(
@@ -125,7 +128,10 @@ class SwiftListener implements EventSubscriberInterface
             return;
         }
 
-        if ($emailManagerTrace->getDisableSending()) {
+        if ($emailManagerTrace->getDisableSending()
+            && TheliaEmailManager::getEnableHistory()
+            && !$emailManagerTrace->getDisableHistory()
+        ) {
             $event->getSwiftEvent()->cancelBubble(true);
 
             $this->traceDriver->push(
@@ -160,16 +166,20 @@ class SwiftListener implements EventSubscriberInterface
                 if (count($customersDisableSend)) {
                     /** @var EmailManagerEmail $emailManagerEmail */
                     foreach ($customersDisableSend as $emailManagerEmail) {
-                        $this->traceDriver->push(
-                            (new EmailEntity())
-                                ->setInfo(
-                                    "Sending email is disabled by the user : " . $emailManagerEmail->getName() . " " . $emailManagerEmail->getEmail()
-                                )
-                                ->setStatus(TheliaEmailManager::STATUS_BLOCKED)
-                                ->hydrateBySwiftMimeMessage($event->getSwiftEvent()->getMessage())
-                                ->setTraceId($this->lastEmailManagerTrace->getId())
-                                ->setTo([$emailManagerEmail->getEmail() => $emailManagerEmail->getName()])
-                        );
+                        if (TheliaEmailManager::getEnableHistory()
+                            && !$emailManagerTrace->getDisableHistory()
+                        ) {
+                            $this->traceDriver->push(
+                                (new EmailEntity())
+                                    ->setInfo(
+                                        "Sending email is disabled by the user : " . $emailManagerEmail->getName() . " " . $emailManagerEmail->getEmail()
+                                    )
+                                    ->setStatus(TheliaEmailManager::STATUS_BLOCKED)
+                                    ->hydrateBySwiftMimeMessage($event->getSwiftEvent()->getMessage())
+                                    ->setTraceId($this->lastEmailManagerTrace->getId())
+                                    ->setTo([$emailManagerEmail->getEmail() => $emailManagerEmail->getName()])
+                            );
+                        }
                     }
                 }
 
@@ -195,16 +205,20 @@ class SwiftListener implements EventSubscriberInterface
                 if (count($customersDisableSend)) {
                     /** @var EmailManagerEmail $emailManagerEmail */
                     foreach ($customersDisableSend as $emailManagerEmail) {
-                        $this->traceDriver->push(
-                            (new EmailEntity())
-                                ->setInfo(
-                                    "Sending email is disabled by the user : " . $emailManagerEmail->getName() . " " . $emailManagerEmail->getEmail()
-                                )
-                                ->setStatus(TheliaEmailManager::STATUS_BLOCKED)
-                                ->hydrateBySwiftMimeMessage($event->getSwiftEvent()->getMessage())
-                                ->setTraceId($this->lastEmailManagerTrace->getId())
-                                ->setBcc([$emailManagerEmail->getEmail() => $emailManagerEmail->getName()])
-                        );
+                        if (TheliaEmailManager::getEnableHistory()
+                            && !$emailManagerTrace->getDisableHistory()
+                        ) {
+                            $this->traceDriver->push(
+                                (new EmailEntity())
+                                    ->setInfo(
+                                        "Sending email is disabled by the user : " . $emailManagerEmail->getName() . " " . $emailManagerEmail->getEmail()
+                                    )
+                                    ->setStatus(TheliaEmailManager::STATUS_BLOCKED)
+                                    ->hydrateBySwiftMimeMessage($event->getSwiftEvent()->getMessage())
+                                    ->setTraceId($this->lastEmailManagerTrace->getId())
+                                    ->setBcc([$emailManagerEmail->getEmail() => $emailManagerEmail->getName()])
+                            );
+                        }
                     }
                 }
             }
@@ -225,16 +239,20 @@ class SwiftListener implements EventSubscriberInterface
                 if (count($customersDisableSend)) {
                     /** @var EmailManagerEmail $emailManagerEmail */
                     foreach ($customersDisableSend as $emailManagerEmail) {
-                        $this->traceDriver->push(
-                            (new EmailEntity())
-                                ->setInfo(
-                                    "Sending email is disabled by the user : " . $emailManagerEmail->getName() . " " . $emailManagerEmail->getEmail()
-                                )
-                                ->setStatus(TheliaEmailManager::STATUS_BLOCKED)
-                                ->hydrateBySwiftMimeMessage($event->getSwiftEvent()->getMessage())
-                                ->setTraceId($this->lastEmailManagerTrace->getId())
-                                ->setCc([$emailManagerEmail->getEmail() => $emailManagerEmail->getName()])
-                        );
+                        if (TheliaEmailManager::getEnableHistory()
+                            && !$emailManagerTrace->getDisableHistory()
+                        ) {
+                            $this->traceDriver->push(
+                                (new EmailEntity())
+                                    ->setInfo(
+                                        "Sending email is disabled by the user : " . $emailManagerEmail->getName() . " " . $emailManagerEmail->getEmail()
+                                    )
+                                    ->setStatus(TheliaEmailManager::STATUS_BLOCKED)
+                                    ->hydrateBySwiftMimeMessage($event->getSwiftEvent()->getMessage())
+                                    ->setTraceId($this->lastEmailManagerTrace->getId())
+                                    ->setCc([$emailManagerEmail->getEmail() => $emailManagerEmail->getName()])
+                            );
+                        }
                     }
                 }
             }
@@ -269,7 +287,7 @@ class SwiftListener implements EventSubscriberInterface
 
         // if Swift_TransportException
         if ($this->lastSwiftException !== null) {
-            if (TheliaEmailManager::getEnableHistory() && !$this->lastEmailManagerTrace->getDisableHistory()) {
+            if (TheliaEmailManager::getEnableHistory() && !$emailManagerTrace->getDisableHistory()) {
                 $this->traceDriver->push(
                     (new EmailEntity())
                         ->setInfo($this->lastSwiftException->getMessage())
