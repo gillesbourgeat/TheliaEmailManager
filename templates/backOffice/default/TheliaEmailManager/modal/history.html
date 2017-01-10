@@ -1,6 +1,71 @@
 {if $history}
     <div class="row">
 
+        {$types = ['from', 'to', 'cc', 'bcc', 'rt']}
+
+        {foreach from=$types item=emailType}
+            <div class="col-md-12">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{intl l="Email address %type" type=$emailType d="theliaemailmanager.bo.default"}</h3>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-striped js-table-{$emailType}">
+                            <thead>
+                            <tr>
+                                <th>
+                                    {intl l="Email :" d="theliaemailmanager.bo.default"}
+                                </th>
+                                <th>
+                                    {intl l="Name :" d="theliaemailmanager.bo.default"}
+                                </th>
+                                <th>
+                                    {intl l="Remove" d="theliaemailmanager.bo.default"}
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {foreach from=$historyEmails[$emailType] item=value}
+                                <tr>
+                                    <td>
+                                        <div class="form-group">
+                                            <input type="email" value="{$value['email']}" class="form-control"/>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <input type="text" value="{$value['name']}" class="form-control"/>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <button type="button" class="btn btn-danger js-action-remove-{$emailType}">{intl l="Remove" d="theliaemailmanager.bo.default"}</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {/foreach}
+                            {if !count($historyEmails[$emailType])}
+                                <tr>
+                                    <td colspan="3" class="text-center">
+                                        {intl l="No email address %type" type=$emailType d="theliaemailmanager.bo.default"}
+                                    </td>
+                                </tr>
+                            {/if}
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-center">
+                                    <button class="btn btn-success js-action-add-{$emailType}">{intl l="Add email address %type" type=$emailType d="theliaemailmanager.bo.default"}</button>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        {/foreach}
+
         {if $history->getStatus() == 3}
         <div class="col-md-12">
             <div class="panel panel-danger">
