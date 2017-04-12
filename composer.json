@@ -1,11 +1,17 @@
 {
   "name": "gillesbourgeat/thelia-email-manager-module",
-  "license": "LGPL-3.0+",
+  "license": "MIT",
   "type": "thelia-module",
   "require": {
     "thelia/installer": "~1.1"
   },
   "extra": {
     "installer-name": "TheliaEmailManager"
-  }
+  },
+  "authors": [
+    {
+      "name": "Gilles Bourgeat",
+      "email": "gilles.bourgeat@gmail.com"
+    }
+  ]
 }

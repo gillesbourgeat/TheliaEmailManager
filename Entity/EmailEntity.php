@@ -1,12 +1,12 @@
 <?php
-/*************************************************************************************/
-/*      Copyright (C) 2016 Gilles Bourgeat <gilles.bourgeat@gmail.com>               */
-/*                                                                                   */
-/*      This file is part of TheliaEmailManager module.                              */
-/*                                                                                   */
-/*      The module TheliaEmailManager can not be copied and/or distributed without   */
-/*      permission of Gilles Bourgeat.                                               */
-/*************************************************************************************/
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Gilles Bourgeat <gilles.bourgeat@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace TheliaEmailManager\Entity;
 
