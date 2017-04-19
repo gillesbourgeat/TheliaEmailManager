@@ -34,7 +34,7 @@ class TraceController extends BaseAdminController
     public function listAction(Request $request)
     {
         // Check current user authorization
-        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_TRACE, null, AccessManager::VIEW)) {
+        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_TRACE, '', AccessManager::VIEW)) {
             return $response;
         }
 
@@ -76,7 +76,7 @@ class TraceController extends BaseAdminController
     public function viewAction(Request $request, $traceId)
     {
         // Check current user authorization
-        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_TRACE, null, AccessManager::VIEW)) {
+        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_TRACE, '', AccessManager::VIEW)) {
             return $response;
         }
 
@@ -155,7 +155,7 @@ class TraceController extends BaseAdminController
     public function updateAction(Request $request, $traceId)
     {
         // Check current user authorization
-        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_TRACE, null, AccessManager::UPDATE)) {
+        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_TRACE, '', AccessManager::UPDATE)) {
             return $response;
         }
 
@@ -204,7 +204,7 @@ class TraceController extends BaseAdminController
     public function unlinkAction(Request $request, $traceId)
     {
         // Check current user authorization
-        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_TRACE, null, AccessManager::UPDATE)) {
+        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_TRACE, '', AccessManager::UPDATE)) {
             return $response;
         }
 

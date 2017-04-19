@@ -41,7 +41,7 @@ class EmailController extends BaseAdminController
         }
 
         // Check current user authorization
-        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_EMAIL, null, AccessManager::VIEW)) {
+        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_EMAIL, '', AccessManager::VIEW)) {
             return $response;
         }
 
@@ -51,7 +51,7 @@ class EmailController extends BaseAdminController
     public function ajaxListAction(Request $request)
     {
         // Check current user authorization
-        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_EMAIL, null, AccessManager::VIEW)) {
+        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_EMAIL, '', AccessManager::VIEW)) {
             return $response;
         }
 
@@ -110,7 +110,7 @@ class EmailController extends BaseAdminController
     public function reactivateAction(Request $request, $emailId)
     {
         // Check current user authorization
-        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_EMAIL, null, AccessManager::UPDATE)) {
+        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_EMAIL, '', AccessManager::UPDATE)) {
             return $response;
         }
 
