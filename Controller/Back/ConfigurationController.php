@@ -27,7 +27,7 @@ class ConfigurationController extends BaseAdminController
     public function viewAction(Request $request)
     {
         // Check current user authorization
-        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_CONFIGURATION, null, AccessManager::VIEW)) {
+        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_CONFIGURATION, '', AccessManager::VIEW)) {
             return $response;
         }
 
@@ -45,7 +45,7 @@ class ConfigurationController extends BaseAdminController
     public function updateAction(Request $request)
     {
         // Check current user authorization
-        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_CONFIGURATION, null, AccessManager::UPDATE)) {
+        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_CONFIGURATION, '', AccessManager::UPDATE)) {
             return $response;
         }
 

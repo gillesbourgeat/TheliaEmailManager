@@ -13,6 +13,8 @@ namespace TheliaEmailManager;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Symfony\Component\Finder\Finder;
 use Thelia\Install\Database;
+use Thelia\Model\Resource;
+use Thelia\Model\ResourceQuery;
 use Thelia\Module\BaseModule;
 use TheliaEmailManager\DataTransformer\EmailListTransformer;
 
@@ -66,6 +68,8 @@ class TheliaEmailManager extends BaseModule
         static::setEnableHistory(true);
         static::setDisableSending(false);
         static::setRedirectAllTo([]);
+
+        $this->addResources();
     }
 
     /**
@@ -87,6 +91,46 @@ class TheliaEmailManager extends BaseModule
                 $database->insertSql(null, [$updateSQLFile->getPathname()]);
             }
         }
+
+        $this->addResources();
+    }
+
+    protected function addResources()
+    {
+        $resources = [
+            self::RESOURCE_CONFIGURATION => [
+                ['locale'=>'en_US','title'=>'Thelia email manager configuration'],
+                ['locale'=>'fr_FR','title'=>'Configuration de Thelia email manager']
+            ],
+            self::RESOURCE_TRACE => [
+                ['locale'=>'en_US','title'=>'Thelia email manager trace'],
+                ['locale'=>'fr_FR','title'=>'Trace de Thelia email manager']
+            ],
+            self::RESOURCE_HISTORY => [
+                ['locale'=>'en_US','title'=>'Thelia email manager history'],
+                ['locale'=>'fr_FR','title'=>'Historique de Thelia email manager']
+            ],
+            self::RESOURCE_EMAIL => [
+                ['locale'=>'en_US','title'=>'Thelia email manager email'],
+                ['locale'=>'fr_FR','title'=>'Email de Thelia email manager']
+            ]
+        ];
+
+        foreach ($resources as $code => $i18ns) {
+            $resourceExist = ResourceQuery::create()
+                ->findOneByCode($code);
+
+            if (!$resourceExist) {
+                $resource = (new Resource())
+                    ->setCode($code);
+                foreach ($i18ns as $i18n) {
+                    $resource->setLocale($i18n['locale'])
+                        ->setTitle($i18n['title'])
+                        ->save();
+                }
+            }
+        }
+
     }
 
     /**

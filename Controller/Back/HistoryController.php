@@ -46,7 +46,7 @@ class HistoryController extends BaseAdminController
         }
 
         // Check current user authorization
-        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_HISTORY, null, AccessManager::VIEW)) {
+        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_HISTORY, '', AccessManager::VIEW)) {
             return $response;
         }
 
@@ -77,7 +77,7 @@ class HistoryController extends BaseAdminController
     public function ajaxListAction(Request $request)
     {
         // Check current user authorization
-        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_EMAIL, null, AccessManager::VIEW)) {
+        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_EMAIL, '', AccessManager::VIEW)) {
             return $response;
         }
 
@@ -185,7 +185,7 @@ class HistoryController extends BaseAdminController
     public function viewAction(Request $request, $historyId)
     {
         // Check current user authorization
-        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_HISTORY, null, AccessManager::VIEW)) {
+        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_HISTORY, '', AccessManager::VIEW)) {
             return $response;
         }
 
@@ -218,7 +218,7 @@ class HistoryController extends BaseAdminController
     public function resendAction(Request $request, $historyId)
     {
         // Check current user authorization
-        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_HISTORY, null, AccessManager::UPDATE)) {
+        if (null !== $response = $this->checkAuth(TheliaEmailManager::RESOURCE_HISTORY, '', AccessManager::UPDATE)) {
             return $response;
         }
     }
